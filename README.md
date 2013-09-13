@@ -4,8 +4,22 @@ Monitoramento de Ônibus
 Sistema para monitorar transportes públicos baseado em localização.
 
 
-[Create a spatially-enabled database] [2]
+HowTo
 ===================
+
+
+Install Postgres+Postgis
+-------------------
+TODO
+
+
+Configure Postgres
+-------------------
+TODO
+
+
+[Create a spatially-enabled database][2]
+-------------------
 
 The first step in creating a PostGIS database is to create a simple PostgreSQL database.
 
@@ -39,16 +53,31 @@ psql -d [yourdatabase] -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql
 
 
 Download OSM from Brazil
-===================
-Downloading .osm.bz2 from Brazil [here] [1]. 
+-------------------
+Download .osm.bz2 from Brazil [here][1]. 
+
+
+Install osm2pgsql
+-------------------
+TODO
 
 
 Import OSM in PostGIS
-===================
+-------------------
 
 ```
 osm2pgsql -s -U matheussampaio -W -E 4326 -d gonibus <path>/brazil-latest.osm
 ```
 
-    [1]: http://download.geofabrik.de/south-america.html
-    [2]: http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id418654
+Install GeoServer
+-------------------
+TODO
+
+
+Configure GeoServer
+-------------------
+TODO
+
+
+[1]: http://download.geofabrik.de/south-america.html
+[2]: http://postgis.refractions.net/documentation/manual-1.5/ch02.html#id418654
