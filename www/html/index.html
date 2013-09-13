@@ -8,27 +8,37 @@
             height: 99%;
             width: 99%;
         }
-        #map {
+        #map_id {
             width: 100%;
             height: 100%;
             border: 1px solid black;
         }   
     </style>
     <script src='http://openlayers.org/api/OpenLayers.js'></script>
+    <script type="text/javascript">
+            var map, osm;
+
+            function init() {
+
+                var options = {
+                    center: new OpenLayers.LonLat(-3996296.2385206,-807660.81172368),
+                    layers: [new OpenLayers.Layer.OSM()],
+                    zoom: 14,
+                    controls: [new OpenLayers.Control.LayerSwitcher()]
+                }
+
+                map = new OpenLayers.Map("map_id", options);
+            }
+    </script>
+    
     </head>
     <body>
-        <div id='map'></div>
-        <script type="text/javascript">
-            var map = new OpenLayers.Map('map',{maxResolution: 0.703125} );
-            var wmscURL = [
-                "http://wmsc1.terrapages.net/getmap?",
-                "http://wmsc2.terrapages.net/getmap?",
-                "http://wmsc3.terrapages.net/getmap?",
-                "http://wmsc4.terrapages.net/getmap?"
-            ];
-            var terrapagesStreetLayer = new OpenLayers.Layer.WMS( 'TerraPages Street',wmscURL, {layers: 'UnprojectedStreet', format: 'image/jpeg' }, {buffer: 1, isBaseLayer: true} );
-            map.addLayer(terrapagesStreetLayer);
-            map.zoomToMaxExtent();      
-        </script>
+        
+
+        <div id="map_id">
+            <script>
+            init();
+            </script>
+        </div>
     </body>
 </html>
