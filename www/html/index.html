@@ -16,7 +16,7 @@
     </style>
     <script src='http://openlayers.org/api/OpenLayers.js'></script>
     <script type="text/javascript">
-            var map, osm;
+            var map;
 
             function init() {
 
@@ -24,7 +24,10 @@
                     center: new OpenLayers.LonLat(-3996296.2385206,-807660.81172368),
                     layers: [new OpenLayers.Layer.OSM()],
                     zoom: 14,
-                    controls: [new OpenLayers.Control.LayerSwitcher()]
+                    numZoomLevels: 1,
+                    controls: [new OpenLayers.Control.LayerSwitcher(), new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(2, 3)}), new OpenLayers.Control.Navigation(), new OpenLayers.Control.ScaleLine()],
+                    maxExtent: new OpenLayers.Bounds(-38.7649917602539, -8.30254077911377, -34.793327331543, -6.02551984786987)
+
                 }
 
                 map = new OpenLayers.Map("map_id", options);
