@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="EN">
@@ -14,24 +14,74 @@
             border: 1px solid black;
         }   
     </style>
-    <script src='http://openlayers.org/api/OpenLayers.js'></script>
+    <script src='http://maps.google.com/maps/api/js?v=3&amp;sensor=false'></script>
+    <script src="http://openlayers.org/api/OpenLayers.js"></script>
     <script type="text/javascript">
-            var map;
+            var map, layer_onibus;
+
+            var server = "http://localhost:8080/geoserver/SIG/wms";
+
+            var refreshing = false;
+            var refreshID;
 
             function init() {
 
-                var options = {
-                    center: new OpenLayers.LonLat(-3996296.2385206,-807660.81172368),
-                    layers: [new OpenLayers.Layer.OSM()],
-                    zoom: 14,
-                    numZoomLevels: 1,
-                    controls: [new OpenLayers.Control.LayerSwitcher(), new OpenLayers.Control.PanZoomBar({position: new OpenLayers.Pixel(2, 3)}), new OpenLayers.Control.Navigation(), new OpenLayers.Control.ScaleLine()],
-                    maxExtent: new OpenLayers.Bounds(-38.7649917602539, -8.30254077911377, -34.793327331543, -6.02551984786987)
+                var layer_municipios = new OpenLayers.Layer.WMS(
+                                "Municipios", server,
+                                {layers: 'SIG:municipios', transparent: "true"},
+                                {singleTile: false, isBaseLayer: false, visibility: false}
+                            );
 
+                var layer_rota = new OpenLayers.Layer.WMS(
+                    "Rota: 400", "http://localhost:8080/geoserver/GO/wms",
+                    {layers: 'gonibus:rota', transparent: "true"},
+                    {singleTile: false, isBaseLayer: false, visibility: true}
+                );
+
+                layer_onibus = new OpenLayers.Layer.WMS(
+                    "Ônibus", "http://localhost:8080/geoserver/GO/wms",
+                    {layers: 'gonibus:lastlocalization', transparent: "true"},
+                    {singleTile: false, isBaseLayer: false, visibility: true}
+                );
+
+
+                var options = {
+                    projection: 'EPSG:3857',
+                    center: new OpenLayers.LonLat(-3996296.2385206,-807660.81172368),
+                    numZoomLevels: 20,
+                    zoom: 15
                 }
 
-                map = new OpenLayers.Map("map_id", options);
+
+                map = new OpenLayers.Map('map_id', options);
+
+                layer_googleStr = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
+
+                map.addLayers([layer_googleStr, layer_rota, layer_onibus]);
+
+                map.addControl(new OpenLayers.Control.LayerSwitcher());
+                map.addControl(new OpenLayers.Control.MousePosition());
+
+                map.setCenter(new OpenLayers.LonLat(-3996296.2385206,-807660.81172368), 15);
             }
+
+            function refresh() {
+                map.getLayersByName('Ônibus')[0].redraw(true);
+                console.log('refreshing...');
+            }
+
+            function toggleRefresh() {
+                refreshing = !refreshing;
+
+                if (!refreshing) {
+                    clearInterval(refreshID);
+                } else {
+                    refreshID = window.setInterval( refresh, 3000);
+                }
+
+                console.log('Refresh toggle: ' + refreshing);
+            }
+
     </script>
     
     </head>
@@ -42,6 +92,9 @@
             <script>
             init();
             </script>
+        </div>
+        <div>
+            <button id="refresh" type="button" onclick="toggleRefresh()">Toggle Refresh</button>
         </div>
     </body>
 </html>
