@@ -32,9 +32,21 @@
                                 {singleTile: false, isBaseLayer: false, visibility: false}
                             );
 
-                var layer_rota = new OpenLayers.Layer.WMS(
-                    "Rota: 400", "http://localhost:8080/geoserver/GO/wms",
-                    {layers: 'gonibus:rota', transparent: "true"},
+                var layer_rota_500 = new OpenLayers.Layer.WMS(
+                    "Rota: 500", "http://localhost:8080/geoserver/GO/wms",
+                    {layers: 'gonibus:rota500view', transparent: "true"},
+                    {singleTile: false, isBaseLayer: false, visibility: true}
+                );
+
+                var layer_rota_505 = new OpenLayers.Layer.WMS(
+                    "Rota: 505", "http://localhost:8080/geoserver/GO/wms",
+                    {layers: 'gonibus:rota505view', transparent: "true"},
+                    {singleTile: false, isBaseLayer: false, visibility: true}
+                );
+
+                var layer_rota_555 = new OpenLayers.Layer.WMS(
+                    "Rota: 555", "http://localhost:8080/geoserver/GO/wms",
+                    {layers: 'gonibus:rota555view', transparent: "true"},
                     {singleTile: false, isBaseLayer: false, visibility: true}
                 );
 
@@ -57,7 +69,7 @@
 
                 layer_googleStr = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
 
-                map.addLayers([layer_googleStr, layer_rota, layer_onibus]);
+                map.addLayers([layer_googleStr, layer_rota_500, layer_rota_505, layer_rota_555, layer_onibus]);
 
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                 map.addControl(new OpenLayers.Control.MousePosition());
