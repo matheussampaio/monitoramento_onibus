@@ -7,10 +7,13 @@ SELECT AddGeometryColumn('','Rota','geom','4291','MULTILINESTRING',2);
 
 ALTER TABLE Rota ADD CONSTRAINT nome_unico_rota UNIQUE (nome);
 
+CREATE TYPE status AS ENUM ('normal', 'atrasado', 'garagem', 'indeterminado');
+
 CREATE TABLE Onibus (
     id_onibus SERIAL PRIMARY KEY,
     id_rota integer NOT NULL,
-    placa text NOT NULL
+    placa text NOT NULL,
+    current_status status NOT NULL
 );
 
 ALTER TABLE Onibus ADD FOREIGN KEY (id_rota) REFERENCES Rota;

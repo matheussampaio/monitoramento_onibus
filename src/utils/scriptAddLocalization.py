@@ -48,8 +48,11 @@ def main():
             k += 1
 
         cur.execute("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0001'), {0}, {1}, NOW());".format(listaCoordenadas500[i][0], listaCoordenadas500[i][1]))
+        print("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0001'), {0}, {1}, NOW());".format(listaCoordenadas500[i][0], listaCoordenadas500[i][1]))
         cur.execute("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0004'), {0}, {1}, NOW());".format(listaCoordenadas505[j][0], listaCoordenadas505[j][1]))
+        print("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0004'), {0}, {1}, NOW());".format(listaCoordenadas505[j][0], listaCoordenadas505[j][1]))
         cur.execute("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0007'), {0}, {1}, NOW());".format(listaCoordenadas555[k][0], listaCoordenadas555[k][1]))
+        print("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0007'), {0}, {1}, NOW());".format(listaCoordenadas555[k][0], listaCoordenadas555[k][1]))
 
         sleep(3)
 
