@@ -32,20 +32,19 @@ def main():
 
     while True:
         
-        if i > len(listaCoordenadas500):
+        i += 1
+        j += 1
+        k += 1
+        
+        if i >= len(listaCoordenadas500):
             i = 0
-        else:
-            i += 1
             
-        if j > len(listaCoordenadas505):
+        if j >= len(listaCoordenadas505):
             j = 0
-        else:
-            j += 1
 
-        if k > len(listaCoordenadas555):
+        if k >= len(listaCoordenadas555):
             k = 0
-        else:
-            k += 1
+            
 
         cur.execute("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0001'), {0}, {1}, NOW());".format(listaCoordenadas500[i][0], listaCoordenadas500[i][1]))
         print("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = 'ABC-0001'), {0}, {1}, NOW());".format(listaCoordenadas500[i][0], listaCoordenadas500[i][1]))

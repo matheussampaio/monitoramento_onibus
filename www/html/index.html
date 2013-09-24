@@ -19,41 +19,41 @@
     <script type="text/javascript">
             var map, layer_onibus;
 
-            var server = "http://localhost:8080/geoserver/SIG/wms";
+            var server = "http://localhost:8080/geoserver/GO/wms";
 
             var refreshing = false;
             var refreshID;
 
             function init() {
 
-                var layer_municipios = new OpenLayers.Layer.WMS(
-                                "Municipios", server,
-                                {layers: 'SIG:municipios', transparent: "true"},
-                                {singleTile: false, isBaseLayer: false, visibility: false}
-                            );
-
                 var layer_rota_500 = new OpenLayers.Layer.WMS(
-                    "Rota: 500", "http://localhost:8080/geoserver/GO/wms",
+                    "Rota: 500", server,
                     {layers: 'gonibus:rota500view', transparent: "true"},
                     {singleTile: false, isBaseLayer: false, visibility: true}
                 );
 
                 var layer_rota_505 = new OpenLayers.Layer.WMS(
-                    "Rota: 505", "http://localhost:8080/geoserver/GO/wms",
+                    "Rota: 505", server,
                     {layers: 'gonibus:rota505view', transparent: "true"},
                     {singleTile: false, isBaseLayer: false, visibility: true}
                 );
 
                 var layer_rota_555 = new OpenLayers.Layer.WMS(
-                    "Rota: 555", "http://localhost:8080/geoserver/GO/wms",
+                    "Rota: 555", server,
                     {layers: 'gonibus:rota555view', transparent: "true"},
                     {singleTile: false, isBaseLayer: false, visibility: true}
                 );
 
+                var layer_pontos_onibus = new OpenLayers.Layer.WMS(
+                    "Pontos de Ônibus", server,
+                    {layers: 'gonibus:pontoonibus', transparent: "true"},
+                    {singleTile: true, isBaseLayer: false, visibility: true}
+                );
+
                 layer_onibus = new OpenLayers.Layer.WMS(
-                    "Ônibus", "http://localhost:8080/geoserver/GO/wms",
+                    "Ônibus", server,
                     {layers: 'gonibus:lastlocalization', transparent: "true"},
-                    {singleTile: false, isBaseLayer: false, visibility: true}
+                    {singleTile: true, isBaseLayer: false, visibility: true}
                 );
 
 
@@ -69,12 +69,12 @@
 
                 layer_googleStr = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
 
-                map.addLayers([layer_googleStr, layer_rota_500, layer_rota_505, layer_rota_555, layer_onibus]);
+                map.addLayers([layer_googleStr, layer_rota_500, layer_rota_505, layer_rota_555, layer_pontos_onibus, layer_onibus]);
 
                 map.addControl(new OpenLayers.Control.LayerSwitcher());
                 map.addControl(new OpenLayers.Control.MousePosition());
 
-                map.setCenter(new OpenLayers.LonLat(-3996296.2385206,-807660.81172368), 15);
+                map.setCenter(new OpenLayers.LonLat(-3996296.2385206,-807660.81172368), 14);
             }
 
             function refresh() {
@@ -88,7 +88,7 @@
                 if (!refreshing) {
                     clearInterval(refreshID);
                 } else {
-                    refreshID = window.setInterval( refresh, 3000);
+                    refreshID = window.setInterval( refresh, 2000);
                 }
 
                 console.log('Refresh toggle: ' + refreshing);
@@ -103,6 +103,7 @@
         <div id="map_id">
             <script>
             init();
+            toggleRefresh();
             </script>
         </div>
         <div>
