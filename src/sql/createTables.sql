@@ -1,9 +1,24 @@
+CREATE TABLE PontoOnibus ( 
+    id_pontoonibus SERIAL PRIMARY KEY,
+    nome text
+);
+
+SELECT AddGeometryColumn('','pontoonibus','geom','4291','POINT',2);
+
 CREATE TABLE Rota (
     id_rota SERIAL PRIMARY KEY,
     nome text NOT NULL,
 );
 
-SELECT AddGeometryColumn('','Rota','geom','4291','MULTILINESTRING',2);
+SELECT AddGeometryColumn('','rota','geom','4291','MULTILINESTRING',2);
+
+CREATE TABLE PontoOnibus_Rota (
+    id_rota INTEGER NOT NULL,
+    id_pontoonibus INTEGER NOT NULL
+);
+
+ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_rota) REFERENCES Rota;
+ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_pontoonibus) REFERENCES PontoOnibus;
 
 ALTER TABLE Rota ADD CONSTRAINT nome_unico_rota UNIQUE (nome);
 
