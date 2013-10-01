@@ -10,7 +10,9 @@ CREATE TABLE Rota (
     nome text NOT NULL,
 );
 
-SELECT AddGeometryColumn('','rota','geom','4291','MULTILINESTRING',2);
+SELECT AddGeometryColumn('','rota','geom','4291','LINESTRING',2);
+
+ALTER TABLE Rota ADD CONSTRAINT nome_unico_rota UNIQUE (nome);
 
 CREATE TABLE PontoOnibus_Rota (
     id_rota INTEGER NOT NULL,
@@ -19,8 +21,6 @@ CREATE TABLE PontoOnibus_Rota (
 
 ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_rota) REFERENCES Rota;
 ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_pontoonibus) REFERENCES PontoOnibus;
-
-ALTER TABLE Rota ADD CONSTRAINT nome_unico_rota UNIQUE (nome);
 
 CREATE TYPE status AS ENUM ('normal', 'atrasado', 'garagem', 'indeterminado');
 
