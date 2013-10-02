@@ -63,3 +63,32 @@ BEGIN
     RETURN result;
 END;
 $$ LANGUAGE plpgsql;
+
+
+CREATE OR REPLACE FUNCTION getVelocidadeMedia (id INTEGER) RETURNS REAL AS $$
+DECLARE
+    pointA Geometry;
+    pointB Geometry;
+
+    timeA timestamp;
+    timeB timestamp;
+
+    result INTEGER;
+
+    distance REAL;
+    diffTime REAL;
+
+    points CURSOR FOR SELECT ST_GeomFromText('POINT (' || lat || ' ' || long || ')', 4291) AS geom, time FROM localization WHERE id_onibus = id ORDER BY time DESC LIMIT 2;
+BEGIN
+    OPEN points;
+    FETCH points INTO pointA, timeA;
+    FETCH points INTO pointB, timeB;
+    CLOSE points;
+
+    distance = ST_Distance(ST_Transform(pointA, 26986), ST_Transform(pointB, 26986));
+
+    diffTime = EXTRACT(EPOCH FROM (timeA - timeB));
+
+    RETURN ( distance / diffTime ) * 3.6;
+END;
+$$ LANGUAGE plpgsql;
