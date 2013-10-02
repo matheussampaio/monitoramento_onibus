@@ -1,13 +1,46 @@
+<!DOCTYPE html>
 <html>
-
-<head>
-
-</head>
-
-
-<body>
-
-</body>
-
-
+	<head> 
+	<title>Criar Rota</title>
+	
+	<script type="text/javascript">
+		
+		
+	var coordenadas = new Array();
+	var indice = 0
+	function adicionarCoordenada(longitude, latitude){
+		coordenadas[indice] = longitude+","+latitude;
+		indice +=1;
+		
+		var saida = document.getElementById("lat/lon").innerHTML;
+	
+		document.getElementById("lat/lon").innerHTML= saida + "<br>" + coordenadas[indice-1];
+	}
+	
+	function adicionarRota(){
+		var xmlhttp = new XMLHttpRequest();
+		xmlhttp.open("http://localhost/task/POST", coordenadas); 
+		xmlhttp.send();	
+	}
+	</script>
+	<style>
+	.center
+	{
+	text-align:center;
+	}
+	</style>
+	</head> 
+	<body>
+	<div class="center">
+	<input type="text" id="longi" /> <input type="text" id="lati" /> 
+	<input id="botao" type="button" value="Adicionar Coordenada" onclick="javascript:adicionarCoordenada(document.getElementById('longi').value,document.getElementById('lati').value) ;"/>
+	</div>
+	<div class="center">
+		Latitude e longitude = <p id="lat/lon"> </p>
+	</div>
+	<div class="center">
+	<input id="botao" type="button" value="Adicionar Rota" onclick="javascript:adicionarRota();"/>
+	</div>
+	</body>
+		
 </html>

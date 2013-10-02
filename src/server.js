@@ -12,7 +12,7 @@ try {
     process.exit(e.code);
 }
 
-var conString = "postgres://matheussampaio:sampaio@localhost:5432/gonibus";
+var conString = "postgres://matheussampaio:sampaio@192.168.1.244:5432/gonibus";
 
 var client = new pg.Client(conString);
 client.connect();
@@ -31,7 +31,6 @@ server.configure(function(){
 server.get('/', function(req, res){
     res.render('index.html');
 });
-
 
 server.get('/admin', function(req, res) {
     res.render('admin.html');
