@@ -5,6 +5,18 @@ try {
     process.exit(e.code);
 }
 
+try {
+    var pg = require('pg');
+} catch(e) {
+    console.error("pg is not found. You should install: npm install pg");
+    process.exit(e.code);
+}
+
+var conString = "postgres://matheussampaio:sampaio@localhost:5432/gonibus";
+
+var client = new pg.Client(conString);
+client.connect();
+
 var server = express();
 
 // Configura o servidor.
