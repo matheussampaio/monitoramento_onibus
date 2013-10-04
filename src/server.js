@@ -30,11 +30,37 @@ server.configure(function(){
 // Define o get para a pagina principal: apenas retorna o index
 server.get('/', function(req, res){
     res.render('index.html');
+
 });
 
-server.get('/admin', function(req, res) {
+
+
+ server.get('/adicionar', function(req, res) {
     res.render('admin.html');
+ });
+
+
+
+server.post('/enviarNovoPonto', function(req, res) {
+   var coordenada = req.body.lati+" "+req.body.longi
+   var inserir = "INSERT INTO PontoOnibus VALUES (DEFAULT, NULL, ST_GeomFromText('POINT ("+coordenada+")' ,4291))"
+   client.query(inserir);
+   res.redirect('/');
 });
+  
+
+// var coordenadas = new Array();  
+// var indice = 0
+
+// server.post('/enviarNovaRota', function(req, res) {
+//    var latitude = req.body.lati;
+//    var longitude = req.body.longi;
+
+//    console.log(latitude+" "+ longitude);
+
+
+//     res.render('index.html');
+// });
 
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
