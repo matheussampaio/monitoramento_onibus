@@ -2,29 +2,8 @@
 <html>
 	<head> 
 		<title>Administrador</title>
-
-		
+	
 		<script type="text/javascript">
-
-
-			var coordenadas = new Array();
-			var indice = 0
-
-			var ponto;
-
-			function adicionarCoordenada(longitude, latitude){
-				coordenadas[indice] = longitude+" "+latitude;
-				indice +=1;
-				var saida = document.getElementById("lat/lon1").innerHTML;
-				document.getElementById("lat/lon1").innerHTML= saida + "<br>" + coordenadas[indice-1];
-			}
-			
-			function confirmarRota(){
-				var xmlhttp = new XMLHttpRequest();
-				xmlhttp.open(servidor, coordenadas); 
-				xmlhttp.send();	
-			}
-
 		</script>
 		
 		<style>
@@ -37,49 +16,80 @@
 	</head> 
 
 	<body>
-<!-- 
-		<div class="center">
-			<input type="text" id="longi1" /> <input type="text" id="lati1" /> 
-			<input id="botao1" type="button" value="Adicionar Coordenada" onclick="javascript:adicionarCoordenada(document.getElementById('longi1').value,document.getElementById('lati1').value) ;"/>
-		</div>
 
 		<div class="center">
-			Latitude e longitude = <p id="lat/lon1"> </p>
-		</div>
 
-		<div class="center">
-			<form action="/enviarNovaRota" method="post" align='center'>
 
-				<input id="botao2" type="button" value="Confirmar Rota" onclick="javascript:confirmarRota();"/>
-		
+			Insira todas as coordenadas que compõem a rota: <br>
+			Ex: Latitude1 longitude1, latitude2 longitude2, latitude3 longitude3...<br>
+			<form action="addCoordsParaNovaRota" method="POST" align='center'>
+				Coordenadas:
+				<textarea rows="5" cols="50" id="cod" name="coords"></textarea>
+				Número da linha: <input type="text" id="numOni" name="onibus"> </input>
+				<input id="botao4" type="submit" value="Confirmar Rota" onclick="myFunction1()"/>
+				<script>
+					function myFunction1(){
+						try{ 
+							var x=document.getElementById("cod").value;
+							var y=document.getElementById("numOni").value;
+							if(x=="x")    throw "empty";
+							if(y=="x")    throw "empty";
+						}catch(err){
+						alert("errado");
+						}
+					}
+				</script>
 			</form>
-		</div> -->
-
-
+			<p>--------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+		</div>
 
 
 		<div class="center">
-			<form action="enviarCoordParaNovaRota" method="POST" align='center'>
+			Insira as coordenadas do novo Ponto <br>
+			<form action="adicionarNovoPonto" method="POST" align='center'>
 
 				Latitude:<input type="text" id="lat" name="lati"> </input>
 				Longitude:<input type="text" id="lon" name="longi"> </input>
-				<input id="botao4" type="submit" value="Confirmar Ponto"/>
-		
+				<input id="botao4" type="submit" value="Confirmar Ponto" onclick="myFunction2()"/>
+
+				<script>
+					function myFunction2(){
+						try{ 
+							var x=document.getElementById("lat").value;
+							var y=document.getElementById("lon").value;
+							if(x=="x")    throw "empty";
+							if(y=="x")    throw "empty";
+						}catch(err){
+						alert("errado");
+						}
+					}
+				</script>
 			</form>
+			<p>--------------------------------------------------------------------------------------------------------------------------------------------------------</p>
 		</div>
-
-
 		<div class="center">
-			<form action="enviarNovoPonto" method="POST" align='center'>
+			Insira a placa do ônibus e o num da linha<br>
+			<form action="adicionarOnibus" method="POST" align='center'>
 
-				Latitude:<input type="text" id="lat" name="lati"> </input>
-				Longitude:<input type="text" id="lon" name="longi"> </input>
-				<input id="botao4" type="submit" value="Confirmar Ponto"/>
-		
+				Placa do ônibus:<input type="text" id="placa" name="placaOni"> </input>
+				Número da linha:<input type="text" id="num" name="numLinha"> </input>
+				<input id="botao4" type="submit" value="Confirmar Ônibus" onclick="myFunction3()"/>
+
+				<script>
+					function myFunction3(){
+						try{ 
+							var x=document.getElementById("placa").value;
+							var y=document.getElementById("num").value;
+							if(x=="x")    throw "empty";
+							if(y=="x")    throw "empty";
+						}catch(err){
+						alert("errado");
+						}
+					}
+				</script>
 			</form>
+			<p>-------------------------------------------------------------------------------------------------------------------------------------------------------</p>
 		</div>
-
-
 	</body>
 		
 </html>
