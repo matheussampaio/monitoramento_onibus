@@ -88,7 +88,7 @@ server.get('/fugarota', function(req, res) {
     });
 });
 
-server.put('/fugarota', function(req, res) {
+server.post('/fugarota', function(req, res) {
     var idOnibus = req.body.idOnibus;
 
     var query = "UPDATE FugaRota SET resolvido = TRUE WHERE id_onibus = " + idOnibus + " AND resolvido = FALSE";
