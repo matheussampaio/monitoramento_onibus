@@ -44,11 +44,12 @@ server.get('/', function(req, res){
 
 
 server.post('/addCoordsParaNovaRota', function(req, res) {
-   
-  console.log(req.body.coords);
-  console.log(req.body.onibus);
+  
   var coordenadas = req.body.coords;
   var numOnibus = req.body.onibus;
+  console.log(coordenadas);
+  console.log(numOnibus);
+
   var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numOnibus+"', ST_GeomFromText('LINESTRING("+coordenadas+")', 4291)";
   var view = "CREATE OR REPLACE VIEW rota"+numOnibus+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numOnibus+"'";
   client.query(inserir);
@@ -74,9 +75,6 @@ server.post('/adicionarOnibus', function(req, res) {
   client.query(inserir);
   res.redirect('/');
 });
-
-
-
 
 
 // Inicia o servidor na porta 3001.
