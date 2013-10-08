@@ -181,14 +181,19 @@ CREATE OR REPLACE FUNCTION getSubLineString(id INTEGER) RETURNS Geometry AS $$
     $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE VIEW tempoToPontoOnibus AS
+CREATE OR REPLACE VIEW TempoToPontoOnibus AS
     SELECT o.id_onibus, p.id_pontoonibus, NOW() + (ST_Length( ST_Transform(getSubLineString(o.id_onibus, p.id_pontoonibus), 26986)) / getVelocidadeMedia(o.id_onibus))*'1 SECOND'::INTERVAL AS tempo
     FROM Onibus o, PontoOnibus p, Rota r, PontoOnibus_Rota pr
     WHERE o.id_rota = r.id_rota AND pr.id_rota = r.id_rota AND pr.id_pontoonibus = p.id_pontoonibus
     GROUP BY o.id_onibus, p.id_pontoonibus
     ORDER BY o.id_onibus, p.id_pontoonibus;
 
-create or replace view viewsubstrings as select o.id_onibus, getsublinestring(o.id_onibus) as geom from onibus o where o.id_onibus = 25;
 
-SELECT a.distance, a.velocidade, (a.distance/a.velocidade) AS tempo, NOW() + INTERVAL a.distance/a.velocidade SECOND
-FROM ( SELECT ST_Length( ST_Transform(getSubLineString(25), 26986) ) AS distance, getVelocidadeMedia(25) AS velocidade ) a;
+CREATE TABLE FugaRota (
+    id_fugarota SERIAL PRIMARY KEY,
+    id_onibus INTEGER NOT NULL,
+    rosolvido BOOLEAN NOT NULL,
+    time TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE FugaRota ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
