@@ -197,3 +197,20 @@ CREATE TABLE FugaRota (
 );
 
 ALTER TABLE FugaRota ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
+
+CREATE OR REPLACE FUNCTION refreshFugaRota() RETURNS trigger AS $refreshFugaRota$
+    DECLARE
+        isNewCoordOut Boolean;
+    BEGIN
+        SELECT ST_Intersects(r.geom, l.geom) INTO isNewCoordOut FROM LastLocalization l, Rota r, Onibus o WHERE o.id_onibus = NEW.id_onibus AND l.id_onibus = o.id_onibus AND r.id_rota = o.id_rota;
+
+        IF NOT isNewCoordOut THEN
+            INSERT INTO FugaRota VALUES (DEFAULT, NEW.id_onibus, FALSE, DEFAULT);
+        END IF;
+
+        RETURN NEW;
+    END;
+    $refreshFugaRota$ LANGUAGE plpgsql;
+
+CREATE TRIGGER refreshFugaRota AFTER INSERT ON Localization
+    FOR EACH ROW EXECUTE PROCEDURE refreshFugaRota();
