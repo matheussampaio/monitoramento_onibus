@@ -30,11 +30,52 @@ server.configure(function(){
 // Define o get para a pagina principal: apenas retorna o index
 server.get('/', function(req, res){
     res.render('index.html');
+
 });
 
-server.get('/admin', function(req, res) {
+
+
+ server.get('/adicionar', function(req, res) {
     res.render('admin.html');
+ });
+
+
+
+
+
+server.post('/addCoordsParaNovaRota', function(req, res) {
+  
+  var coordenadas = req.body.coords;
+  var numOnibus = req.body.onibus;
+  console.log(coordenadas);
+  console.log(numOnibus);
+
+  var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numOnibus+"', ST_GeomFromText('LINESTRING("+coordenadas+")', 4291)";
+  var view = "CREATE OR REPLACE VIEW rota"+numOnibus+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numOnibus+"'";
+  client.query(inserir);
+  client.query(view);
+  res.redirect('/');
 });
+
+server.post('/adicionarNovoPonto', function(req, res) {
+  var coordenada = req.body.lati+" "+req.body.longi;
+  console.log(coordenada);
+  var inserir = "INSERT INTO PontoOnibus VALUES (DEFAULT, NULL, ST_GeomFromText('POINT ("+coordenada+")' ,4291))"
+  client.query(inserir);
+  res.redirect('/');
+});
+  
+
+server.post('/adicionarOnibus', function(req, res) {
+  var placa = req.body.placaOni;
+  var numero = req.body.numLinha;
+  console.log(placa);
+  console.log(numero);
+  var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '"+numero+"'), '"+placa+"');"
+  client.query(inserir);
+  res.redirect('/');
+});
+
 
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
