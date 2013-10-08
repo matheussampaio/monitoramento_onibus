@@ -1,14 +1,14 @@
 CREATE TABLE PontoOnibus ( 
     id_pontoonibus SERIAL PRIMARY KEY,
-    nome text NOT NULL DEFAULT ''
+    nome TEXT NOT NULL DEFAULT ''
 );
 
 SELECT AddGeometryColumn('','pontoonibus','geom','4291','POINT',2);
 
 CREATE TABLE Rota (
     id_rota SERIAL PRIMARY KEY,
-    nome text NOT NULL,
-    first_pontonibus INTEGER NOT NULL
+    nome TEXT NOT NULL,
+    first_pontoonibus INTEGER NOT NULL
 );
 
 SELECT AddGeometryColumn('','rota','geom','4291','LINESTRING',2);
@@ -29,8 +29,8 @@ CREATE TYPE status AS ENUM ('normal', 'atrasado', 'garagem', 'indeterminado');
 
 CREATE TABLE Onibus (
     id_onibus SERIAL PRIMARY KEY,
-    id_rota integer NOT NULL,
-    placa text NOT NULL,
+    id_rota INTEGER NOT NULL,
+    placa TEXT NOT NULL,
     current_status status NOT NULL,
     current_pontoonibus INTEGER NOT NULL
 );
@@ -43,10 +43,10 @@ ALTER TABLE Onibus ADD CONSTRAINT placa_unica_onibus UNIQUE (placa);
 
 CREATE TABLE Localization (
     id_localization SERIAL PRIMARY KEY,
-    id_onibus integer NOT NULL,
-    lat text NOT NULL,
-    long text NOT NULL,
-    time timestamp NOT NULL
+    id_onibus INTEGER NOT NULL,
+    lat TEXT NOT NULL,
+    long TEXT NOT NULL,
+    time TIMESTAMP NOT NULL
 );
 
 ALTER TABLE Localization ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
@@ -70,8 +70,8 @@ CREATE OR REPLACE FUNCTION getVelocidadeMedia (id INTEGER) RETURNS REAL AS $$
         pointA Geometry;
         pointB Geometry;
 
-        timeA timestamp;
-        timeB timestamp;
+        timeA TIMESTAMP;
+        timeB TIMESTAMP;
 
         result INTEGER;
 
@@ -83,13 +83,20 @@ CREATE OR REPLACE FUNCTION getVelocidadeMedia (id INTEGER) RETURNS REAL AS $$
         OPEN points;
         FETCH points INTO pointA, timeA;
         FETCH points INTO pointB, timeB;
-        CLOSE points;
 
         distance = ST_Distance(ST_Transform(pointA, 26986), ST_Transform(pointB, 26986));
+
+        WHILE distance = 0 LOOP
+            FETCH points INTO pointB, timeB;
+            distance = ST_Distance(ST_Transform(pointA, 26986), ST_Transform(pointB, 26986));
+        END LOOP;
+
+        CLOSE points;
 
         diffTime = EXTRACT(EPOCH FROM (timeA - timeB));
 
         RETURN ( distance / diffTime );
+
     END;
     $$ LANGUAGE plpgsql;
 
@@ -181,14 +188,36 @@ CREATE OR REPLACE FUNCTION getSubLineString(id INTEGER) RETURNS Geometry AS $$
     $$ LANGUAGE plpgsql;
 
 
-CREATE OR REPLACE VIEW tempoToPontoOnibus AS
+CREATE OR REPLACE VIEW TempoToPontoOnibus AS
     SELECT o.id_onibus, p.id_pontoonibus, NOW() + (ST_Length( ST_Transform(getSubLineString(o.id_onibus, p.id_pontoonibus), 26986)) / getVelocidadeMedia(o.id_onibus))*'1 SECOND'::INTERVAL AS tempo
     FROM Onibus o, PontoOnibus p, Rota r, PontoOnibus_Rota pr
     WHERE o.id_rota = r.id_rota AND pr.id_rota = r.id_rota AND pr.id_pontoonibus = p.id_pontoonibus
     GROUP BY o.id_onibus, p.id_pontoonibus
     ORDER BY o.id_onibus, p.id_pontoonibus;
 
-create or replace view viewsubstrings as select o.id_onibus, getsublinestring(o.id_onibus) as geom from onibus o where o.id_onibus = 25;
 
-SELECT a.distance, a.velocidade, (a.distance/a.velocidade) AS tempo, NOW() + INTERVAL a.distance/a.velocidade SECOND
-FROM ( SELECT ST_Length( ST_Transform(getSubLineString(25), 26986) ) AS distance, getVelocidadeMedia(25) AS velocidade ) a;
+CREATE TABLE FugaRota (
+    id_fugarota SERIAL PRIMARY KEY,
+    id_onibus INTEGER NOT NULL,
+    resolvido BOOLEAN NOT NULL,
+    time TIMESTAMP NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE FugaRota ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
+
+CREATE OR REPLACE FUNCTION refreshFugaRota() RETURNS trigger AS $refreshFugaRota$
+    DECLARE
+        isNewCoordOut Boolean;
+    BEGIN
+        SELECT ST_Intersects(r.geom, l.geom) INTO isNewCoordOut FROM LastLocalization l, Rota r, Onibus o WHERE o.id_onibus = NEW.id_onibus AND l.id_onibus = o.id_onibus AND r.id_rota = o.id_rota;
+
+        IF NOT isNewCoordOut THEN
+            INSERT INTO FugaRota VALUES (DEFAULT, NEW.id_onibus, FALSE, DEFAULT);
+        END IF;
+
+        RETURN NEW;
+    END;
+    $refreshFugaRota$ LANGUAGE plpgsql;
+
+CREATE TRIGGER refreshFugaRota AFTER INSERT ON Localization
+    FOR EACH ROW EXECUTE PROCEDURE refreshFugaRota();

@@ -77,7 +77,34 @@ server.post('/adicionarOnibus', function(req, res) {
 });
 
 
+server.get('/fugarota', function(req, res) {
+
+    client.query("SELECT DISTINCT ON (f.id_onibus) o.id_onibus, o.placa, f.time FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.time DESC;", function(err, result) {
+        if (err) {
+            return console.log("Error runing query", err);
+        }
+
+        res.render('fugarota.html', {result: result.rows});
+    });
+});
+
+server.put('/fugarota', function(req, res) {
+    var idOnibus = req.body.idOnibus;
+
+    var query = "UPDATE FugaRota SET resolvido = TRUE WHERE id_onibus = " + idOnibus + " AND resolvido = FALSE";
+
+    client.query (query, function(err, result) {
+        if (err) {
+            return console.log("Error runing query", err);
+        }
+
+        res.redirect('/fugarota');
+    });
+
+});
+
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
     console.log("Server on.");
+    console.log("http://localhost:3001");
 });
