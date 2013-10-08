@@ -1,14 +1,14 @@
 CREATE TABLE PontoOnibus ( 
     id_pontoonibus SERIAL PRIMARY KEY,
-    nome text NOT NULL DEFAULT ''
+    nome TEXT NOT NULL DEFAULT ''
 );
 
 SELECT AddGeometryColumn('','pontoonibus','geom','4291','POINT',2);
 
 CREATE TABLE Rota (
     id_rota SERIAL PRIMARY KEY,
-    nome text NOT NULL,
-    first_pontonibus INTEGER NOT NULL
+    nome TEXT NOT NULL,
+    first_pontoonibus INTEGER NOT NULL
 );
 
 SELECT AddGeometryColumn('','rota','geom','4291','LINESTRING',2);
@@ -29,8 +29,8 @@ CREATE TYPE status AS ENUM ('normal', 'atrasado', 'garagem', 'indeterminado');
 
 CREATE TABLE Onibus (
     id_onibus SERIAL PRIMARY KEY,
-    id_rota integer NOT NULL,
-    placa text NOT NULL,
+    id_rota INTEGER NOT NULL,
+    placa TEXT NOT NULL,
     current_status status NOT NULL,
     current_pontoonibus INTEGER NOT NULL
 );
@@ -43,10 +43,10 @@ ALTER TABLE Onibus ADD CONSTRAINT placa_unica_onibus UNIQUE (placa);
 
 CREATE TABLE Localization (
     id_localization SERIAL PRIMARY KEY,
-    id_onibus integer NOT NULL,
-    lat text NOT NULL,
-    long text NOT NULL,
-    time timestamp NOT NULL
+    id_onibus INTEGER NOT NULL,
+    lat TEXT NOT NULL,
+    long TEXT NOT NULL,
+    time TIMESTAMP NOT NULL
 );
 
 ALTER TABLE Localization ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
@@ -70,8 +70,8 @@ CREATE OR REPLACE FUNCTION getVelocidadeMedia (id INTEGER) RETURNS REAL AS $$
         pointA Geometry;
         pointB Geometry;
 
-        timeA timestamp;
-        timeB timestamp;
+        timeA TIMESTAMP;
+        timeB TIMESTAMP;
 
         result INTEGER;
 
@@ -83,13 +83,20 @@ CREATE OR REPLACE FUNCTION getVelocidadeMedia (id INTEGER) RETURNS REAL AS $$
         OPEN points;
         FETCH points INTO pointA, timeA;
         FETCH points INTO pointB, timeB;
-        CLOSE points;
 
         distance = ST_Distance(ST_Transform(pointA, 26986), ST_Transform(pointB, 26986));
+
+        WHILE distance = 0 LOOP
+            FETCH points INTO pointB, timeB;
+            distance = ST_Distance(ST_Transform(pointA, 26986), ST_Transform(pointB, 26986));
+        END LOOP;
+
+        CLOSE points;
 
         diffTime = EXTRACT(EPOCH FROM (timeA - timeB));
 
         RETURN ( distance / diffTime );
+
     END;
     $$ LANGUAGE plpgsql;
 
@@ -192,7 +199,7 @@ CREATE OR REPLACE VIEW TempoToPontoOnibus AS
 CREATE TABLE FugaRota (
     id_fugarota SERIAL PRIMARY KEY,
     id_onibus INTEGER NOT NULL,
-    rosolvido BOOLEAN NOT NULL,
+    resolvido BOOLEAN NOT NULL,
     time TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
