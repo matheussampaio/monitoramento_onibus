@@ -18,16 +18,19 @@
         <table border=1 align="center">
             <tr>
                 <td><div align="center"><b>Placa do Ônibus</b></div></td>
-                <td><div align="center"><b>Horário da Fuga</b></div></td>
+                <td><div align="center"><b>Inicio da Fuga</b></div></td>
+                <td><div align="center"><b>Final da Fuga</b></div></td>
                 <td><div align="center"><b>Marcar como Resolvido</b></div></td>
             <tr>
 
             <% for (var i = 0; i < result.length; i++) { %>
                 <tr>
                     <td><div align="center"><%= result[i].placa %></div></td>
-                    <td><div align="center"><%= result[i].time %></div></td>
+                    <td><div align="center"><%= result[i].horarioinicio %></div></td>
+                    <td><div align="center"><%= result[i].horariofinal %></div></td>
                     <td><div align="center">
                         <form action="fugarota" method="POST">
+                            <input type="hidden" name="idFugaRota" id="idFugaRota" value=<%= result[i].id_fugarota %>>
                             <input type="hidden" name="idOnibus" id="idOnibus" value=<%= result[i].id_onibus %>>
                             <input type="submit" value="x">
                         </form>

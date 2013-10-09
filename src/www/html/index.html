@@ -47,13 +47,13 @@
         var layer_pontos_onibus = new OpenLayers.Layer.WMS(
             "Pontos de Ônibus", server,
             {layers: 'gonibus:pontoonibus', transparent: "true"},
-            {singleTile: true, isBaseLayer: false, visibility: true}
+            {singleTile: false, isBaseLayer: false, visibility: true}
             );
 
         layer_onibus = new OpenLayers.Layer.WMS(
             "Ônibus", server,
             {layers: 'gonibus:lastlocalization', transparent: "true"},
-            {singleTile: true, isBaseLayer: false, visibility: true}
+            {singleTile: false, isBaseLayer: false, visibility: true}
             );
 
 
@@ -79,7 +79,6 @@
 
     function refresh() {
         map.getLayersByName('Ônibus')[0].redraw(true);
-        console.log('refreshing...');
     }
 
     function toggleRefresh() {
@@ -90,8 +89,6 @@
         } else {
             refreshID = window.setInterval( refresh, 5000);
         }
-
-        console.log('Refresh toggle: ' + refreshing);
     }
 
     </script>

@@ -85,7 +85,7 @@ server.post('/adicionarOnibus', function(req, res) {
 
 server.get('/fugarota', function(req, res) {
 
-    client.query("SELECT DISTINCT ON (f.id_onibus) o.id_onibus, o.placa, f.time FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.time DESC;", function(err, result) {
+    client.query("SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MM:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MM:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.horarioinicio DESC;", function(err, result) {
         if (err) {
             return console.log("Error runing query", err);
         }
@@ -95,18 +95,25 @@ server.get('/fugarota', function(req, res) {
 });
 
 server.post('/fugarota', function(req, res) {
+    var idFugaRota = req.body.idFugaRota;
     var idOnibus = req.body.idOnibus;
 
-    var query = "UPDATE FugaRota SET resolvido = TRUE WHERE id_onibus = " + idOnibus + " AND resolvido = FALSE";
+    var query1 = "UPDATE FugaRota SET resolvido = TRUE WHERE id_fugarota = " + idFugaRota + " AND resolvido = FALSE";
+    var query2 = "UPDATE Onibus SET statusFuga = FALSE WHERE id_onibus = " + idOnibus;
 
-    client.query (query, function(err, result) {
+    client.query (query1, function(err, result) {
         if (err) {
             return console.log("Error runing query", err);
         }
 
-        res.redirect('/fugarota');
-    });
+        client.query(query2, function(err2, result2) {
+            if (err2) {
+                return console.log("Error runing query", err2);
+            }
 
+            res.redirect('/fugarota');
+        });
+    });
 });
 
 server.get('/onibus', function(req, res) {

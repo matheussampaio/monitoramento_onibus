@@ -31,8 +31,9 @@ CREATE TABLE Onibus (
     id_onibus SERIAL PRIMARY KEY,
     id_rota INTEGER NOT NULL,
     placa TEXT NOT NULL,
-    current_status status NOT NULL,
-    current_pontoonibus INTEGER NOT NULL
+    current_status status NOT NULL DEFAULT 'normal',
+    current_pontoonibus INTEGER NOT NULL,
+    statusFuga BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 ALTER TABLE Onibus ADD FOREIGN KEY (id_rota) REFERENCES Rota;
@@ -200,19 +201,30 @@ CREATE TABLE FugaRota (
     id_fugarota SERIAL PRIMARY KEY,
     id_onibus INTEGER NOT NULL,
     resolvido BOOLEAN NOT NULL,
-    time TIMESTAMP NOT NULL DEFAULT NOW()
+    horarioInicio TIMESTAMP NOT NULL DEFAULT NOW(),
+    horarioFinal TIMESTAMP
 );
 
 ALTER TABLE FugaRota ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
 
 CREATE OR REPLACE FUNCTION refreshFugaRota() RETURNS trigger AS $refreshFugaRota$
     DECLARE
-        isNewCoordOut Boolean;
+        isNewCoordIn BOOLEAN;
+        isCurrentOut BOOLEAN;
     BEGIN
-        SELECT ST_Intersects(r.geom, l.geom) INTO isNewCoordOut FROM LastLocalization l, Rota r, Onibus o WHERE o.id_onibus = NEW.id_onibus AND l.id_onibus = o.id_onibus AND r.id_rota = o.id_rota;
+        SELECT ST_Intersects(r.geom, l.geom) INTO isNewCoordIn FROM LastLocalization l, Rota r, Onibus o WHERE o.id_onibus = NEW.id_onibus AND l.id_onibus = o.id_onibus AND r.id_rota = o.id_rota;
+        SELECT o.statusFuga INTO isCurrentOut FROM Onibus o WHERE o.id_onibus = NEW.id_onibus;
 
-        IF NOT isNewCoordOut THEN
-            INSERT INTO FugaRota VALUES (DEFAULT, NEW.id_onibus, FALSE, DEFAULT);
+        -- Se tiver na rota, porém o novo ponto sai dela:
+        IF NOT isCurrentOut AND NOT isNewCoordIn THEN
+            INSERT INTO FugaRota VALUES (DEFAULT, NEW.id_onibus, FALSE, DEFAULT, NULL);
+            UPDATE Onibus SET statusFuga = TRUE WHERE id_onibus = NEW.id_onibus;
+        END IF;
+
+        -- Se não estiver na rota, porém o novo ponto volta para ela:
+        IF isCurrentOut AND isNewCoordIn THEN
+            UPDATE FugaRota SET horarioFinal = NOW() WHERE id_onibus = NEW.id_onibus AND horarioFinal IS NULL;
+            UPDATE Onibus SET statusFuga = FALSE WHERE id_onibus = NEW.id_onibus;
         END IF;
 
         RETURN NEW;
