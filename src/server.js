@@ -110,12 +110,10 @@ server.post('/fugarota', function(req, res) {
 });
 
 server.get('/onibus', function(req, res) {
-
     var placa = req.query.placa;
-    console.log(placa);
+
     var query = "SELECT * FROM Onibus WHERE placa = '" + placa + "'";
 
-    console.log(query);
     client.query(query, function(err, result) {
         if (err) {
             res.send(err);
