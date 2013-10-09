@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head> 
+		<title>Horários</title>
+	
+		<script type="text/javascript">
+		
+		</script>
+
+		
+		<style>
+			.center
+			{
+			text-align:center;
+			}
+			body {background-image:url('images/busao1.png');
+				}
+		</style>
+	</head> 
+
+
+
+	<body>
+		
+		<br>
+        <br>
+		
+		<h3 align="center">Horários dos ônibus</h3>
+		
+		<br>
+        <br>
+
+         <table border=1 align="center">
+            <tr>
+                <td><div align="center"><b>Ônibus</b></div></td>
+                <td><div align="center"><b>Ponto</b></div></td>
+                <td><div align="center"><b>Horário</b></div></td>
+            <tr>
+
+            <% for (var i = 0; i < result.length; i++) { %>
+
+
+                <tr>
+                    <td><div align="center"><%= result[i].id_onibus %></div></td>
+                    <td><div align="center"><%= result[i].id_pontoonibus %></div></td>
+                   
+                   	<% var tempo = "" 
+                   	if(result[i].tempo != null){ %>
+                   		<% tempo = result[i].tempo; %>
+                   <% }  %>
+                   		<td><div align="center"><%= tempo %></div></td>
+
+                   		<%  %>
+
+                    
+                </tr>
+            <% } %>
+
+        </form>
+
+
+        </table>
+
+        <br>
+        <br>
+
+          <form align="center" action="/" method="GET">
+          <input type="submit" value="Voltar">
+
+	</body>
+		
+</html>

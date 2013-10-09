@@ -39,9 +39,15 @@ server.get('/', function(req, res){
     res.render('admin.html');
  });
 
+server.get('/verHorarios', function(req,res){
+  client.query("SELECT * FROM TempoToPontoOnibus", function(err, result) {
+        if (err) {
+            return console.log("Error runing query", err);
+        }
 
-
-
+        res.render('horarios.html', {result: result.rows});
+    });
+});
 
 server.post('/addCoordsParaNovaRota', function(req, res) {
   
