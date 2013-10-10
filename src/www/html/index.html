@@ -24,6 +24,16 @@
     var refreshing = false;
     var refreshID;
 
+     //função criada para adicionar layers das rotas dinamicamente
+    function criaLayerRota(numRota){
+       return new OpenLayers.Layer.WMS(
+            "Rota: "+numRota, server,
+            {layers: 'gonibus:rota'+numRota+'view', transparent: "true"},
+            {singleTile: false, isBaseLayer: false, visibility: true}
+            );
+    }
+
+
     function init() {
 
         var layer_rota_500 = new OpenLayers.Layer.WMS(
@@ -71,6 +81,12 @@
 
         map.addLayers([layer_googleStr, layer_rota_500, layer_rota_505, layer_rota_555, layer_pontos_onibus, layer_onibus]);
 
+        //trecho adicionado para adicionar layers das rotas aos mapas
+         <% for (var i = 3; i < result.length; i++) {%>
+            var novaRota = criaLayerRota(<%=result[i].nome.toString()%>);
+            map.addLayers([novaRota]);
+        <%};%>
+
         map.addControl(new OpenLayers.Control.LayerSwitcher());
         map.addControl(new OpenLayers.Control.MousePosition());
 
@@ -109,7 +125,7 @@
         <form action="verHorarios">
              <input type="submit" value="Ver horários dos ônibus">
         </form>
-        <p id="mess"></p>
+
     </div>
 
 </body>

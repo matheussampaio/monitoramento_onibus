@@ -19,6 +19,10 @@ client.connect();
 
 var server = express();
 
+//conta o número de rotas criadas
+var contadorDeRota = 4;
+
+
 // Configura o servidor.
 server.configure(function(){
     server.set('views', __dirname + '/www/html/');
@@ -29,7 +33,7 @@ server.configure(function(){
 
 // Define o get para a pagina principal: apenas retorna o index
 server.get('/', function(req, res){
-    res.render('index.html');
+    res.render('index.html',{result: new Array()});
 
 });
 
@@ -66,37 +70,58 @@ server.get('/filtrar', function(req,res){
     });
 });
 
+//sai da pagina de error e vai para pagina de adicionar
+server.get('/voltar', function(req, res) {
+    res.render('admin.html');
+});
+
+//recebe dados para adicionar uma nova rota de ônibus
 server.post('/addCoordsParaNovaRota', function(req, res) {
-  
   var coordenadas = req.body.coords;
   var numOnibus = req.body.onibus;
-  console.log(coordenadas);
-  console.log(numOnibus);
 
-  var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numOnibus+"', ST_GeomFromText('LINESTRING("+coordenadas+")', 4291)";
+  var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numOnibus+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+contadorDeRota+")";
   var view = "CREATE OR REPLACE VIEW rota"+numOnibus+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numOnibus+"'";
+  contadorDeRota++;
+  console.log(contadorDeRota);
   client.query(inserir);
   client.query(view);
-  res.redirect('/');
+  client.query("SELECT nome FROM Rota", function(err,result){
+    console.log(result.rows)
+    res.render('index.html',{result: result.rows})
+  });
+
+  //res.redirect('/');
 });
 
-server.post('/adicionarNovoPonto', function(req, res) {
+//recebe dados para adicionar um novo ponto
+server.post('/criarNovoPonto', function(req, res) {
   var coordenada = req.body.lati+" "+req.body.longi;
-  console.log(coordenada);
-  var inserir = "INSERT INTO PontoOnibus VALUES (DEFAULT, NULL, ST_GeomFromText('POINT ("+coordenada+")' ,4291))"
-  client.query(inserir);
-  res.redirect('/');
-});
-  
+  var idPonto = req.body.idponto;
 
+  if(isNaN(parseInt(req.body.lati)) || req.body.lati=="" || isNaN(parseInt(req.body.longi)) || req.body.longi=="" || isNaN(parseInt(idPonto)) || idPonto==""){
+    res.render('admin.html');
+  }else{
+    var inserir = "INSERT INTO PontoOnibus VALUES ("+idPonto+", DEFAULT, ST_GeomFromText('POINT ("+coordenada+")' ,4291))";
+    client.query(inserir);
+    res.redirect('/');
+  }
+});
+
+//adiciona um novo ônibus a uma rota
 server.post('/adicionarOnibus', function(req, res) {
   var placa = req.body.placaOni;
   var numero = req.body.numLinha;
-  console.log(placa);
-  console.log(numero);
-  var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '"+numero+"'), '"+placa+"');"
-  client.query(inserir);
-  res.redirect('/');
+  var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '"+numero+"'), '"+placa+"')";
+  
+  client.query(inserir, function(err, result) {
+                if (err) {
+                    res.render('error.html',{erro: err});                
+                } else {
+                    console.log('blz');
+                    res.redirect('/');
+                }
+  }); 
 });
 
 

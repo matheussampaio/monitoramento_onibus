@@ -11,8 +11,6 @@
 			{
 			text-align:center;
 			}
-			body {background-image:url('images/busao1.png');
-				}
 		</style>
 	</head> 
 
@@ -31,43 +29,49 @@
 				<script>
 					function myFunction1(){
 						try{ 
-							var x=document.getElementById("cod").value;
-							var y=document.getElementById("numOni").value;
-							if(x=="x")    throw "empty";
-							if(y=="x")    throw "empty";
+							var coord = document.getElementById("cod").value;
+							var num = document.getElementById("numOni").value;
+							if(coord=="")    throw "Coordenadas de rota vazia";
+							if(num==" ")    throw "Campo da linha vazia";
 						}catch(err){
-						alert("errado");
+						alert("Error: "+err);
 						}
 					}
 				</script>
 			</form>
-			<p>--------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+			
 		</div>
 
-
+		<hr>
 		<div class="center">
-			Insira as coordenadas do novo Ponto <br>
-			<form action="adicionarNovoPonto" method="POST" align='center'>
+			Insira as coordenadas do novo Ponto criado<br>
+			<form action="criarNovoPonto" method="POST" align='center'>
 
 				Latitude:<input type="text" id="lat" name="lati"> </input>
 				Longitude:<input type="text" id="lon" name="longi"> </input>
+				Identificador:<input type="text" id="idPonto" name="idponto"> </input>
 				<input id="botao4" type="submit" value="Confirmar Ponto" onclick="myFunction2()"/>
 
 				<script>
 					function myFunction2(){
 						try{ 
-							var x=document.getElementById("lat").value;
-							var y=document.getElementById("lon").value;
-							if(x=="x")    throw "empty";
-							if(y=="x")    throw "empty";
+							var la=document.getElementById("lat").value;
+							var lo=document.getElementById("lon").value;
+							var idp=document.getElementById("idponto").value;
+							if(la=="")    throw "Campo de latitude vazio";
+							if(isNaN(la))    throw "Latitude não é um número";
+							if(lo=="")    throw "Campo de longitude vazio";
+							if(isNaN(lo))    throw "Longitude não é um número";
+							if(idp=="")    throw "Campo de longitude vazio";
+							if(isNaN(idp))    throw "Longitude não é um número";
 						}catch(err){
-						alert("errado");
+						alert("Error: "+err);
 						}
 					}
 				</script>
 			</form>
-			<p>--------------------------------------------------------------------------------------------------------------------------------------------------------</p>
 		</div>
+		<hr>
 		<div class="center">
 			Insira a placa do ônibus e o num da linha<br>
 			<form action="adicionarOnibus" method="POST" align='center'>
@@ -79,17 +83,17 @@
 				<script>
 					function myFunction3(){
 						try{ 
-							var x=document.getElementById("placa").value;
-							var y=document.getElementById("num").value;
-							if(x=="x")    throw "empty";
-							if(y=="x")    throw "empty";
+							var pl=document.getElementById("placa").value;
+							var num=document.getElementById("num").value;
+							if(pl=="")    throw "Campo de placa vazio";
+							if(num=="")    throw "Camdo da linha vazio";
 						}catch(err){
 						alert("errado");
 						}
 					}
 				</script>
 			</form>
-			<p>-------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+			
 		</div>
 	</body>
 		
