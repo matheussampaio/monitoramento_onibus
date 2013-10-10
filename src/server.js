@@ -40,7 +40,24 @@ server.get('/', function(req, res){
  });
 
 server.get('/verHorarios', function(req,res){
-  client.query("SELECT * FROM TempoToPontoOnibus", function(err, result) {
+  var query = "SELECT id_onibus, id_pontoonibus, to_char(tempo, 'HH24:MM:SS DD/MM/YY') AS tempo, nome FROM TempoToPontoOnibus WHERE tempo IS NOT NULL";
+
+  client.query(query, function(err, result) {
+        if (err) {
+            return console.log("Error runing query", err);
+        }
+
+        res.render('horarios.html', {result: result.rows});
+    });
+});
+
+server.get('/filtrar', function(req,res){
+  
+  var filtro = req.body.filtro;
+ 
+     var query = "SELECT id_onibus, id_pontoonibus, to_char(tempo, 'HH24:MM:SS DD/MM/YY') AS tempo, nome FROM TempoToPontoOnibus WHERE tempo IS NOT NULL AND nome ='"+filtro+"'";
+
+  client.query(query, function(err, result) {
         if (err) {
             return console.log("Error runing query", err);
         }

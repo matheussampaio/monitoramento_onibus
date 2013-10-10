@@ -18,8 +18,6 @@
 		</style>
 	</head> 
 
-
-
 	<body>
 		
 		<br>
@@ -28,37 +26,34 @@
 		<h3 align="center">Horários dos ônibus</h3>
 		
 		<br>
-        <br>
 
-         <table border=1 align="center">
+         <table border=1 align="center" id = "horarios">
+            
             <tr>
-                <td><div align="center"><b>Ônibus</b></div></td>
+                <td><div align="center"><b>Rota</b></div></td>
+                <td><div align="center"><b>Ponto</b></div></td>
+                <td><div align="center"><b>Horário</b></div></td>
+            <tr>
+            <% var rota = result[0].nome %>
+            <% for (var i = 0; i < result.length; i++) { %>                
+                <% if(rota != result[i].nome) { %> 
+                 <table border=1 align="center">
+                <br>
+                <tr>
+                <td><div align="center"><b>Rota</b></div></td>
                 <td><div align="center"><b>Ponto</b></div></td>
                 <td><div align="center"><b>Horário</b></div></td>
             <tr>
 
-            <% for (var i = 0; i < result.length; i++) { %>
-
+                  <% rota = result[i].nome %>
+                <% } %>
 
                 <tr>
-                    <td><div align="center"><%= result[i].id_onibus %></div></td>
+                    <td><div align="center"><%= result[i].nome %></div></td>
                     <td><div align="center"><%= result[i].id_pontoonibus %></div></td>
-                   
-                   	<% var tempo = "" 
-                   	if(result[i].tempo != null){ %>
-                   		<% tempo = result[i].tempo; %>
-                   <% }  %>
-                   		<td><div align="center"><%= tempo %></div></td>
-
-                   		<%  %>
-
-                    
+                    <td><div align="center"><%= result[i].tempo %></div></td>
                 </tr>
             <% } %>
-
-        </form>
-
-
         </table>
 
         <br>
@@ -66,7 +61,6 @@
 
           <form align="center" action="/" method="GET">
           <input type="submit" value="Voltar">
-
-	</body>
-		
+          </form>          
+	</body>	
 </html>
