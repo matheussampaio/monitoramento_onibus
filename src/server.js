@@ -39,9 +39,10 @@ server.get('/', function(req, res){
 
 
 
- server.get('/adicionar', function(req, res) {
-    res.render('admin.html');
- });
+server.get('/criar', function(req, res) {
+  res.render('admin.html');
+});
+
 
 server.get('/verHorarios', function(req,res){
   var query = "SELECT id_onibus, id_pontoonibus, to_char(tempo, 'HH24:MM:SS DD/MM/YY') AS tempo, nome FROM TempoToPontoOnibus WHERE tempo IS NOT NULL";
@@ -80,31 +81,62 @@ server.post('/addCoordsParaNovaRota', function(req, res) {
   var coordenadas = req.body.coords;
   var numOnibus = req.body.onibus;
 
-  var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numOnibus+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+contadorDeRota+")";
-  var view = "CREATE OR REPLACE VIEW rota"+numOnibus+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numOnibus+"'";
-  contadorDeRota++;
-  console.log(contadorDeRota);
-  client.query(inserir);
-  client.query(view);
-  client.query("SELECT nome FROM Rota", function(err,result){
-    console.log(result.rows)
-    res.render('index.html',{result: result.rows})
-  });
+  //checa os dados que vieram da UI, se não passar fica na mesma pagina
+  if(isNaN(parseInt(coordenadas)) || coordenadas=="" || isNaN(parseInt(numOnibus)) || numOnibus==""){
+    res.render('admin.html');
 
-  //res.redirect('/');
+  // se passar tenta inserir no banco de dados e criar uma view
+  }else{
+
+    var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numOnibus+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+contadorDeRota+")";
+    var view = "CREATE OR REPLACE VIEW rota"+numOnibus+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numOnibus+"'";
+    contadorDeRota++;
+    console.log(contadorDeRota);
+    client.query(inserir, function(err, result) {
+                if (err) {
+                    res.render('error.html',{erro: err});                
+                } else {
+                    console.log('sem erro');
+                    res.redirect('/');
+                }
+    }); 
+    client.query(view ,function(err, result) {
+                if (err) {
+                    res.render('sem erro',{erro: err});                
+                } else {
+                    console.log('blz');
+                    res.redirect('/');
+                }
+    }); 
+
+
+    //ALGO PARA PUBLICA NO GEOSERVER
+   /* client.query("SELECT nome FROM Rota", function(err,result){
+    console.log(result.rows)
+    res.render('index.html',{result: result.rows})*/
+  }
 });
 
-//recebe dados para adicionar um novo ponto
+//recebe dados para criar um novo ponto
 server.post('/criarNovoPonto', function(req, res) {
   var coordenada = req.body.lati+" "+req.body.longi;
   var idPonto = req.body.idponto;
 
+  //checa os dados que vieram da UI, se não passar fica na mesma pagina
   if(isNaN(parseInt(req.body.lati)) || req.body.lati=="" || isNaN(parseInt(req.body.longi)) || req.body.longi=="" || isNaN(parseInt(idPonto)) || idPonto==""){
     res.render('admin.html');
+
+  //se passar tenta inserir no banco de dados
   }else{
     var inserir = "INSERT INTO PontoOnibus VALUES ("+idPonto+", DEFAULT, ST_GeomFromText('POINT ("+coordenada+")' ,4291))";
-    client.query(inserir);
-    res.redirect('/');
+    client.query(inserir, function(err, result) {
+                if (err) {
+                  res.render('error.html',{erro: err});              
+                } else {
+                    console.log('sem erro');
+                    res.redirect('/');
+                }
+    }); 
   }
 });
 
@@ -112,16 +144,66 @@ server.post('/criarNovoPonto', function(req, res) {
 server.post('/adicionarOnibus', function(req, res) {
   var placa = req.body.placaOni;
   var numero = req.body.numLinha;
-  var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '"+numero+"'), '"+placa+"')";
-  
-  client.query(inserir, function(err, result) {
+
+  //checa os dados que vieram da UI, se não passar fica na mesma pagina
+  if(placa=="" || isNaN(parseInt(numero)) || numero==""){
+    res.render('admin.html');
+
+  //se passar tenta inserir no banco de dados
+  }else{
+
+    var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '"+numero+"'), '"+placa+"')";
+    
+    client.query(inserir, function(err, result) {
                 if (err) {
-                    res.render('error.html',{erro: err});                
+                  /*var msgErro = "";
+                  if(err.severity == "ERROR") msgErro="esta linha não existe";*/
+                  res.render('error.html',{erro: err});                
                 } else {
-                    console.log('blz');
+                    console.log('sem erro');
                     res.redirect('/');
                 }
-  }); 
+    }); 
+
+  }
+});
+
+
+//recebe dados para adicionar um ponto a uma rota
+server.post('/addPontoRota', function(req, res) {
+  var linha = req.body.numLinha;
+  var idPonto1 = req.body.idponto1;
+  var idPonto2 = req.body.idponto2;
+  var idPonto3 = req.body.idponto3;
+
+  //checa os dados que vieram da UI, se não passar fica na mesma pagina
+  if(linha=="" || isNaN(parseInt(idPonto1)) || idPonto1=="" || isNaN(parseInt(idPonto2)) || idPonto2=="" || isNaN(parseInt(idPonto3)) || idPonto3==""){
+    res.render('admin.html');
+
+  //se passar tenta inserir no banco de dados
+  }else{
+
+    var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '"+linha+"'), "+idPonto1+", "+idPonto3+")";
+    client.query(inserir, function(err, result) {
+                if (err) {
+                  res.render('error.html',{erro: err});              
+                } else {
+                    console.log('sem erro');
+                    res.redirect('/');
+                }
+    });
+/*    "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = "+idPonto1+" WHERE id_pontoonibus = "+idPonto2+""*/
+    var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = "+idPonto1+" WHERE id_pontoonibus = "+idPonto2+"";
+    client.query(atualiza, function(err, result) {
+                if (err) {
+                  res.render('error.html',{erro: err});              
+                } else {
+                    console.log('sem erro');
+                    res.redirect('/');
+                }
+    });
+
+  }
 });
 
 

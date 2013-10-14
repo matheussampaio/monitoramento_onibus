@@ -33,6 +33,7 @@
 							var num = document.getElementById("numOni").value;
 							if(coord=="")    throw "Coordenadas de rota vazia";
 							if(num==" ")    throw "Campo da linha vazia";
+							if(isNaN(num))    throw "A linha precisa começar com um número";
 						}catch(err){
 						alert("Error: "+err);
 						}
@@ -57,13 +58,13 @@
 						try{ 
 							var la=document.getElementById("lat").value;
 							var lo=document.getElementById("lon").value;
-							var idp=document.getElementById("idponto").value;
+							var idp=document.getElementById("idPonto").value;
 							if(la=="")    throw "Campo de latitude vazio";
 							if(isNaN(la))    throw "Latitude não é um número";
 							if(lo=="")    throw "Campo de longitude vazio";
 							if(isNaN(lo))    throw "Longitude não é um número";
-							if(idp=="")    throw "Campo de longitude vazio";
-							if(isNaN(idp))    throw "Longitude não é um número";
+							if(idp=="")    throw "Campo do identificador vazio";
+							if(isNaN(idp))    throw "identificador precisa ser um número";
 						}catch(err){
 						alert("Error: "+err);
 						}
@@ -87,14 +88,57 @@
 							var num=document.getElementById("num").value;
 							if(pl=="")    throw "Campo de placa vazio";
 							if(num=="")    throw "Camdo da linha vazio";
+							if(isNaN(num))    throw "A linha precisa começar com um número";
 						}catch(err){
-						alert("errado");
+						alert("Error: "+err);
 						}
 					}
 				</script>
 			</form>
 			
 		</div>
+		<hr>
+		<div class="center">
+			Adicione um ponto a uma rota de uma linha<br>
+			<form action="addPontoRota" method="POST" align='center'>
+
+				Número da linha:<input type="text" id="num" name="numLinha"> </input>
+				Identificador do novo ponto:<input type="text" id="idp1" name="idponto1"> </input><br>
+				O novo ponto vai ficar entre estes dois pontos<br>
+				Identificador do ponto anterior:<input type="text" id="idp2" name="idponto2"> </input>
+				Identificador do ponto seguinte:<input type="text" id="idp3" name="idponto3"> </input>
+				<input id="botao4" type="submit" value="Confirmar Ponto a nova Rota" onclick="myFunction4()"/>
+
+				<script>
+					function myFunction4(){
+						try{ 
+							var num=document.getElementById("num").value;
+							var p1=document.getElementById("idp1").value;
+							var p2=document.getElementById("idp2").value;
+							var p3=document.getElementById("idp3").value;
+							if(num=="")    throw "Camdo da linha vazio";
+							if(p1=="")    throw "Campo de id vazio";
+							if(p2=="")    throw "Campo de id vazio";
+							if(p3=="")    throw "Campo de id vazio";
+							if(isNaN(num))    throw "A linha precisa começar com um número";
+							if(isNaN(p1))    throw "O identificador precisa ser um número";
+							if(isNaN(p2))    throw "O identificador precisa ser um número";
+							if(isNaN(p3))    throw "O identificador precisa ser um número";
+						}catch(err){
+						}catch(err){
+						alert("Error: "+err);
+						}
+					}
+				</script>
+			</form>
+			
+		</div>
+		<hr>
+		<div class="center">
+			<form align="center" action="/" method="GET">
+	        <input type="submit" value="Voltar">
+	        </form>  
+        </div>
 	</body>
 		
 </html>
