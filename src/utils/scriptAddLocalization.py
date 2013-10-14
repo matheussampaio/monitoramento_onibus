@@ -19,6 +19,8 @@ listaCoordenadas555 = [line.split(',') for line in arq.read().split('\n')]
 
 arq.close()
 
+
+
 def main():
     print('begin...')
 
@@ -28,6 +30,8 @@ def main():
 
     cur = conn.cursor()
 
+    cur.execute("UPDATE Onibus SET current_seq = 1 WHERE id_onibus = 25")
+    
     i, j, k = 0, 0, 0
 
     while True:
