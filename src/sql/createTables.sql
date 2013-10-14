@@ -26,15 +26,16 @@ ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_rota) REFERENCES Rota;
 ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_pontoonibus) REFERENCES PontoOnibus;
 ALTER TABLE PontoOnibus_Rota ADD CONSTRAINT PontoOnibus_Rota_PK PRIMARY KEY (id_rota, id_pontoonibus, next_id_pontoonibus);
 
-CREATE TYPE status AS ENUM ('normal', 'atrasado', 'garagem', 'indeterminado');
+CREATE TYPE status AS ENUM ('normal', 'atrasado', 'adiantado', 'garagem', 'indeterminado');
 
 CREATE TABLE Onibus (
     id_onibus SERIAL PRIMARY KEY,
     id_rota INTEGER NOT NULL,
     placa TEXT NOT NULL,
-    current_status status NOT NULL DEFAULT 'normal',
+    current_status status NOT NULL DEFAULT 'indeterminado',
     current_pontoonibus INTEGER NOT NULL,
-    statusFuga BOOLEAN NOT NULL DEFAULT FALSE
+    statusFuga BOOLEAN NOT NULL DEFAULT FALSE,
+    current_seq INTEGER NOT NULL DEFAULT 1,
 );
 
 ALTER TABLE Onibus ADD FOREIGN KEY (id_rota) REFERENCES Rota;
@@ -134,6 +135,7 @@ CREATE OR REPLACE FUNCTION refreshCurrentPontoOnibus() RETURNS trigger AS $refre
     END;
     $refreshCurrentPontoOnibus$ LANGUAGE plpgsql;
 
+
 CREATE TRIGGER refreshCurrentPontoOnibus AFTER INSERT ON Localization
     FOR EACH ROW EXECUTE PROCEDURE refreshCurrentPontoOnibus();
 
@@ -197,6 +199,7 @@ CREATE OR REPLACE VIEW TempoToPontoOnibus AS
     GROUP BY o.id_onibus, p.id_pontoonibus, r.nome
     ORDER BY o.id_onibus, p.id_pontoonibus;
 
+
 CREATE TABLE FugaRota (
     id_fugarota SERIAL PRIMARY KEY,
     id_onibus INTEGER NOT NULL,
@@ -206,6 +209,7 @@ CREATE TABLE FugaRota (
 );
 
 ALTER TABLE FugaRota ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
+
 
 CREATE OR REPLACE FUNCTION refreshFugaRota() RETURNS trigger AS $refreshFugaRota$
     DECLARE
@@ -230,6 +234,7 @@ CREATE OR REPLACE FUNCTION refreshFugaRota() RETURNS trigger AS $refreshFugaRota
         RETURN NEW;
     END;
     $refreshFugaRota$ LANGUAGE plpgsql;
+
 
 CREATE TRIGGER refreshFugaRota AFTER INSERT ON Localization
     FOR EACH ROW EXECUTE PROCEDURE refreshFugaRota();
@@ -259,3 +264,38 @@ CREATE OR REPLACE FUNCTION checkPontoOnibusInRota() RETURNS trigger AS $checkPon
 
 CREATE TRIGGER checkPontoOnibusInRota BEFORE INSERT ON PontoOnibus_Rota
     FOR EACH ROW EXECUTE PROCEDURE checkPontoOnibusInRota();
+
+
+CREATE TABLE Horario (
+    id_horario SERIAL PRIMARY KEY,
+    id_onibus INTEGER NOT NULL,
+    id_pontoonibus INTEGER NOT NULL,
+    tempo TIME NOT NULL,
+    seq INTEGER NOT NULL
+);
+
+ALTER TABLE Horario ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
+ALTER TABLE Horario ADD FOREIGN KEY (id_pontoonibus) REFERENCES PontoOnibus;
+
+
+CREATE OR REPLACE FUNCTION refreshStatusOnibus() RETURNS TRIGGER AS $refreshStatusOnibus$
+    DECLARE
+        diffAdiantado BOOLEAN;
+        diffAtrasado BOOLEAN;
+    BEGIN
+        SELECT (CAST(h.tempo AS TIME) - CAST(t.tempo AS TIME) > TIME '00:05'), (CAST(h.tempo AS TIME) - CAST(t.tempo AS TIME) < -(TIME '00:05')) INTO diffAdiantado, diffAtrasado FROM Onibus o, Horario h, TempoToPontoOnibus t WHERE o.id_onibus = NEW.id_onibus AND o.id_onibus = h.id_onibus AND o.id_onibus = t.id_onibus AND h.id_pontoonibus = t.id_pontoonibus AND o.current_seq = h.seq;
+
+        IF (diffAdiantado) THEN
+            UPDATE Onibus SET current_status = 'adiantado' WHERE id_onibus = NEW.id_onibus;
+        ELSEIF (diffAtrasado) THEN
+            UPDATE Onibus SET current_status = 'atrasado' WHERE id_onibus = NEW.id_onibus;
+        ELSE
+            UPDATE Onibus SET current_status = 'normal' WHERE id_onibus = NEW.id_onibus;
+        END IF;
+
+        RETURN NEW;
+    END;
+    $refreshStatusOnibus$ LANGUAGE plpgsql;
+
+CREATE TRIGGER refreshStatusOnibus AFTER INSERT ON Localization
+    FOR EACH ROW EXECUTE PROCEDURE refreshStatusOnibus();
