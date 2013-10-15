@@ -24,16 +24,20 @@
 			<form action="addCoordsParaNovaRota" method="POST" align='center'>
 				Coordenadas:
 				<textarea rows="5" cols="50" id="cod" name="coords"></textarea>
-				Número da linha: <input type="text" id="numOni" name="onibus"> </input>
+				Número da linha: <input type="text" id="numLin" name="linha"> </input>
+				O primeiro ponto de ônibus da linha: <input type="text" id="idPonto" name="idponto"> </input>
 				<input id="botao4" type="submit" value="Confirmar Rota" onclick="myFunction1()"/>
 				<script>
 					function myFunction1(){
 						try{ 
 							var coord = document.getElementById("cod").value;
-							var num = document.getElementById("numOni").value;
+							var num = document.getElementById("numLin").value;
+							var idp = document.getElementById("idPonto").value;
 							if(coord=="")    throw "Coordenadas de rota vazia";
-							if(num==" ")    throw "Campo da linha vazia";
+							if(num=="")    throw "Campo da linha vazia";
 							if(isNaN(num))    throw "A linha precisa começar com um número";
+							if(idp=="")    throw "Campo do ponto vazia";
+							if(isNaN(idp))    throw "O identificador precisa ser um número";
 						}catch(err){
 						alert("Error: "+err);
 						}
@@ -74,7 +78,7 @@
 		</div>
 		<hr>
 		<div class="center">
-			Insira a placa do ônibus e o num da linha<br>
+			Insira a placa do ônibus e o num da linha- Formato da placa (LLL-NNNN)<br>
 			<form action="adicionarOnibus" method="POST" align='center'>
 
 				Placa do ônibus:<input type="text" id="placa" name="placaOni"> </input>
@@ -86,6 +90,18 @@
 						try{ 
 							var pl=document.getElementById("placa").value;
 							var num=document.getElementById("num").value;
+							var cont = 0;
+							for (var i = 0 ; i < pl.length; i++) {
+								if(cont<3){
+									if(!isNaN(pl[i])) throw "A placa tem que iniciar com 3 letras"
+								}else if(cont==3){
+									if(pl[i]!="-") throw "A placa tem que conter um hífen(-) para separar as letras dos números"
+								}else{
+									if(isNaN(pl[i])) throw "A placa tem que terminar com 4 números"
+								}
+								cont++;
+							};
+							if(pl.toString().length!=8) throw "A placa tem que conter 3 letras/hífen/4 números";
 							if(pl=="")    throw "Campo de placa vazio";
 							if(num=="")    throw "Camdo da linha vazio";
 							if(isNaN(num))    throw "A linha precisa começar com um número";
@@ -102,7 +118,7 @@
 			Adicione um ponto a uma rota de uma linha<br>
 			<form action="addPontoRota" method="POST" align='center'>
 
-				Número da linha:<input type="text" id="num" name="numLinha"> </input>
+				Número da linha:<input type="text" id="num1" name="numLinha"> </input>
 				Identificador do novo ponto:<input type="text" id="idp1" name="idponto1"> </input><br>
 				O novo ponto vai ficar entre estes dois pontos<br>
 				Identificador do ponto anterior:<input type="text" id="idp2" name="idponto2"> </input>
@@ -112,11 +128,11 @@
 				<script>
 					function myFunction4(){
 						try{ 
-							var num=document.getElementById("num").value;
+							var num=document.getElementById("num1").value;
 							var p1=document.getElementById("idp1").value;
 							var p2=document.getElementById("idp2").value;
 							var p3=document.getElementById("idp3").value;
-							if(num=="")    throw "Camdo da linha vazio";
+							if(num=="")    throw "Campo da linha vazio";
 							if(p1=="")    throw "Campo de id vazio";
 							if(p2=="")    throw "Campo de id vazio";
 							if(p3=="")    throw "Campo de id vazio";
@@ -124,7 +140,6 @@
 							if(isNaN(p1))    throw "O identificador precisa ser um número";
 							if(isNaN(p2))    throw "O identificador precisa ser um número";
 							if(isNaN(p3))    throw "O identificador precisa ser um número";
-						}catch(err){
 						}catch(err){
 						alert("Error: "+err);
 						}
