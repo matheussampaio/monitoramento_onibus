@@ -1,4 +1,4 @@
-CREATE TABLE PontoOnibus ( 
+CREATE TABLE PontoOnibus (
     id_pontoonibus SERIAL PRIMARY KEY,
     nome TEXT NOT NULL DEFAULT ''
 );
@@ -24,6 +24,7 @@ CREATE TABLE PontoOnibus_Rota (
 
 ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_rota) REFERENCES Rota;
 ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_pontoonibus) REFERENCES PontoOnibus;
+ALTER TABLE PontoOnibus_Rota ADD CONSTRAINT PontoOnibus_Rota_PK PRIMARY KEY (id_rota, id_pontoonibus, next_id_pontoonibus);
 
 CREATE TYPE status AS ENUM ('normal', 'atrasado', 'garagem', 'indeterminado');
 
@@ -232,3 +233,29 @@ CREATE OR REPLACE FUNCTION refreshFugaRota() RETURNS trigger AS $refreshFugaRota
 
 CREATE TRIGGER refreshFugaRota AFTER INSERT ON Localization
     FOR EACH ROW EXECUTE PROCEDURE refreshFugaRota();
+
+
+CREATE OR REPLACE FUNCTION checkPontoOnibusInRota() RETURNS trigger AS $checkPontoOnibusInRota$
+    DECLARE
+    PontoInRota BOOLEAN;
+    nextPontoInRota BOOLEAN;
+    BEGIN
+         SELECT ST_Intersects(r.geom, p.geom) INTO PontoInRota FROM Rota r, PontoOnibus p WHERE p.id_pontoonibus = NEW.id_pontoonibus AND r.id_rota = NEW.id_rota;
+
+         IF (NOT PontoInRota) THEN
+            RAISE EXCEPTION 'id_pontoonibus not in rota';
+         END IF;
+
+         SELECT ST_Intersects(r.geom, p.geom) INTO nextPontoInRota FROM Rota r, PontoOnibus p WHERE p.id_pontoonibus = NEW.next_id_pontoonibus AND r.id_rota = NEW.id_rota;
+
+         IF (NOT nextPontoInRota) THEN
+            RAISE EXCEPTION 'next_id_pontoonibus not in rota';
+         END IF;
+
+        RETURN NEW;
+    END;
+    $checkPontoOnibusInRota$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER checkPontoOnibusInRota BEFORE INSERT ON PontoOnibus_Rota
+    FOR EACH ROW EXECUTE PROCEDURE checkPontoOnibusInRota();
