@@ -24,6 +24,7 @@ CREATE TABLE PontoOnibus_Rota (
 
 ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_rota) REFERENCES Rota;
 ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (id_pontoonibus) REFERENCES PontoOnibus;
+ALTER TABLE PontoOnibus_Rota ADD FOREIGN KEY (next_id_pontoonibus) REFERENCES PontoOnibus;
 ALTER TABLE PontoOnibus_Rota ADD CONSTRAINT PontoOnibus_Rota_PK PRIMARY KEY (id_rota, id_pontoonibus, next_id_pontoonibus);
 
 CREATE TYPE status AS ENUM ('normal', 'atrasado', 'adiantado', 'garagem', 'indeterminado');
@@ -275,6 +276,7 @@ CREATE TABLE Horario (
     seq INTEGER NOT NULL
 );
 
+
 ALTER TABLE Horario ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
 ALTER TABLE Horario ADD FOREIGN KEY (id_pontoonibus) REFERENCES PontoOnibus;
 
@@ -298,6 +300,7 @@ CREATE OR REPLACE FUNCTION refreshStatusOnibus() RETURNS TRIGGER AS $refreshStat
         RETURN NEW;
     END;
     $refreshStatusOnibus$ LANGUAGE plpgsql;
+
 
 CREATE TRIGGER refreshStatusOnibus AFTER INSERT ON Localization
     FOR EACH ROW EXECUTE PROCEDURE refreshStatusOnibus();
