@@ -45,7 +45,7 @@ server.get('/criar', function(req, res) {
 
 
 server.get('/verHorarios', function(req,res){
-  var query = "SELECT id_onibus, id_pontoonibus, to_char(tempo, 'HH24:MM:SS DD/MM/YY') AS tempo, nome FROM TempoToPontoOnibus WHERE tempo IS NOT NULL";
+  var query = "SELECT t.id_onibus, t.id_pontoonibus, to_char(t.tempo, 'HH24:MM:SS DD/MM/YY') AS tempo, t.nome, o.placa FROM TempoToPontoOnibus t, Onibus o WHERE t.tempo IS NOT NULL AND t.id_onibus = o.id_onibus";
 
   client.query(query, function(err, result) {
         if (err) {

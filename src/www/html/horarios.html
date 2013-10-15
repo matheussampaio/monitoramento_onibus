@@ -32,6 +32,7 @@
             <tr>
                 <td><div align="center"><b>Rota</b></div></td>
                 <td><div align="center"><b>Ponto</b></div></td>
+                <td><div align="center"><b>Placa</b></div></td>
                 <td><div align="center"><b>Horário</b></div></td>
             <tr>
             <% var rota = result[0].nome %>
@@ -42,6 +43,7 @@
                 <tr>
                 <td><div align="center"><b>Rota</b></div></td>
                 <td><div align="center"><b>Ponto</b></div></td>
+                <td><div align="center"><b>Placa</b></div></td>
                 <td><div align="center"><b>Horário</b></div></td>
             <tr>
 
@@ -51,6 +53,7 @@
                 <tr>
                     <td><div align="center"><%= result[i].nome %></div></td>
                     <td><div align="center"><%= result[i].id_pontoonibus %></div></td>
+                    <td><div align="center"><%= result[i].placa %></div></td>
                     <td><div align="center"><%= result[i].tempo %></div></td>
                 </tr>
             <% } %>
