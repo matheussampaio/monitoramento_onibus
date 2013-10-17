@@ -33,8 +33,7 @@ server.configure(function(){
 
 // Define o get para a pagina principal: apenas retorna o index
 server.get('/', function(req, res){
-    res.render('index.html',{result: new Array()});
-
+    res.render('index.html', {result: new Array()});
 });
 
 
@@ -45,7 +44,7 @@ server.get('/criar', function(req, res) {
 
 
 server.get('/verHorarios', function(req,res){
-  var query = "SELECT t.id_onibus, t.id_pontoonibus, to_char(t.tempo, 'HH24:MM:SS DD/MM/YY') AS tempo, t.nome, o.placa FROM TempoToPontoOnibus t, Onibus o WHERE t.tempo IS NOT NULL AND t.id_onibus = o.id_onibus";
+  var query = "SELECT t.id_onibus, t.id_pontoonibus, to_char(t.tempo, 'HH24:MI:SS DD/MM/YY') AS tempo, t.nome, o.placa FROM TempoToPontoOnibus t, Onibus o WHERE t.tempo IS NOT NULL AND t.id_onibus = o.id_onibus";
 
   client.query(query, function(err, result) {
         if (err) {
@@ -57,10 +56,10 @@ server.get('/verHorarios', function(req,res){
 });
 
 server.get('/filtrar', function(req,res){
-  
+
   var filtro = req.body.filtro;
- 
-     var query = "SELECT id_onibus, id_pontoonibus, to_char(tempo, 'HH24:MM:SS DD/MM/YY') AS tempo, nome FROM TempoToPontoOnibus WHERE tempo IS NOT NULL AND nome ='"+filtro+"'";
+
+     var query = "SELECT id_onibus, id_pontoonibus, to_char(tempo, 'HH24:MI:SS DD/MM/YY') AS tempo, nome FROM TempoToPontoOnibus WHERE tempo IS NOT NULL AND nome ='"+filtro+"'";
 
   client.query(query, function(err, result) {
         if (err) {
@@ -94,20 +93,20 @@ server.post('/addCoordsParaNovaRota', function(req, res) {
     console.log(contadorDeRota);
     client.query(inserir, function(err, result) {
                 if (err) {
-                    res.render('error.html',{erro: err});                
+                    res.render('error.html',{erro: err});
                 } else {
                     console.log('sem erro');
                     res.redirect('/');
                 }
-    }); 
+    });
     client.query(view ,function(err, result) {
                 if (err) {
-                    res.render('sem erro',{erro: err});                
+                    res.render('sem erro',{erro: err});
                 } else {
                     console.log('blz');
                     res.redirect('/');
                 }
-    }); 
+    });
 
 
     //ALGO PARA PUBLICA NO GEOSERVER
@@ -131,12 +130,12 @@ server.post('/criarNovoPonto', function(req, res) {
     var inserir = "INSERT INTO PontoOnibus VALUES ("+idPonto+", DEFAULT, ST_GeomFromText('POINT ("+coordenada+")' ,4291))";
     client.query(inserir, function(err, result) {
                 if (err) {
-                  res.render('error.html',{erro: err});              
+                  res.render('error.html',{erro: err});
                 } else {
                     console.log('sem erro');
                     res.redirect('/');
                 }
-    }); 
+    });
   }
 });
 
@@ -153,17 +152,17 @@ server.post('/adicionarOnibus', function(req, res) {
   }else{
 
     var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '"+numero+"'), '"+placa+"')";
-    
+
     client.query(inserir, function(err, result) {
                 if (err) {
                   /*var msgErro = "";
                   if(err.severity == "ERROR") msgErro="esta linha não existe";*/
-                  res.render('error.html',{erro: err});                
+                  res.render('error.html',{erro: err});
                 } else {
                     console.log('sem erro');
                     res.redirect('/');
                 }
-    }); 
+    });
 
   }
 });
@@ -186,7 +185,7 @@ server.post('/addPontoRota', function(req, res) {
     var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '"+linha+"'), "+idPonto1+", "+idPonto3+")";
     client.query(inserir, function(err, result) {
                 if (err) {
-                  res.render('error.html',{erro: err});              
+                  res.render('error.html',{erro: err});
                 } else {
                     console.log('sem erro');
                     res.redirect('/');
@@ -196,7 +195,7 @@ server.post('/addPontoRota', function(req, res) {
     var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = "+idPonto1+" WHERE id_pontoonibus = "+idPonto2+"";
     client.query(atualiza, function(err, result) {
                 if (err) {
-                  res.render('error.html',{erro: err});              
+                  res.render('error.html',{erro: err});
                 } else {
                     console.log('sem erro');
                     res.redirect('/');
@@ -209,7 +208,7 @@ server.post('/addPontoRota', function(req, res) {
 
 server.get('/fugarota', function(req, res) {
 
-    client.query("SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MM:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MM:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.horarioinicio DESC;", function(err, result) {
+    client.query("SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.horarioinicio DESC;", function(err, result) {
         if (err) {
             return console.log("Error runing query", err);
         }
