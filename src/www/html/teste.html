@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Administrador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap -->
+  <link href="css/bootstrap.css" rel="stylesheet" media="screen">
+  
+  <script>
+  function myFunction3(){
+      try{ 
+       var pl=document.getElementById("placa").value;
+       var numB=document.getElementById("numLinhaB").value;
+       var cont = 0;
+       for (var i = 0 ; i < pl.length; i++) {
+        if(cont<3){
+         if(!isNaN(pl[i])) throw "A placa tem que iniciar com 3 letras"
+     }else if(cont==3){
+         if(pl[i]!="-") throw "A placa tem que conter um hífen(-) para separar as letras dos números"
+     }else{
+         if(isNaN(pl[i])) throw "A placa tem que terminar com 4 números"
+     }
+ cont++;
+};
+if(pl.length!=8) throw "A placa tem que conter 3 letras/hífen/4 números";
+if(pl=="")    throw "Campo de placa vazio";
+if(numB=="")    throw "Camdo da linha vazio";
+if(isNaN(numB))    throw "A linha precisa começar com um número";
+}catch(err){
+  alert("Error: "+err);
+}
+}
+</script>
+</head> 
+
+<body style="margin-top: 40px">
+
+
+   Insira a placa do ônibus e o num da linha- Formato da placa (LLL-NNNN)<br>
+   <form action="adicionarOnibus" method="POST" align='center'>
+
+    Placa do ônibus:<input type="text" id="placa" name="placaOni"> </input>
+    Número da linha:<input type="text" id="numLinhaB" name="numLinha"> </input>
+    <input id="botao3" type="submit" value="Confirmar Ônibus" onclick="myFunction3()"/>
+
+
+</form>
+
+
+</body>
+
+</html>

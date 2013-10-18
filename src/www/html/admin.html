@@ -1,159 +1,142 @@
 <!DOCTYPE html>
 <html>
-	<head> 
-		<title>Administrador</title>
-	
-		<script type="text/javascript">
-		</script>
-		
-		<style>
-			.center
-			{
-			text-align:center;
-			}
-		</style>
-	</head> 
+<head>
+  <meta charset="utf-8">
+  <title>Administrador</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Bootstrap -->
+  <link href="css/bootstrap.css" rel="stylesheet" media="screen">
 
-	<body>
+  <script type="text/javascript">
 
-		<div class="center">
+  function adicionarOnibus() {
+    var isOk = true;
 
+    var placa = document.getElementById("placaOnibusAdicionar").value;
+    var numeroRota = document.getElementById("numeroRota").value;
+    var cont = 0;
 
-			Insira todas as coordenadas que compõem a rota: <br>
-			Ex: Latitude1 longitude1, latitude2 longitude2, latitude3 longitude3...<br>
-			<form action="addCoordsParaNovaRota" method="POST" align='center'>
-				Coordenadas:
-				<textarea rows="5" cols="50" id="cod" name="coords"></textarea>
-				Número da linha: <input type="text" id="numLinhaA" name="linha"> </input>
-				O primeiro ponto de ônibus da linha: <input type="text" id="idPontoA" name="idponto"> </input>
-				<input id="botao1" type="submit" value="Confirmar Rota" onclick="myFunction1()"/>
-				<script>
-					function myFunction1(){
-						try{ 
-							var coord = document.getElementById("cod").value;
-							var numA = document.getElementById("numLinhaA").value;
-							var idpA = document.getElementById("idPontoA").value;
-							if(coord=="")    throw "Coordenadas de rota vazia";
-							if(numA=="")    throw "Campo da linha vazia";
-							if(isNaN(numA))    throw "A linha precisa começar com um número";
-							if(idpA=="")    throw "Campo do ponto vazia";
-							if(isNaN(idpA))    throw "O identificador precisa ser um número";
-						}catch(err){
-						alert("Error: "+err);
-						}
-					}
-				</script>
-			</form>
-			
-		</div>
+    document.getElementById("errorPlaca").innerHTML = "";
+    document.getElementById("errorNumero").innerHTML = "";
 
-		<hr>
-		<div class="center">
-			Insira as coordenadas do novo Ponto criado<br>
-			<form action="criarNovoPonto" method="POST" align='center'>
+    if (placa.length != 8) {
+    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa de Ônibus não pode ser vázia.</div>';
+    isOk = false;
+    }
 
-				Latitude:<input type="text" id="lat" name="lati"> </input>
-				Longitude:<input type="text" id="lon" name="longi"> </input>
-				Identificador:<input type="text" id="idPontoB" name="idponto"> </input>
-				<input id="botao2" type="submit" value="Confirmar Ponto" onclick="myFunction2()"/>
+    for (var i = 0 ; i < placa.length; i++) {
+    if (cont < 3) {
+      if (!isNaN(placa[i])) {
+        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa de Ônibus deve iniciar com 3 Letras.</div>';
+        isOk = false;
+      }
+    } else if (cont == 3) {
+      if (placa[i] != "-") {
+        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa deve ter o fomato LLL-NNNN.</div>';
+        isOk = false;
+      }
+    } else {
+      if (isNaN(placa[i])) {
+        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa deve ter o fomato LLL-NNNN.</div>';
+        isOk = false;
+      }
+    }
 
-				<script>
-					function myFunction2(){
-						try{ 
-							var la=document.getElementById("lat").value;
-							var lo=document.getElementById("lon").value;
-							var idpB=document.getElementById("idPontoB").value;
-							if(la=="")    throw "Campo de latitude vazio";
-							if(isNaN(la))    throw "Latitude não é um número";
-							if(lo=="")    throw "Campo de longitude vazio";
-							if(isNaN(lo))    throw "Longitude não é um número";
-							if(idpB=="")    throw "Campo do identificador vazio";
-							if(isNaN(idpB))    throw "identificador precisa ser um número";
-						}catch(err){
-						alert("Error: "+err);
-						}
-					}
-				</script>
-			</form>
-		</div>
-		<hr>
-		<div class="center">
-			Insira a placa do ônibus e o num da linha- Formato da placa (LLL-NNNN)<br>
-			<form action="adicionarOnibus" method="POST" align='center'>
+    cont++;
+    };
 
-				Placa do ônibus:<input type="text" id="placa" name="placaOni"> </input>
-				Número da linha:<input type="text" id="numLinhaB" name="numLinha"> </input>
-				<input id="botao3" type="submit" value="Confirmar Ônibus" onclick="myFunction3()"/>
+    if (numeroRota.length == 0) {
+      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6">Número da Rota não pode ser vázio.</div>';
+      isOk = false;
+    } else if (isNaN(numeroRota)) {
+      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6">O número da rota precisa ser um número.</div>';
+      isOk = false;
+    }
 
-				<script>
-					function myFunction3(){
-						try{ 
-							var pl=document.getElementById("placa").value;
-							var numB=document.getElementById("numLinhaB").value;
-							var cont = 0;
-							for (var i = 0 ; i < pl.length; i++) {
-								if(cont<3){
-									if(!isNaN(pl[i])) throw "A placa tem que iniciar com 3 letras"
-								}else if(cont==3){
-									if(pl[i]!="-") throw "A placa tem que conter um hífen(-) para separar as letras dos números"
-								}else{
-									if(isNaN(pl[i])) throw "A placa tem que terminar com 4 números"
-								}
-								cont++;
-							};
-							if(pl.length!=8) throw "A placa tem que conter 3 letras/hífen/4 números";
-							if(pl=="")    throw "Campo de placa vazio";
-							if(numB=="")    throw "Camdo da linha vazio";
-							if(isNaN(numB))    throw "A linha precisa começar com um número";
-						}catch(err){
-						alert("Error: "+err);
-						}
-					}
-				</script>
-			</form>
-			
-		</div>
-		<hr>
-		<div class="center">
-			Adicione um ponto a uma rota de uma linha<br>
-			<form action="addPontoRota" method="POST" align='center'>
+    return isOk;
+  }
 
-				Número da linha:<input type="text" id="numLinhaC" name="numLinha"> </input>
-				Identificador do novo ponto:<input type="text" id="idPontoC" name="idponto1"> </input><br>
-				O novo ponto vai ficar entre estes dois pontos<br>
-				Identificador do ponto anterior:<input type="text" id="idPontoD" name="idponto2"> </input>
-				Identificador do ponto seguinte:<input type="text" id="idPontoE" name="idponto3"> </input>
-				<input id="botao4" type="submit" value="Confirmar Ponto a nova Rota" onclick="myFunction4()"/>
+  </script>
+</head>
 
-				<script>
-					function myFunction4(){
-						try{ 
-							var numC=document.getElementById("numLinhaC").value;
-							var p1=document.getElementById("idPontoC").value;
-							var p2=document.getElementById("idPontoD").value;
-							var p3=document.getElementById("idPontoE").value;
-							if(numC=="")    throw "Campo da linha vazio";
-							if(p1=="")    throw "Campo de id vazio";
-							if(p2=="")    throw "Campo de id vazio";
-							if(p3=="")    throw "Campo de id vazio";
-							if(isNaN(numC))    throw "A linha precisa começar com um número";
-							if(isNaN(p1))    throw "O identificador precisa ser um número";
-							if(isNaN(p2))    throw "O identificador precisa ser um número";
-							if(isNaN(p3))    throw "O identificador precisa ser um número";
-						}catch(err){
-						alert("Error: "+err);
-						}
-					}
-				</script>
-			</form>
-			
-		</div>
-		<hr>
-		<div class="center">
-			<form align="center" action="/" method="GET">
-	        <input type="submit" value="Voltar">
-	        </form>  
+<body data-spy="scroll" data-target=".bs-docs-sidebar" style="margin-top: 40px">
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="js/bootstrap.js"></script>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <a class="brand" href="./home">Monitoramento de Ônibus</a>
+        <div class="container">
+          <ul class="nav" >
+            <li><a href="./home">Home</a></li>
+            <li><a href="./horarios">Horários</a></li>
+            <li class="active"><a href="./admin">Administração</a></li>
+          </ul>
         </div>
-	</body>
-		
+      </div>
+    </div>
+
+    <div class="row-fluid">
+
+      <!--Sidebar content-->
+      <div class="span3" style="padding: 100px">
+        <ul class="nav nav-tabs nav-stacked">
+          <li class="active"><a href="#onibus">Ônibus</i></a></li>
+          <li><a href="#rotas">Rotas</a></li>
+          <li><a href="#pontoonibus">Pontos de Ônibus</a></li>
+        </ul>
+      </div>
+
+      <!--Body content-->
+      <div class="span9" style="padding: 100px">
+        <section id="onibus">
+            <h3>Adicionar Ônibus</h3> <br>
+
+            <form id="onibusForm" class="form-horizontal" onsubmit="return adicionarOnibus()" method="POST" action="adicionarOnibus">
+              <div class="control-group">
+                <label class="control-label" for="placaOnibusAdicionar">Placa do Ônibus</label>
+                <div class="controls">
+                  <input type="text" id="placaOnibusAdicionar" name="placaOnibusAdicionar" placeholder="Placa (LLL-NNNN)">
+                </div>
+                <div id="errorPlaca"></div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="numeroRota">Número da Rota</label>
+                <div class="controls">
+                  <input type="text" id="numeroRota" name="numeroRota" placeholder="Número">
+                </div>
+                <div id="errorNumero"></div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <button class="submit" type="submit" class="btn">Adicionar</button>
+                </div>
+              </div>
+            </form>
+
+            <hr>
+
+            <h3>Remover Ônibus</h3> <br>
+
+            <form class="form-horizontal">
+              <div class="control-group">
+                <label class="control-label" for="placaOnibusRemover">Placa do Ônibus</label>
+                <div class="controls">
+                  <input type="text" id="placaOnibusRemover" placeholder="Placa (LLL-NNNN)">
+                </div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <button type="submit" class="btn">Remover</button>
+                </div>
+              </div>
+            </form>
+
+        </section>
+      </div>
+    </div>
+
+</body>
+
 </html>

@@ -35,7 +35,9 @@ server.get('/', function(req, res){
     res.render('index.html');
 });
 
-
+server.get('/home', function(req, res){
+    res.render('index.html');
+});
 
 server.get('/admin', function(req, res) {
   res.render('admin.html');
@@ -141,44 +143,27 @@ server.post('/criarNovoPonto', function(req, res) {
 
 //adiciona um novo ônibus a uma rota
 server.post('/adicionarOnibus', function(req, res) {
-    var placa = req.body.placaOni;
-    var numero = req.body.numLinha;
+    var placa = req.body.placaOnibusAdicionar;
+    var numero = req.body.numeroRota;
 
-    var cont = 0;
+    console.log(placa);
+    console.log(numero);
 
-    for (var i = 0 ; i < placa.length; i++) {
-        if (cont < 3) {
-            if (!isNaN(placa[i])) res.render('admin.html');
-        } else if (cont == 3) {
-            if (placa[i] != "-") res.render('admin.html');
-        } else {
-            if (isNaN(placa[i])) res.render('admin.html');
-        }
-
-        cont++;
-    }
-
-    //checa os dados que vieram da UI, se não passar fica na mesma pagina
-    if (placa.length != 8 || placa == "" || isNaN(parseInt(numero)) || numero == "") {
-        res.render('admin.html');
-    //se passar tenta inserir no banco de dados
-    } else {
-        var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '"+numero+"'), '"+placa+"')";
-        client.query(inserir, function(err, result) {
-            if (err) {
-                var msgErro = "";
-                if (err == 'error: duplicate key value violates unique constraint "placa_unica_onibus"') {
-                    msgErro = "Esta linha de ônibus já existe";
-                } else if (err == 'error: null value in column "id_rota" violates not-null constraint') {
-                    msgErro = "A rota que você passou não existe";
-                }
-
-                res.render('error.html', {erro: msgErro});
-            } else {
-                res.render('success.html', {sucesso: "Ônibus criado com sucesso"});
+    var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '" + numero + "'), '" + placa + "', 'indeterminado', (SELECT first_pontoonibus FROM Rota WHERE nome = '" + numero + "'), DEFAULT)";
+    client.query(inserir, function(err, result) {
+        if (err) {
+            var msgErro = "";
+            if (err == 'error: duplicate key value violates unique constraint "placa_unica_onibus"') {
+                msgErro = "Esta placa de ônibus já existe.";
+            } else if (err == 'error: null value in column "id_rota" violates not-null constraint') {
+                msgErro = "A rota que você passou não existe";
             }
-        });
-    }
+
+            res.render('error.html', {erro: msgErro});
+        } else {
+            res.render('success.html', {sucesso: "Ônibus criado com sucesso"});
+        }
+    });
 });
 
 
@@ -274,6 +259,10 @@ server.get('/onibus', function(req, res) {
             res.send(result.rows);
         }
     });
+});
+
+server.get('/teste', function(req, res) {
+    res.render('teste.html');
 });
 
 // Inicia o servidor na porta 3001.
