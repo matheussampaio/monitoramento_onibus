@@ -62,7 +62,19 @@ server.get('/admin', function(req, res) {
                         if (err3) {
                             res.render('error.html', {erro: err3});
                         } else {
-                            res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                            client.query("SELECT id_rota, nome, first_pontoonibus FROM rota;", function(err4, result4) {
+                                if (err4) {
+                                    res.render('error.html', {erro: err4});
+                                } else {
+                                    client.query("SELECT id_pontoonibus, nome, ST_AsText(geom) AS pos FROM PontoOnibus;", function(err5, result5) {
+                                        if (err5) {
+                                            res.render('error.html', {erro: err5});
+                                        } else {
+                                            res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, rotas: result4.rows, pontoonibus: result5.rows, messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
                 }
@@ -71,7 +83,6 @@ server.get('/admin', function(req, res) {
     });
 });
 
-
 server.get('/horarios', function(req,res){
     var query = "SELECT t.id_onibus, t.id_pontoonibus, to_char(t.tempo, 'HH24:MI:SS DD/MM/YY') AS tempo, t.nome, o.placa FROM TempoToPontoOnibus t, Onibus o WHERE t.tempo IS NOT NULL AND t.id_onibus = o.id_onibus";
 
@@ -79,20 +90,6 @@ server.get('/horarios', function(req,res){
         if (err) {
             return console.log("Error runing query", err);
         }
-        res.render('horarios.html', {result: result.rows});
-    });
-});
-
-server.get('/filtrar', function(req,res){
-    var filtro = req.body.filtro;
-
-    var query = "SELECT id_onibus, id_pontoonibus, to_char(tempo, 'HH24:MI:SS DD/MM/YY') AS tempo, nome FROM TempoToPontoOnibus WHERE tempo IS NOT NULL AND nome ='" + filtro + "'";
-
-    client.query(query, function(err, result) {
-        if (err) {
-            return console.log("Error runing query", err);
-        }
-
         res.render('horarios.html', {result: result.rows});
     });
 });
@@ -140,33 +137,21 @@ server.post('/addCoordsParaNovaRota', function(req, res) {
 });
 
 //recebe dados para criar um novo ponto
-server.post('/criarNovoPonto', function(req, res) {
-    var coordenada = req.body.lati+" "+req.body.longi;
-    var idPonto = req.body.idponto;
+server.post('/adicionarPontoOnibus', function(req, res) {
+    var coordenada = req.body.latitude + " " + req.body.longitude;
+    var nome = req.body.nomePontoOnibus;
 
-    //checa os dados que vieram da UI, se não passar fica na mesma pagina
-    if (isNaN(parseInt(req.body.lati)) || req.body.lati == "" || isNaN(parseInt(req.body.longi)) || req.body.longi == "" || isNaN(parseInt(idPonto)) || idPonto == "") {
-        res.render('admin.html');
+    var inserir = "INSERT INTO PontoOnibus VALUES (DEFAULT, '" + nome + "', ST_GeomFromText('POINT (" + coordenada + ")' ,4291))";
 
-    //se passar tenta inserir no banco de dados
-    } else {
-        var inserir = "INSERT INTO PontoOnibus VALUES (" + idPonto + ", DEFAULT, ST_GeomFromText('POINT (" + coordenada + ")' ,4291))";
-
-        client.query(inserir, function(err, result) {
-            if (err) {
-                var msgErro = "";
-
-                if (err == 'error: duplicate key value violates unique constraint "pontoonibus_pkey"') {
-                    msgErro = "Este ponto já existe, escolha outro identificador";
-                }
-
-                res.render('error.html', {erro: msgErro});
-
-            } else {
-                res.render('success.html',{sucesso: "Ponto criado com sucesso"});
-            }
-        });
-    }
+    client.query(inserir, function(err, result) {
+        if (err) {
+            req.flash('error', err);
+            res.redirect('/admin');
+        } else {
+            req.flash('success', "Ponto de Ônibus criado com sucesso.");
+            res.redirect('/admin');
+        }
+    });
 });
 
 //adiciona um novo ônibus a uma rota
@@ -174,10 +159,8 @@ server.post('/adicionarOnibus', function(req, res) {
     var placa = req.body.placaOnibusAdicionar;
     var numero = req.body.numeroRota;
 
-    console.log(placa);
-    console.log(numero);
-
     var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '" + numero + "'), '" + placa + "', 'indeterminado', (SELECT first_pontoonibus FROM Rota WHERE nome = '" + numero + "'), DEFAULT)";
+
     client.query(inserir, function(err, result) {
         if (err) {
             var msgErro = "";
@@ -187,14 +170,14 @@ server.post('/adicionarOnibus', function(req, res) {
                 msgErro = "A rota que você passou não existe";
             }
 
-            res.render('error.html', {erro: msgErro});
+            req.flash('error', msgErro);
+            res.redirect('/admin');
         } else {
-            res.render('success.html', {sucesso: "Ônibus criado com sucesso"});
+            req.flash('success', "Ônibus criado com sucesso.");
+            res.redirect('/admin');
         }
     });
 });
-
-
 
 //recebe dados para adicionar um ponto a uma rota
 server.post('/addPontoRota', function(req, res) {
@@ -263,6 +246,22 @@ server.post('/fugarota', function(req, res) {
                     res.redirect('/admin');
                 }
             });
+        }
+    });
+});
+
+server.post('/removerPontoOnibus', function(req, res) {
+    var idPontoOnibus = req.body.idPontoOnibus;
+
+    var query = "SELECT * FROM PontoOnibus;";
+
+    client.query (query, function(err, result) {
+        if (err) {
+            req.flash('error', err);
+            res.redirect('/admin');
+        } else {
+            req.flash('success', 'Ponto de Ônibus removido com sucesso.');
+            res.redirect('/admin');
         }
     });
 });

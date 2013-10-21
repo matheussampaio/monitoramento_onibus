@@ -71,6 +71,13 @@
     return isOk;
   }
 
+  function adicionarPontoOnibus() {
+    var isOk = true;
+
+
+    return isOk;
+  }
+
   </script>
 </head>
 
@@ -138,8 +145,8 @@
                     <tr>
                         <td><div align="center"><%= onibus[i].placa %></div></td>
                         <td><div align="center"><%= onibus[i].nome %></div></td>
-                        <td><div align="center"><%= onibus[i].current_status %></div></td>
-                        <td><div align="center"><%= onibus[i].statusfuga %></div></td>
+                        <td><div align="center"><%=: onibus[i].current_status | capitalize %></div></td>
+                        <td><div align="center"><%=: onibus[i].statusfuga | capitalize  %></div></td>
                         <td><div align="center">
                             <form action="removerOnibus" method="POST">
                                 <input type="hidden" name="idOnibus" id="idOnibus" value=<%= onibus[i].id_onibus %>>
@@ -178,11 +185,114 @@
         </div>
 
         <div class="hide" id="body_content_rotas">
-            Rotas!
+            <h2 class="text-center">Rotas</h2><br>
+
+            <% if (rotas.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhuma Rota no banco de dados.</p>
+            <% } else { %>
+
+                <table class="table">
+                <thead>
+                <tr>
+                    <td><div align="center"><b>Nome</b></div></td>
+                    <td><div align="center"><b>Ponto de Ônibus de Início</b></div></td>
+                    <td><div align="center"><b>Remover</b></div></td>
+                <tr>
+                </thead>
+
+                <% for (var i = 0; i < rotas.length; i++) { %>
+                    <tr>
+                        <td><div align="center"><%= rotas[i].nome %></div></td>
+                        <td><div align="center"><%= rotas[i].first_pontoonibus %></div></td>
+                        <td><div align="center">
+                            <form action="removerRota" method="POST">
+                                <input type="hidden" name="idRota" id="idRota" value=<%= rotas[i].id_rota %>>
+                                <button class="btn btn-mini btn-link" type="submit"><i class="icon-remove"></i></button>
+                            </form>
+                            </div>
+                        </td>
+                    </tr>
+                <% } %>
+                </table>
+
+            <% } %>
+
+            <h3 class="text-center">Adicionar Rota de Ônibus</h3> <br>
+
+            TODO
         </div>
 
         <div class="hide" id="body_content_pontoonibus">
-            Pontos de Onibus!
+            <h2 class="text-center">Pontos de Ônibus</h2><br>
+
+            <% if (pontoonibus.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhum Ponto de Ônibus no banco de dados.</p>
+            <% } else { %>
+
+                <table class="table">
+                <thead>
+                <tr>
+                    <td><div align="center"><b>ID</b></div></td>
+                    <td><div align="center"><b>Nome</b></div></td>
+                    <td><div align="center"><b>Posição</b></div></td>
+                    <td><div align="center"><b>Remover</b></div></td>
+                <tr>
+                </thead>
+
+                <% for (var i = 0; i < pontoonibus.length; i++) { %>
+                    <tr>
+                        <td><div align="center"><%= pontoonibus[i].id_pontoonibus %></div></td>
+                        <% if (!pontoonibus[i].nome) { %>
+                            <td><div align="center">-</div></td>
+                        <% } else { %>
+                            <td><div align="center"><%= pontoonibus[i].nome %></div></td>
+                        <% } %>
+                        <td><div align="center"><%= pontoonibus[i].pos %></div></td>
+                        <td><div align="center">
+                            <form action="removerPontoOnibus" method="POST">
+                                <input type="hidden" name="idPontoOnibus" id="idPontoOnibus" value=<%= pontoonibus[i].id_pontoonibus %>>
+                                <button class="btn btn-mini btn-link" type="submit"><i class="icon-remove"></i></button>
+                            </form>
+                            </div>
+                        </td>
+                    </tr>
+                <% } %>
+                </table>
+
+            <% } %>
+
+            <h3 class="text-center">Adicionar Ponto de Ônibus</h3> <br>
+
+            <form id="pontoOnibusForm" class="form-horizontal" onsubmit="return adicionarPontoOnibus()" method="POST" action="adicionarPontoOnibus">
+              <div class="control-group">
+                <label class="control-label" for="nomePontoOnibus">Nome</label>
+                <div class="controls">
+                  <input type="text" id="nomePontoOnibus" name="nomePontoOnibus" placeholder="Nome (Opcional)">
+                </div>
+                <div id="errorNomePO"></div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="latitude">Latitude</label>
+                <div class="controls">
+                  <input type="text" id="latitude" name="latitude" placeholder="Latitude">
+                </div>
+                <div id="errorLatitudePO"></div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="longitude">Longitude</label>
+                <div class="controls">
+                  <input type="text" id="longitude" name="longitude" placeholder="Longitude">
+                </div>
+                <div id="errorLatitudePO"></div>
+              </div>
+              <div class="control-group">
+                <div class="controls">
+                  <button class="submit btn" type="submit">Adicionar</button>
+                </div>
+              </div>
+            </form>
         </div>
 
         <div class="hide" id="body_content_fugarotas">
@@ -210,7 +320,7 @@
                         <% if (!fugarota[i].horariofinal) { %>
                             <td><div align="center">-</div></td>
                         <% } else { %>
-                        <td><div align="center"><%= fugarota[i].horariofinal %></div></td>
+                            <td><div align="center"><%= fugarota[i].horariofinal %></div></td>
                         <% } %>
                         <td><div align="center">
                             <form action="fugarota" method="POST">
