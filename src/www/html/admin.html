@@ -8,6 +8,19 @@
   <link href="css/bootstrap.css" rel="stylesheet" media="screen">
 
   <script type="text/javascript">
+    function submenu(div) {
+        for (var i=0; i < document.getElementById('sidebar_content_ul').children.length; i++) {
+            document.getElementById('sidebar_content_ul').children[i].setAttribute("class", "");
+        }
+
+        for (var j=0; j < document.getElementById('body_content').children.length; j++) {
+            document.getElementById('body_content').children[j].setAttribute("class", "hide");
+        }
+
+        document.getElementById('body_content_' + div).setAttribute("class", "");
+        document.getElementById('submenu_' + div).setAttribute("class", "active");
+    };
+
 
   function adicionarOnibus() {
     var isOk = true;
@@ -59,7 +72,7 @@
   </script>
 </head>
 
-<body data-spy="scroll" data-target=".bs-docs-sidebar" style="margin-top: 40px">
+<body style="margin-top: 40px">
 
     <script src="http://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
@@ -77,20 +90,23 @@
       </div>
     </div>
 
-    <div class="row-fluid">
-
+    <div class="row">
+      <div class="row">
+        <div class="span12" id="header" style="padding: 50px"></div>
+      </div>
       <!--Sidebar content-->
-      <div class="span3" style="padding: 100px">
-        <ul class="nav nav-tabs nav-stacked">
-          <li class="active"><a href="#onibus">Ônibus</i></a></li>
-          <li><a href="#rotas">Rotas</a></li>
-          <li><a href="#pontoonibus">Pontos de Ônibus</a></li>
+      <div class="span3" style="margin-left: 100px; margin-right: 100px">
+        <ul class="nav nav-tabs nav-stacked" id="sidebar_content_ul">
+          <li class="active" id="submenu_onibus"><a href="#onibus" onclick="javascript:submenu('onibus')">Ônibus</i></a></li>
+          <li id="submenu_rotas"><a href="#rotas" onclick="javascript:submenu('rotas')">Rotas</a></li>
+          <li id="submenu_pontoonibus"><a href="#pontoonibus" onclick="javascript:submenu('pontoonibus')">Pontos de Ônibus</a></li>
+          <li id="submenu_fugarotas"><a href="#fugarotas" onclick="javascript:submenu('fugarotas')">Fugas de Rotas</a></li>
         </ul>
       </div>
 
       <!--Body content-->
-      <div class="span9" style="padding: 100px">
-        <section id="onibus">
+      <div class="span9" id="body_content" style="margin-left: 100px">
+        <div id="body_content_onibus">
             <h3>Adicionar Ônibus</h3> <br>
 
             <form id="onibusForm" class="form-horizontal" onsubmit="return adicionarOnibus()" method="POST" action="adicionarOnibus">
@@ -110,7 +126,7 @@
               </div>
               <div class="control-group">
                 <div class="controls">
-                  <button class="submit" type="submit" class="btn">Adicionar</button>
+                  <button class="submit btn" type="submit">Adicionar</button>
                 </div>
               </div>
             </form>
@@ -132,11 +148,92 @@
                 </div>
               </div>
             </form>
+        </div>
 
-        </section>
+        <div class="hide" id="body_content_rotas">
+            Rotas!
+        </div>
+
+        <div class="hide" id="body_content_pontoonibus">
+            Pontos de Onibus!
+        </div>
+
+        <div class="hide" id="body_content_fugarotas">
+            <h3 class="text-center">Fugas em Aberto</h3>
+
+            <% if (fugarota.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhuma Fuga de Rota em aberto.</p>
+            <% } else { %>
+
+                <table class="table">
+                <thead>
+                <tr>
+                    <td><div align="center"><b>Placa do Ônibus</b></div></td>
+                    <td><div align="center"><b>Inicio da Fuga</b></div></td>
+                    <td><div align="center"><b>Final da Fuga</b></div></td>
+                    <td><div align="center"><b>Marcar como Resolvido</b></div></td>
+                <tr>
+                </thead>
+
+                <% for (var i = 0; i < fugarota.length; i++) { %>
+                    <tr>
+                        <td><div align="center"><%= fugarota[i].placa %></div></td>
+                        <td><div align="center"><%= fugarota[i].horarioinicio %></div></td>
+                        <% if (!fugarota[i].horariofinal) { %>
+                            <td><div align="center">-</div></td>
+                        <% } else { %>
+                        <td><div align="center"><%= fugarota[i].horariofinal %></div></td>
+                        <% } %>
+                        <td><div align="center">
+                            <form action="fugarota" method="POST">
+                                <input type="hidden" name="idFugaRota" id="idFugaRota" value=<%= fugarota[i].id_fugarota %>>
+                                <input type="hidden" name="idOnibus" id="idOnibus" value=<%= fugarota[i].id_onibus %>>
+                                <button class"btn" type="submit"><i class="icon-ok"></i></button>
+                            </form>
+                        </div></td>
+                    </tr>
+                <% } %>
+                </table>
+
+            <% } %>
+
+            <br><br>
+
+            <h3 class="text-center">Histórico de Fugas</h3>
+
+            <% if (fugarotahistorico.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhuma Fuga de Rota resolvida.</p>
+            <% } else { %>
+
+                <table class="table">
+                <thead>
+                <tr>
+                    <td><div align="center"><b>Placa do Ônibus</b></div></td>
+                    <td><div align="center"><b>Inicio da Fuga</b></div></td>
+                    <td><div align="center"><b>Final da Fuga</b></div></td>
+                <tr>
+                </thead>
+
+                <% for (var i = 0; i < fugarotahistorico.length; i++) { %>
+                    <tr>
+                        <td><div align="center"><%= fugarotahistorico[i].placa %></div></td>
+                        <td><div align="center"><%= fugarotahistorico[i].horarioinicio %></div></td>
+                        <% if (!fugarotahistorico[i].horariofinal) { %>
+                            <td><div align="center">-</div></td>
+                        <% } else { %>
+                        <td><div align="center"><%= fugarotahistorico[i].horariofinal %></div></td>
+                        <% } %>
+                    </tr>
+                <% } %>
+                </table>
+
+            <% } %>
+        </div>
+
       </div>
     </div>
-
 </body>
 
 </html>

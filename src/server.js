@@ -40,7 +40,19 @@ server.get('/home', function(req, res){
 });
 
 server.get('/admin', function(req, res) {
-  res.render('admin.html');
+    client.query("SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.horarioinicio DESC;", function(err, result) {
+        if (err) {
+            res.render('error.html', {erro: err});
+        } else {
+            client.query("SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido ORDER BY f.id_onibus, f.horarioinicio DESC;", function(err2, result2) {
+                if (err2) {
+                    res.render('error.html', {erro: err2});
+                } else {
+                    res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows});
+                }
+            });
+        }
+    });
 });
 
 
@@ -214,17 +226,6 @@ server.post('/addPontoRota', function(req, res) {
     }
 });
 
-
-server.get('/fugarota', function(req, res) {
-    client.query("SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.horarioinicio DESC;", function(err, result) {
-        if (err) {
-            res.render('error.html', {erro: err});
-        } else {
-            res.render('fugarota.html', {result: result.rows});
-        }
-    });
-});
-
 server.post('/fugarota', function(req, res) {
     var idFugaRota = req.body.idFugaRota;
     var idOnibus = req.body.idOnibus;
@@ -240,7 +241,7 @@ server.post('/fugarota', function(req, res) {
                 if (err2) {
                     res.render('error.html', {erro: err});
                 } else {
-                    res.redirect('/fugarota');
+                    res.redirect('/admin');
                 }
             });
         }
