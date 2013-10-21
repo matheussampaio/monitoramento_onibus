@@ -9,6 +9,8 @@
 
   <script type="text/javascript">
     function submenu(div) {
+        document.getElementById('header_messages').innerHTML = "";
+
         for (var i=0; i < document.getElementById('sidebar_content_ul').children.length; i++) {
             document.getElementById('sidebar_content_ul').children[i].setAttribute("class", "");
         }
@@ -91,8 +93,15 @@
     </div>
 
     <div class="row">
-      <div class="row">
-        <div class="span12" id="header" style="padding: 50px"></div>
+      <div class="row-fluid">
+        <div class="span12 center" id="header_messages" style="padding: 50px">
+            <% if (messageSuccess.length > 0) { %>
+                <div class="alert alert-success text-center"><%= messageSuccess %></div>
+            <% } %>
+            <% if (messageError.length > 0) { %>
+                <div class="alert alert-error text-center"><%= messageError %></div>
+            <% } %>
+        </div>
       </div>
       <!--Sidebar content-->
       <div class="span3" style="margin-left: 100px; margin-right: 100px">
@@ -107,7 +116,43 @@
       <!--Body content-->
       <div class="span9" id="body_content" style="margin-left: 100px">
         <div id="body_content_onibus">
-            <h3>Adicionar Ônibus</h3> <br>
+            <h2 class="text-center">Ônibus</h2><br>
+
+            <% if (onibus.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhum Ônibus no banco de dados.</p>
+            <% } else { %>
+
+                <table class="table">
+                <thead>
+                <tr>
+                    <td><div align="center"><b>Placa</b></div></td>
+                    <td><div align="center"><b>Rota</b></div></td>
+                    <td><div align="center"><b>Status</b></div></td>
+                    <td><div align="center"><b>Fuga</b></div></td>
+                    <td><div align="center"><b>Remover</b></div></td>
+                <tr>
+                </thead>
+
+                <% for (var i = 0; i < onibus.length; i++) { %>
+                    <tr>
+                        <td><div align="center"><%= onibus[i].placa %></div></td>
+                        <td><div align="center"><%= onibus[i].nome %></div></td>
+                        <td><div align="center"><%= onibus[i].current_status %></div></td>
+                        <td><div align="center"><%= onibus[i].statusfuga %></div></td>
+                        <td><div align="center">
+                            <form action="removerOnibus" method="POST">
+                                <input type="hidden" name="idOnibus" id="idOnibus" value=<%= onibus[i].id_onibus %>>
+                                <button class="btn btn-mini btn-link" type="submit"><i class="icon-remove"></i></button>
+                            </form>
+                        </div></td>
+                    </tr>
+                <% } %>
+                </table>
+
+            <% } %>
+
+            <h3 class="text-center">Adicionar Ônibus</h3> <br>
 
             <form id="onibusForm" class="form-horizontal" onsubmit="return adicionarOnibus()" method="POST" action="adicionarOnibus">
               <div class="control-group">
@@ -130,24 +175,6 @@
                 </div>
               </div>
             </form>
-
-            <hr>
-
-            <h3>Remover Ônibus</h3> <br>
-
-            <form class="form-horizontal">
-              <div class="control-group">
-                <label class="control-label" for="placaOnibusRemover">Placa do Ônibus</label>
-                <div class="controls">
-                  <input type="text" id="placaOnibusRemover" placeholder="Placa (LLL-NNNN)">
-                </div>
-              </div>
-              <div class="control-group">
-                <div class="controls">
-                  <button type="submit" class="btn">Remover</button>
-                </div>
-              </div>
-            </form>
         </div>
 
         <div class="hide" id="body_content_rotas">
@@ -159,7 +186,7 @@
         </div>
 
         <div class="hide" id="body_content_fugarotas">
-            <h3 class="text-center">Fugas em Aberto</h3>
+            <h2 class="text-center">Fugas em Aberto</h2><br>
 
             <% if (fugarota.length == 0) { %>
                 <br>
@@ -189,7 +216,7 @@
                             <form action="fugarota" method="POST">
                                 <input type="hidden" name="idFugaRota" id="idFugaRota" value=<%= fugarota[i].id_fugarota %>>
                                 <input type="hidden" name="idOnibus" id="idOnibus" value=<%= fugarota[i].id_onibus %>>
-                                <button class"btn" type="submit"><i class="icon-ok"></i></button>
+                                <button class="btn btn-link btn-mini" type="submit"><i class="icon-ok"></i></button>
                             </form>
                         </div></td>
                     </tr>
@@ -200,7 +227,7 @@
 
             <br><br>
 
-            <h3 class="text-center">Histórico de Fugas</h3>
+            <h2 class="text-center">Histórico de Fugas</h2><br>
 
             <% if (fugarotahistorico.length == 0) { %>
                 <br>

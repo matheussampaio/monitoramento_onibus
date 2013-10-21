@@ -1,4 +1,11 @@
 try {
+    var flash = require('connect-flash');
+} catch(e) {
+    console.error("Connect-Flash is not found. You should install: npm install connect-flash");
+    process.exit(e.code);
+}
+
+try {
     var express = require('express');
 } catch(e) {
     console.error("Express is not found. You should install: npm install express");
@@ -28,6 +35,9 @@ server.configure(function(){
     server.use('/img',express.static(__dirname + '/public/img'));
     server.use('/js',express.static(__dirname + '/public/js'));
     server.use('/css',express.static(__dirname + '/public/css'));
+    server.use(express.cookieParser('keyboard cat'));
+    server.use(express.session({ cookie: { maxAge: 60000 }}));
+    server.use(flash());
 });
 
 // Define o get para a pagina principal: apenas retorna o index
@@ -48,7 +58,13 @@ server.get('/admin', function(req, res) {
                 if (err2) {
                     res.render('error.html', {erro: err2});
                 } else {
-                    res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows});
+                    client.query("SELECT o.id_onibus, o.placa, o.current_status, o.statusfuga, r.nome FROM Onibus o, Rota r WHERE o.id_rota = r.id_rota ORDER BY o.placa;", function(err3, result3) {
+                        if (err3) {
+                            res.render('error.html', {erro: err3});
+                        } else {
+                            res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                        }
+                    });
                 }
             });
         }
@@ -235,13 +251,56 @@ server.post('/fugarota', function(req, res) {
 
     client.query (query1, function(err, result) {
         if (err) {
-            res.render('error.html', {erro: err});
+            req.flash('error', err);
+            res.redirect('/admin');
         } else {
             client.query(query2, function(err2, result2) {
                 if (err2) {
-                    res.render('error.html', {erro: err});
-                } else {
+                    req.flash('error', err2);
                     res.redirect('/admin');
+                } else {
+                    req.flash('success', 'Fuga de Rota resolvida.');
+                    res.redirect('/admin');
+                }
+            });
+        }
+    });
+});
+
+server.post('/removerOnibus', function(req, res) {
+    var idOnibus = req.body.idOnibus;
+
+    var deleteHorario = "DELETE FROM Horario WHERE id_onibus = '" + idOnibus + "';";
+    var deleteFugaRota = "DELETE FROM FugaRota WHERE id_onibus = '" + idOnibus + "';";
+    var deleteLocalization = "DELETE FROM Localization WHERE id_onibus = '" + idOnibus + "';";
+    var deleteOnibus = "DELETE FROM Onibus WHERE id_onibus = '" + idOnibus + "';";
+
+    client.query (deleteHorario, function(err, result) {
+        if (err) {
+            req.flash('error', err);
+            res.redirect('/admin');
+        } else {
+            client.query (deleteFugaRota, function(err2, result2) {
+                if (err2) {
+                    req.flash('error', err2);
+                    res.redirect('/admin');
+                } else {
+                    client.query (deleteLocalization, function(err3, result3) {
+                        if (err3) {
+                            req.flash('error', err3);
+                            res.redirect('/admin');
+                        } else {
+                            client.query (deleteOnibus, function(err4, result4) {
+                                if (err4) {
+                                    req.flash('error', err4);
+                                    res.redirect('/admin');
+                                } else {
+                                    req.flash('success', 'Ônibus removido com sucesso.');
+                                    res.redirect('/admin');
+                                }
+                            });
+                        }
+                    });
                 }
             });
         }
@@ -260,10 +319,6 @@ server.get('/onibus', function(req, res) {
             res.send(result.rows);
         }
     });
-});
-
-server.get('/teste', function(req, res) {
-    res.render('teste.html');
 });
 
 // Inicia o servidor na porta 3001.
