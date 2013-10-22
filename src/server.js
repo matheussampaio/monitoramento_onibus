@@ -70,7 +70,13 @@ server.get('/admin', function(req, res) {
                                         if (err5) {
                                             res.render('error.html', {erro: err5});
                                         } else {
-                                            res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, rotas: result4.rows, pontoonibus: result5.rows, messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                                            client.query("SELECT o.placa, h.* FROM Horario h, Onibus o WHERE h.id_onibus = o.id_onibus;", function(err6, result6) {
+                                                if (err6) {
+                                                    res.render('error.html', {erro: err6});
+                                                } else {
+                                                    res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, rotas: result4.rows, pontoonibus: result5.rows, horarios: result6.rows, messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                                                }
+                                            });
                                         }
                                     });
                                 }
@@ -168,6 +174,49 @@ server.post('/adicionarOnibus', function(req, res) {
         } else {
             req.flash('success', "Ônibus criado com sucesso.");
             res.redirect('/admin');
+        }
+    });
+});
+
+server.post('/adicionarHorario', function(req, res) {
+    var idOnibus = req.body.idOnibus;
+
+    var index = 0;
+    var idAdcPontoOnibus = "";
+    var tempoAdcHorario = "";
+    var query = "INSERT INTO Horario (id_horario, id_onibus, id_pontoonibus, tempo, seq) VALUES ";
+
+    while (true) {
+        index++;
+        idAdcPontoOnibus = req.body["idAdcPontoOnibus" + index];
+        tempoAdcHorario = req.body["tempoAdcHorario" + index];
+
+        if (!idAdcPontoOnibus || !tempoAdcHorario) {
+            break;
+        } else {
+            // console.log("id: " + idAdcPontoOnibus + " tempo: " + tempoAdcHorario);
+            query += "(DEFAULT, " + idOnibus + ", " + idAdcPontoOnibus + ", (SELECT TIME '" + tempoAdcHorario + "'), " + index + "),";
+        }
+    }
+
+    query = query.slice(0, -1) + ";";
+
+    queryDelete = "DELETE FROM Horario WHERE id_onibus = " + idOnibus + ";";
+
+    client.query(queryDelete, function(err, result) {
+        if (err) {
+            req.flash('error', err);
+            res.redirect('/admin');
+        } else {
+            client.query(query, function(err, result) {
+                if (err) {
+                    req.flash('error', err);
+                    res.redirect('/admin');
+                } else {
+                    req.flash('success', "Horário adicionado com sucesso.");
+                    res.redirect('/admin');
+                }
+            });
         }
     });
 });

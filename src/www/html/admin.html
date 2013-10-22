@@ -74,8 +74,36 @@
   function adicionarPontoOnibus() {
     var isOk = true;
 
+    // @TODO: Tratamento de errors em adicionar Ponto de Onibus
 
     return isOk;
+  }
+
+  function showHorario() {
+    for (var j=0; j < document.getElementById('horarios_content').children.length; j++) {
+        document.getElementById('horarios_content').children[j].setAttribute("class", "hide");
+    }
+    var div = "horarios_" + document.getElementById("horarioSelect").value;
+
+    document.getElementById(div).setAttribute("class", "table");
+  }
+
+  function remLinhaHorario() {
+    var container = document.getElementById("tableAdcHorario").children[1];
+
+    if (container.children.length > 1) {
+        container.removeChild(container.lastChild);
+    }
+
+  }
+
+  function adcLinhaHorario() {
+    var container = document.getElementById("tableAdcHorario");
+
+    var index = container.children[1].children.length + 1;
+
+    var row = container.insertRow(-1);
+    row.innerHTML = "<td><div align='center'><select name='idAdcPontoOnibus" + index + "' id='idAdcPontoOnibus" + index + "'><% for (var i = 0; i < pontoonibus.length; i++) { %><option value='<%= pontoonibus[i].id_pontoonibus %>'><%= pontoonibus[i].id_pontoonibus %></option><% } %></select></div></td><td><div align='center'><input type='time' id='tempoAdcHorario" + index + "' name='tempoAdcHorario" + index + "' placahold='Horário' required></div></td>";
   }
 
   </script>
@@ -117,6 +145,7 @@
           <li id="submenu_rotas"><a href="#rotas" onclick="javascript:submenu('rotas')">Rotas</a></li>
           <li id="submenu_pontoonibus"><a href="#pontoonibus" onclick="javascript:submenu('pontoonibus')">Pontos de Ônibus</a></li>
           <li id="submenu_fugarotas"><a href="#fugarotas" onclick="javascript:submenu('fugarotas')">Fugas de Rotas</a></li>
+          <li id="submenu_horarios"><a href="#horarios" onclick="javascript:submenu('horarios')">Horários</a></li>
         </ul>
       </div>
 
@@ -138,7 +167,7 @@
                     <td><div align="center"><b>Status</b></div></td>
                     <td><div align="center"><b>Fuga</b></div></td>
                     <td><div align="center"><b>Remover</b></div></td>
-                <tr>
+                </tr>
                 </thead>
 
                 <% for (var i = 0; i < onibus.length; i++) { %>
@@ -207,7 +236,7 @@
                     <td><div align="center"><b>Nome</b></div></td>
                     <td><div align="center"><b>Ponto de Ônibus de Início</b></div></td>
                     <td><div align="center"><b>Remover</b></div></td>
-                <tr>
+                </tr>
                 </thead>
 
                 <% for (var i = 0; i < rotas.length; i++) { %>
@@ -230,6 +259,8 @@
             <h3 class="text-center">Adicionar Rota de Ônibus</h3> <br>
 
             TODO
+
+            <!-- @TODO: Adicionar Rota de Ônibus -->
         </div>
 
         <div class="hide" id="body_content_pontoonibus">
@@ -247,7 +278,7 @@
                     <td><div align="center"><b>Nome</b></div></td>
                     <td><div align="center"><b>Posição</b></div></td>
                     <td><div align="center"><b>Remover</b></div></td>
-                <tr>
+                </tr>
                 </thead>
 
                 <% for (var i = 0; i < pontoonibus.length; i++) { %>
@@ -319,7 +350,7 @@
                     <td><div align="center"><b>Inicio da Fuga</b></div></td>
                     <td><div align="center"><b>Final da Fuga</b></div></td>
                     <td><div align="center"><b>Marcar como Resolvido</b></div></td>
-                <tr>
+                </tr>
                 </thead>
 
                 <% for (var i = 0; i < fugarota.length; i++) { %>
@@ -359,7 +390,7 @@
                     <td><div align="center"><b>Placa do Ônibus</b></div></td>
                     <td><div align="center"><b>Inicio da Fuga</b></div></td>
                     <td><div align="center"><b>Final da Fuga</b></div></td>
-                <tr>
+                </tr>
                 </thead>
 
                 <% for (var i = 0; i < fugarotahistorico.length; i++) { %>
@@ -375,6 +406,148 @@
                 <% } %>
                 </table>
 
+            <% } %>
+        </div>
+
+        <div class="hide" id="body_content_horarios">
+            <h2 class="text-center">Horários de Ônibus</h2><br>
+
+            <% if (horarios.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhum Horário.</p>
+            <% } else { %>
+
+                <div align="center">
+                    <form class="form-search">
+
+                        <select class="input-medium search-query" name="horarioSelect" id="horarioSelect">
+                            <% var prev = ""; %>
+                            <% for (var i=0; i < horarios.length; i++) { %>
+                                <% if (i == 0) { %>
+                                    <% prev = horarios[i].placa; %>
+                                    <option value="<%= horarios[i].placa %>"><%= horarios[i].placa %></option>
+                                <% } else if (prev != horarios[i].placa) { %>
+                                    <% prev = horarios[i].placa; %>
+                                    <option value="<%= horarios[i].placa %>"><%= horarios[i].placa %></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+
+                        <a class="btn" onclick="javascript:showHorario()"><i class="icon-search"></i></a>
+                    </form>
+                </div>
+
+                <div id="horarios_content">
+                    <% for (var i=0; i < horarios.length; i++ ) { %>
+                        <% if (i == 0) { %>
+                            <% var prev = horarios[i].placa; %>
+                            <table class="table hide" id="horarios_<%= horarios[i].placa %>">
+                              <!-- Cabeçalho -->
+                              <thead>
+                              <tr>
+                                <td><div align="center"><b>Ponto de Ônibus</b></div></td>
+                                <td><div align="center"><b>Horário de Chegada</b></div></td>
+                              </tr>
+                              </thead>
+
+                              <tbody>
+                              <% for (var j=0; j < horarios.length; j++) { %>
+                                <% if (prev == horarios[j].placa) { %>
+                                <tr>
+                                    <td><div align="center"><%= horarios[j].id_pontoonibus %></div></td>
+                                    <td><div align="center"><%= horarios[j].tempo %></div></td>
+                                </tr>
+                                <% } %>
+                              <% } %>
+                              </tbody>
+                            </table>
+
+                        <% } else if (prev != horarios[i].placa) { %>
+                            <% prev = horarios[i].placa; %>
+                            <table class="table hide" id="horarios_<%= horarios[i].placa %>">
+                              <!-- Cabeçalho -->
+                              <thead>
+                                <tr>
+                                  <td><div align="center"><b>Ponto de Ônibus</b></div></td>
+                                  <td><div align="center"><b>Horário de Chegada</b></div></td>
+                                </tr>
+                              </thead>
+                              <tbody>
+                              <% for (var j=0; j < horarios.length; j++) { %>
+                                <% if (prev == horarios[j].nome) { %>
+                                <tr>
+                                    <td><div align="center"><%= horarios[j].pontoonibus %></div></td>
+                                    <td><div align="center"><%= horarios[j].tempo %></div></td>
+                                </tr>
+                                <% } %>
+                              <% } %>
+                              </tbody>
+                            </table>
+                        <% } %>
+                      <% } %>
+                </div>
+
+            <% } %>
+
+            <br><hr><br>
+
+            <h2 class="text-center">Adicionar Horários de Ônibus</h2>
+
+            <br><br>
+
+            <% if (onibus.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhum Ônibus.</p>
+            <% } else if (pontoonibus.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhum Ponto de Ônibus.</p>
+            <% } else { %>
+                <form class="form-horizontal" action="adicionarHorario" method="POST">
+                    <div class="control-group">
+                        <label class="control-label" for="idOnibus">Placa do Ônibus</label>
+
+                        <div class="controls">
+                            <select name="idOnibus" id="idOnibus">
+                                <% for (var i = 0; i < onibus.length; i++) { %>
+                                    <option value="<%= onibus[i].id_onibus %>"><%= onibus[i].placa %></option>
+                                <% } %>
+                            </select>
+                        </div>
+                    </div>
+
+                    <br><br>
+
+                    <table id="tableAdcHorario" class="table">
+                        <thead>
+                            <tr>
+                                <td><div align="center"><b>Ponto de Ônibus</b></div></td>
+                                <td><div align="center"><b>Horário</b></div></td>
+                                <td><div align="center"></div></td>
+                            </tr>
+                        </thead>
+
+                            <tr>
+                                <td>
+                                    <div align="center">
+                                        <select name="idAdcPontoOnibus1" id="idAdcPontoOnibus1">
+                                            <% for (var i = 0; i < pontoonibus.length; i++) { %>
+                                                <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                                            <% } %>
+                                        </select>
+                                    </div>
+                                </td>
+                                <td><div align="center"><input type="time" id="tempoAdcHorario1" name="tempoAdcHorario1" placahold="Horário" required></div></td>
+                                <td><div align="center"><a href="#adcLinha" onclick="javascript:remLinhaHorario()"><i class="icon-minus"></i></a></div></td>
+                                <td><div align="center"><a href="#remLinha" onclick="javascript:adcLinhaHorario()"><i class="icon-plus"></i></a></div></td>
+                            </tr>
+                    </table>
+
+                    <br><br>
+
+                    <div align="center">
+                        <button class="submit btn" type="submit">Adicionar</button>
+                    </div>
+                </form>
             <% } %>
         </div>
 
