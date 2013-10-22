@@ -253,11 +253,11 @@ server.post('/fugarota', function(req, res) {
 server.post('/removerPontoOnibus', function(req, res) {
     var idPontoOnibus = req.body.idPontoOnibus;
 
-    var query = "SELECT * FROM PontoOnibus;";
+    var query = "DELETE FROM PontoOnibus WHERE id_pontoonibus = " + idPontoOnibus + ";";
 
     client.query (query, function(err, result) {
         if (err) {
-            req.flash('error', err);
+            req.flash('error', err.detail);
             res.redirect('/admin');
         } else {
             req.flash('success', 'Ponto de Ônibus removido com sucesso.');

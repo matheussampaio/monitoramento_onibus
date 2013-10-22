@@ -35,7 +35,7 @@
     document.getElementById("errorNumero").innerHTML = "";
 
     if (placa.length != 8) {
-    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa de Ônibus não pode ser vázia.</div>';
+    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa deve ter o fomato LLL-NNNN</div>';
     isOk = false;
     }
 
@@ -161,27 +161,36 @@
 
             <h3 class="text-center">Adicionar Ônibus</h3> <br>
 
-            <form id="onibusForm" class="form-horizontal" onsubmit="return adicionarOnibus()" method="POST" action="adicionarOnibus">
-              <div class="control-group">
-                <label class="control-label" for="placaOnibusAdicionar">Placa do Ônibus</label>
-                <div class="controls">
-                  <input type="text" id="placaOnibusAdicionar" name="placaOnibusAdicionar" placeholder="Placa (LLL-NNNN)">
-                </div>
-                <div id="errorPlaca"></div>
-              </div>
-              <div class="control-group">
-                <label class="control-label" for="numeroRota">Número da Rota</label>
-                <div class="controls">
-                  <input type="text" id="numeroRota" name="numeroRota" placeholder="Número">
-                </div>
-                <div id="errorNumero"></div>
-              </div>
-              <div class="control-group">
-                <div class="controls">
-                  <button class="submit btn" type="submit">Adicionar</button>
-                </div>
-              </div>
-            </form>
+            <% if (rotas.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhuma Rota no banco de dados.</p>
+            <% } else { %>
+                <form id="onibusForm" class="form-horizontal" onsubmit="return adicionarOnibus()" method="POST" action="adicionarOnibus">
+                  <div class="control-group">
+                    <label class="control-label" for="placaOnibusAdicionar">Placa do Ônibus</label>
+                    <div class="controls">
+                      <input type="text" id="placaOnibusAdicionar" name="placaOnibusAdicionar" placeholder="Placa (LLL-NNNN)">
+                    </div>
+                    <div id="errorPlaca"></div>
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label" for="numeroRota">Número da Rota</label>
+                    <div class="controls">
+                        <select type="text" name="numeroRota" id="numeroRota">
+                            <% for (var i=0; i < rotas.length; i++) { %>
+                                <option><%= rotas[i].nome %></option>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div id="errorNumero"></div>
+                  </div>
+                  <div class="control-group">
+                    <div class="controls">
+                      <button class="submit btn" type="submit">Adicionar</button>
+                    </div>
+                  </div>
+                </form>
+            <% } %>
         </div>
 
         <div class="hide" id="body_content_rotas">
