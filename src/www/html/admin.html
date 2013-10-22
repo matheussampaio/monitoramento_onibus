@@ -474,9 +474,9 @@
                               </thead>
                               <tbody>
                               <% for (var j=0; j < horarios.length; j++) { %>
-                                <% if (prev == horarios[j].nome) { %>
+                                <% if (prev == horarios[j].placa) { %>
                                 <tr>
-                                    <td><div align="center"><%= horarios[j].pontoonibus %></div></td>
+                                    <td><div align="center"><%= horarios[j].id_pontoonibus %></div></td>
                                     <td><div align="center"><%= horarios[j].tempo %></div></td>
                                 </tr>
                                 <% } %>
