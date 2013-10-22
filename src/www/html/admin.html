@@ -35,24 +35,24 @@
     document.getElementById("errorNumero").innerHTML = "";
 
     if (placa.length != 8) {
-    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa deve ter o fomato LLL-NNNN</div>';
+    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN</div>';
     isOk = false;
     }
 
     for (var i = 0 ; i < placa.length; i++) {
     if (cont < 3) {
       if (!isNaN(placa[i])) {
-        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa de Ônibus deve iniciar com 3 Letras.</div>';
+        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa de Ônibus deve iniciar com 3 Letras.</div>';
         isOk = false;
       }
     } else if (cont == 3) {
       if (placa[i] != "-") {
-        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa deve ter o fomato LLL-NNNN.</div>';
+        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN.</div>';
         isOk = false;
       }
     } else {
       if (isNaN(placa[i])) {
-        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6">Placa deve ter o fomato LLL-NNNN.</div>';
+        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN.</div>';
         isOk = false;
       }
     }
@@ -61,10 +61,10 @@
     };
 
     if (numeroRota.length == 0) {
-      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6">Número da Rota não pode ser vázio.</div>';
+      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Número da Rota não pode ser vázio.</div>';
       isOk = false;
     } else if (isNaN(numeroRota)) {
-      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6">O número da rota precisa ser um número.</div>';
+      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>O número da rota precisa ser um número.</div>';
       isOk = false;
     }
 
@@ -128,13 +128,14 @@
     </div>
 
     <div class="row">
+        <!-- Header Content -->
       <div class="row-fluid">
         <div class="span12 center" id="header_messages" style="padding: 50px">
             <% if (messageSuccess.length > 0) { %>
-                <div class="alert alert-success text-center"><%= messageSuccess %></div>
+                <div class="alert alert-success text-center"><button type="button" class="close" data-dismiss="alert">&times;</button><%= messageSuccess %></div>
             <% } %>
             <% if (messageError.length > 0) { %>
-                <div class="alert alert-error text-center"><%= messageError %></div>
+                <div class="alert alert-error text-center"><button type="button" class="close" data-dismiss="alert">&times;</button><%= messageError %></div>
             <% } %>
         </div>
       </div>
