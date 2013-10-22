@@ -99,41 +99,34 @@ server.post('/addCoordsParaNovaRota', function(req, res) {
     var coordenadas = req.body.coords;
     var numLinha = req.body.linha;
     var numPonto = req.body.idponto;
+    var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numLinha+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+numPonto+")";
+    var view = "CREATE OR REPLACE VIEW rota"+numLinha+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numLinha+"'";
+    client.query(inserir, function(err, result) {
+        if (err) {
+            var msgErro = "";
 
-    //checa os dados que vieram da UI, se não passar fica na mesma pagina
-    if (coordenadas == "" || isNaN(parseInt(numLinha)) || numLinha == "" || isNaN(parseInt(numPonto)) || numPonto == "") {
-        res.render('admin.html');
-
-    // se passar tenta inserir no banco de dados e criar uma view
-    } else {
-        var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numLinha+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+numPonto+")";
-        var view = "CREATE OR REPLACE VIEW rota"+numLinha+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numLinha+"'";
-        client.query(inserir, function(err, result) {
-            if (err) {
-                var msgErro = "";
-
-                if(err == 'error: duplicate key value violates unique constraint "nome_unico_rota"') {
-                    msgErro = "Este linha já existe, escolha outro identificador";
-                } else if (err == 'error: insert or update on table "rota" violates foreign key constraint "rota_first_pontoonibus_fkey"') {
-                    msgErro = "O ponto de ônibus passado deve ser de um ponto já existente";
-                } else if (err == 'error: geometry requires more points') {
-                    msgErro = "Insira ao menos duas coordenadas para início e fim de rota";
-                } else if (err == 'error: parse error - invalid geometry') {
-                    msgErro = "A coordenadas passadas são inválidas";
-                }
-
-                res.render('error.html',{erro: msgErro});
-            } else {
-                client.query(view ,function(err, result) {
-                    if (err) {
-                        res.render('error.html', {erro: err});
-                    } else {
-                        res.render('success.html', {sucesso: "Rota criada com sucesso"});
-                    }
-                });
+            if(err == 'error: duplicate key value violates unique constraint "nome_unico_rota"') {
+                msgErro = "Este linha já existe, escolha outro identificador";
+            } else if (err == 'error: insert or update on table "rota" violates foreign key constraint "rota_first_pontoonibus_fkey"') {
+                msgErro = "O ponto de ônibus passado deve ser de um ponto já existente";
+            } else if (err == 'error: geometry requires more points') {
+                msgErro = "Insira ao menos duas coordenadas para início e fim de rota";
+            } else if (err == 'error: parse error - invalid geometry') {
+                msgErro = "A coordenadas passadas são inválidas";
             }
-        });
-    }
+
+            res.render('error.html',{erro: msgErro});
+        } else {
+            client.query(view ,function(err, result) {
+                if (err) {
+                    res.render('error.html', {erro: err});
+                } else {
+                    res.render('success.html', {sucesso: "Rota criada com sucesso"});
+                }
+            });
+        }
+    });
+    
 });
 
 //recebe dados para criar um novo ponto
@@ -185,44 +178,35 @@ server.post('/addPontoRota', function(req, res) {
     var idPonto1 = req.body.idponto1;
     var idPonto2 = req.body.idponto2;
     var idPonto3 = req.body.idponto3;
-
-    //checa os dados que vieram da UI, se não passar fica na mesma pagina
-    if (isNaN(parseInt(linha)) || linha == "" || isNaN(parseInt(idPonto1)) || idPonto1 == "" || isNaN(parseInt(idPonto2)) || idPonto2 == "" || isNaN(parseInt(idPonto3)) || idPonto3 == "") {
-        res.render('admin.html');
-
-    //se passar tenta inserir no banco de dados
-    } else {
-
-        var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + linha + "'), " + idPonto1 + ", " + idPonto3 + ")";
-        client.query(inserir, function(err, result) {
-            if (err) {
-                var msgErro = "";
-                if (err == 'error: null value in column "id_rota" violates not-null constraint') {
-                    msgErro = "Esta linha não está cadastrada";
-                } else if (err == 'error: id_pontoonibus not in rota') {
-                    msgErro = "Este ponto está fora da rota da linha";
-                } else if (err == 'error: next_id_pontoonibus not in rota') {
-                    msgErro = "O ponto a frente está fora da rota da linha";
-                }
-
-                res.render('error.html', {erro: msgErro});
-            } else {
-                var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + idPonto1 + " WHERE id_pontoonibus = " + idPonto2 + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + linha + "')";
-
-                client.query(atualiza, function(err, result) {
-                    if (err) {
-                        var msgErro = "x";
-                        if (err == 'error: next_id_pontoonibus not in rota') {
-                            msgErro = "O ponto a frente está fora da rota da linha";
-                        }
-                        res.render('error.html', {erro: msgErro});
-                    } else {
-                        res.render('success.html', {sucesso: "Ponto adicionado a rota com sucesso"});
-                    }
-                });
+    var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + linha + "'), " + idPonto1 + ", " + idPonto3 + ")";
+    client.query(inserir, function(err, result) {
+        if (err) {
+            var msgErro = "";
+            if (err == 'error: null value in column "id_rota" violates not-null constraint') {
+                msgErro = "Esta linha não está cadastrada";
+            } else if (err == 'error: id_pontoonibus not in rota') {
+                msgErro = "Este ponto está fora da rota da linha";
+            } else if (err == 'error: next_id_pontoonibus not in rota') {
+                msgErro = "O ponto a frente está fora da rota da linha";
             }
-        });
-    }
+
+            res.render('error.html', {erro: msgErro});
+        } else {
+            var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + idPonto1 + " WHERE id_pontoonibus = " + idPonto2 + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + linha + "')";
+
+            client.query(atualiza, function(err, result) {
+                if (err) {
+                    var msgErro = "x";
+                    if (err == 'error: next_id_pontoonibus not in rota') {
+                        msgErro = "O ponto a frente está fora da rota da linha";
+                    }
+                    res.render('error.html', {erro: msgErro});
+                } else {
+                    res.render('success.html', {sucesso: "Ponto adicionado a rota com sucesso"});
+                }
+            });
+        }
+    });
 });
 
 server.post('/fugarota', function(req, res) {
@@ -257,7 +241,11 @@ server.post('/removerPontoOnibus', function(req, res) {
 
     client.query (query, function(err, result) {
         if (err) {
-            req.flash('error', err.detail);
+            var msgErro="";
+            if(err.detail.indexOf("rota")!=-1) msgErro = "Este ponto de ônibus está sendo usado em uma rota";
+            else if(err.detail.indexOf("onibus"!=-1)) msgErro = "Este ponto de ônibus está sendo usado em um ônibus";
+            else msgErro=err.detail;
+            req.flash('error', msgErro);
             res.redirect('/admin');
         } else {
             req.flash('success', 'Ponto de Ônibus removido com sucesso.');

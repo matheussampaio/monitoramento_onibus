@@ -1,0 +1,1 @@
+ALTER TABLE Localization ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
