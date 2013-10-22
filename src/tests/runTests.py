@@ -1,4 +1,5 @@
 import unittest as test  # @UnusedWildImport
+import xmlrunner
 
 from HelloTest import *  # @UnusedWildImport
 from PontoOnibusTest import * # @UnusedWildImport
@@ -28,6 +29,7 @@ def SuiteTest():
     return suite
 
 if __name__ == "__main__":
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='test-reports'))
     runner = test.TextTestRunner()
     test_suite = SuiteTest()
     runner.run(test_suite)
