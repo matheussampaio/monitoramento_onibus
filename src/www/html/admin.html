@@ -74,7 +74,43 @@
   function adicionarPontoOnibus() {
     var isOk = true;
 
-    // @TODO: Tratamento de errors em adicionar Ponto de Onibus
+    var latitude = document.getElementById("latitude").value;
+    var longitude = document.getElementById("longitude").value;
+
+    if (latitude.length == 0) {
+      document.getElementById("errorLatitudePO").innerHTML =  '<div class="alert fade in span6">A latitude não pode ser vázio.</div>';
+      isOk = false;
+    } else if (isNaN(latitude)) {
+      document.getElementById("errorLatitudePO").innerHTML =  '<div class="alert fade in span6">A latitude precisa ser um número.</div>';
+      isOk = false;
+    } else if (longitude.length == 0) {
+      document.getElementById("errorLongitudePO").innerHTML =  '<div class="alert fade in span6">A longitude não pode ser vázio.</div>';
+      isOk = false;
+    } else if (isNaN(longitude)) {
+      document.getElementById("errorLongitudePO").innerHTML =  '<div class="alert fade in span6">A longitude precisa ser um número.</div>';
+      isOk = false;
+    }
+    return isOk;
+  }
+
+  function adicionarRotaOnibus() {
+    var isOk = true;
+
+    var novaRota =document.getElementById("novaRota").value;
+    var coordenadas =document.getElementById("coordenadas").value;
+    if (novaRota.length == 0) {
+      document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">Número da Rota não pode ser vázio.</div>';
+      isOk = false;
+    } else if (isNaN(novaRota)) {
+      document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">O número da rota precisa ser um número.</div>';
+      isOk = false;
+    } else if (coordenadas.length == 0) {
+      document.getElementById("errorCoordenadas").innerHTML =  '<div class="alert fade in span6">A coordenada não pode ser vázia.</div>';
+      isOk = false;
+    } else if (isNaN(coordenadas)) {
+      document.getElementById("errorCoordenadas").innerHTML =  '<div class="alert fade in span6">A coordenada precisa ser um número.</div>';
+      isOk = false;
+    }
 
     return isOk;
   }
@@ -259,9 +295,37 @@
 
             <h3 class="text-center">Adicionar Rota de Ônibus</h3> <br>
 
-            TODO
+            <form id="rotaOnibusForm" class="form-horizontal" onsubmit="return adicionarRotaOnibus()" method="POST" action="adicionarRotaOnibus">
+              <div class="control-group">
+                <label class="control-label" for="novaRota">Nome</label>
+                    <input type="text" id="novaRota" name="novaRota" placeholder="Nova Rota">
+                <div id="errorNovaRota"></div>
+              </div>
+              <div class="control-group">
+                <label class="control-label" for="coordenadas">Coordenadas</label>
+                <div class="controls">
+                    <textarea rows="6" cols="50" id="coordenadas" name="coordenadas" placeholder="Coordenadas"></textarea>
+                </div>
+                <div id="errorCoordenadas"></div>
+              </div>
+              <div class="control-group">
+               <label class="control-label" for="pontoOnibusInicial">Ponto de ônibus</label>
+                <div class="controls">
+                    <select name="idAdcPontoOnibus1" id="idAdcPontoOnibus1">Ponto de ônibus
+                        <% for (var i = 0; i < pontoonibus.length; i++) { %>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                        <% } %>
+                    </select>
+                </div>
+              </div>
 
-            <!-- @TODO: Adicionar Rota de Ônibus -->
+              <div class="control-group">
+                <div class="controls">
+                  <button class="submit btn" type="submit">Adicionar nova rota</button>
+                </div>
+              </div>
+            </form>
+
         </div>
 
         <div class="hide" id="body_content_pontoonibus">
@@ -312,7 +376,6 @@
                 <div class="controls">
                   <input type="text" id="nomePontoOnibus" name="nomePontoOnibus" placeholder="Nome (Opcional)">
                 </div>
-                <div id="errorNomePO"></div>
               </div>
               <div class="control-group">
                 <label class="control-label" for="latitude">Latitude</label>
@@ -326,7 +389,7 @@
                 <div class="controls">
                   <input type="text" id="longitude" name="longitude" placeholder="Longitude">
                 </div>
-                <div id="errorLatitudePO"></div>
+                <div id="errorLongitudePO"></div>
               </div>
               <div class="control-group">
                 <div class="controls">
