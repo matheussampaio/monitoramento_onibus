@@ -107,9 +107,6 @@
     } else if (coordenadas.length == 0) {
       document.getElementById("errorCoordenadas").innerHTML =  '<div class="alert fade in span6">A coordenada não pode ser vázia.</div>';
       isOk = false;
-    } else if (isNaN(coordenadas)) {
-      document.getElementById("errorCoordenadas").innerHTML =  '<div class="alert fade in span6">A coordenada precisa ser um número.</div>';
-      isOk = false;
     }
 
     return isOk;
@@ -248,7 +245,6 @@
                             <% } %>
                         </select>
                     </div>
-                    <div id="errorNumero"></div>
                   </div>
                   <div class="control-group">
                     <div class="controls">
@@ -311,7 +307,7 @@
               <div class="control-group">
                <label class="control-label" for="pontoOnibusInicial">Ponto de ônibus</label>
                 <div class="controls">
-                    <select name="idAdcPontoOnibus1" id="idAdcPontoOnibus1">Ponto de ônibus
+                    <select name="pontoInicial" id="pontoInicial">Ponto de ônibus
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
                             <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
                         <% } %>
@@ -325,6 +321,59 @@
                 </div>
               </div>
             </form>
+
+            <h3 class="text-center">Adicionar um ponto a uma rota</h3> <br>
+
+            <form id="rotaPontosForm" class="form-horizontal" onsubmit="return adicionarPontoRota()" method="POST" action="adicionarPontoRota">
+              <div class="control-group">
+                <label class="control-label" for="numeroRota">Número da Rota</label>
+                <div class="controls">
+                    <select type="text" name="numeroRota" id="numeroRota">
+                        <% for (var i=0; i < rotas.length; i++) { %>
+                            <option><%= rotas[i].nome %></option>
+                        <% } %>
+                    </select>
+                </div>
+              </div>
+              <div class="control-group">
+               <label class="control-label" for="pontoAnterior">Ponto de ônibus anterior</label>
+                <div class="controls">
+                    <select name="pontoAnterior" id="pontoAnterior">Ponto de ônibus anterior
+                        <% for (var i = 0; i < pontoonibus.length; i++) { %>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                        <% } %>
+                    </select>
+                </div>
+              </div>
+              <div class="control-group">
+               <label class="control-label" for="pontoNovo">Ponto de ônibus a ser adicionado</label>
+                <div class="controls">
+                    <select name="pontoNovo" id="pontoNovo">Ponto de ônibus a ser adicionado
+                        <% for (var i = 0; i < pontoonibus.length; i++) { %>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                        <% } %>
+                    </select>
+                </div>
+              </div>
+              <div class="control-group">
+               <label class="control-label" for="pontoPosterior">Ponto de ônibus posterior</label>
+                <div class="controls">
+                    <select name="pontoPosterior" id="pontoPosterior">Ponto de ônibus posterior
+                        <% for (var i = 0; i < pontoonibus.length; i++) { %>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                        <% } %>
+                    </select>
+                </div>
+              </div>
+
+              <div class="control-group">
+                <div class="controls">
+                  <button class="submit btn" type="submit">Adicionar novo ponto a rota</button>
+                </div>
+              </div>
+            </form>
+
+
 
         </div>
 
@@ -368,7 +417,7 @@
 
             <% } %>
 
-            <h3 class="text-center">Adicionar Ponto de Ônibus</h3> <br>
+            <h3 class="text-center">Criar Ponto de Ônibus</h3> <br>
 
             <form id="pontoOnibusForm" class="form-horizontal" onsubmit="return adicionarPontoOnibus()" method="POST" action="adicionarPontoOnibus">
               <div class="control-group">

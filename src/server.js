@@ -90,13 +90,13 @@ server.get('/admin', function(req, res) {
 });
 
 // Recebe dados para adicionar uma nova rota de ônibus
-// @TODO: Atualizar para trabalhar com Flash e refatorar o código.
-server.post('/addCoordsParaNovaRota', function(req, res) {
-    var coordenadas = req.body.coords;
-    var numLinha = req.body.linha;
-    var numPonto = req.body.idponto;
-    var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+numLinha+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+numPonto+")";
-    var view = "CREATE OR REPLACE VIEW rota"+numLinha+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+numLinha+"'";
+server.post('/adicionarRotaOnibus', function(req, res) {
+    var coordenadas = req.body.coordenadas;
+    var novaRota = req.body.novaRota;
+    var pontoInicial = req.body.pontoInicial;
+    var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+novaRota+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+pontoInicial+")";
+    var inserirPontoNaRota = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + novaRota + "'), " + pontoInicial + ", " + pontoInicial + ")";
+    var view = "CREATE OR REPLACE VIEW rota"+novaRota+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+novaRota+"'";
     client.query(inserir, function(err, result) {
         if (err) {
             var msgErro = "";
@@ -111,13 +111,17 @@ server.post('/addCoordsParaNovaRota', function(req, res) {
                 msgErro = "A coordenadas passadas são inválidas";
             }
 
-            res.render('error.html',{erro: msgErro});
+            req.flash('error', msgErro);
+            res.redirect('/admin');
         } else {
+            client.query(inserirPontoNaRota);
             client.query(view ,function(err, result) {
                 if (err) {
-                    res.render('error.html', {erro: err});
+                    req.flash('error', err.detail);
+                    res.redirect('/admin');
                 } else {
-                    res.render('success.html', {sucesso: "Rota criada com sucesso"});
+                    req.flash('success', 'Rota adicionada com sucesso.');
+                    res.redirect('/admin');
                 }
             });
         }
@@ -126,12 +130,12 @@ server.post('/addCoordsParaNovaRota', function(req, res) {
 
 //recebe dados para adicionar um ponto a uma rota
 // @TODO: Atualizar para trabalhar com Flash e refatorar o código.
-server.post('/addPontoRota', function(req, res) {
-    var linha = req.body.numLinha;
-    var idPonto1 = req.body.idponto1;
-    var idPonto2 = req.body.idponto2;
-    var idPonto3 = req.body.idponto3;
-    var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + linha + "'), " + idPonto1 + ", " + idPonto3 + ")";
+server.post('/adicionarPontoRota', function(req, res) {
+    var numeroRota = req.body.numeroRota;
+    var pontoNovo = req.body.pontoNovo;
+    var pontoAnterior = req.body.pontoAnterior;
+    var pontoPosterior = req.body.pontoPosterior;
+    var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
     client.query(inserir, function(err, result) {
         if (err) {
             var msgErro = "";
@@ -143,9 +147,10 @@ server.post('/addPontoRota', function(req, res) {
                 msgErro = "O ponto a frente está fora da rota da linha";
             }
 
-            res.render('error.html', {erro: msgErro});
+            req.flash('error', msgErro);
+            res.redirect('/admin');
         } else {
-            var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + idPonto1 + " WHERE id_pontoonibus = " + idPonto2 + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + linha + "')";
+            var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota+ "')";
 
             client.query(atualiza, function(err, result) {
                 if (err) {
@@ -153,9 +158,11 @@ server.post('/addPontoRota', function(req, res) {
                     if (err == 'error: next_id_pontoonibus not in rota') {
                         msgErro = "O ponto a frente está fora da rota da linha";
                     }
-                    res.render('error.html', {erro: msgErro});
+                    req.flash('error', msgErro);
+                    res.redirect('/admin');
                 } else {
-                    res.render('success.html', {sucesso: "Ponto adicionado a rota com sucesso"});
+                    req.flash('success', 'Rota adicionada com sucesso.');
+                    res.redirect('/admin');
                 }
             });
         }
