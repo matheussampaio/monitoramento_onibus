@@ -3,19 +3,20 @@
 import psycopg2
 import unittest
 import sys
+import os
 
 class FunctionsTest(unittest.TestCase):
 
     def setUp(self):
 
-         self.funcao1 = open('src/sql/Funcoes/checkPontoOnibusInRota.sql')
-         self.funcao2 = open('src/sql/Funcoes/getIDNextPontoOnibus.sql')
-         self.funcao3 = open('src/sql/Funcoes/getSubLineString.sql')
-         self.funcao4 = open('src/sql/Funcoes/getVelocidadeMedia.sql')
-         self.funcao5 = open('src/sql/Funcoes/refreshCurrentPontoOnibus.sql')
-         self.funcao6 = open('src/sql/Funcoes/refreshCurrentSeq.sql')
-         self.funcao7 = open('src/sql/Funcoes/refreshFugaRota.sql')
-         self.funcao8 = open('src/sql/Funcoes/refreshStatusOnibus.sql')
+         self.funcao1 = open(os.path.abspath('../') + '/sql/Funcoes/checkPontoOnibusInRota.sql')
+         self.funcao2 = open(os.path.abspath('../') + '/sql/Funcoes/getIDNextPontoOnibus.sql')
+         self.funcao3 = open(os.path.abspath('../') + '/sql/Funcoes/getSubLineString.sql')
+         self.funcao4 = open(os.path.abspath('../') + '/sql/Funcoes/getVelocidadeMedia.sql')
+         self.funcao5 = open(os.path.abspath('../') + '/sql/Funcoes/refreshCurrentPontoOnibus.sql')
+         self.funcao6 = open(os.path.abspath('../') + '/sql/Funcoes/refreshCurrentSeq.sql')
+         self.funcao7 = open(os.path.abspath('../') + '/sql/Funcoes/refreshFugaRota.sql')
+         self.funcao8 = open(os.path.abspath('../') + '/sql/Funcoes/refreshStatusOnibus.sql')
 
          self.checaOnibus = self.funcao1.read()
          self.IDNext = self.funcao2.read()

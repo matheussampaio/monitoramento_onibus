@@ -1,15 +1,16 @@
 import psycopg2
 import unittest
 import sys
+import os
 
 class HorariosTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.table = open('src/sql/createsTable/Horario.sql', 'r')
-        self.constraints = open('src/sql/createsTable/Horario_const.sql', 'r')
-        self.insert = open('src/sql/inserts/Horarios_inserts.sql', 'r')
-        self.falho = open('src/sql/inserts/Horarios_inserts_falhos.sql', 'r')
+        self.table = open(os.path.abspath('../') + '/sql/createsTable/Horario.sql', 'r')
+        self.constraints = open(os.path.abspath('../') + '/sql/createsTable/Horario_const.sql', 'r')
+        self.insert = open(os.path.abspath('../') + '/sql/inserts/Horarios_inserts.sql', 'r')
+        self.falho = open(os.path.abspath('../') + '/sql/inserts/Horarios_inserts_falhos.sql', 'r')
 
         self.Horario = self.table.read()
         self.cons = self.constraints.read()

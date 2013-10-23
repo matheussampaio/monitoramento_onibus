@@ -1,15 +1,16 @@
 import psycopg2
 import unittest
 import sys
+import os
 
 class PontoOnibusRotaTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.table = open('src/sql/createsTable/PontoOnibusRota.sql', 'r')
-        self.constraints = open('src/sql/createsTable/PontoOnibusRota_const.sql', 'r')
-        self.insert = open('src/sql/inserts/PontoOnibusRota_inserts.sql', 'r')
-        self.falho = open('src/sql/inserts/PontoOnibusRota_inserts_falhos.sql', 'r')
+        self.table = open(os.path.abspath('../') + '/sql/createsTable/PontoOnibusRota.sql', 'r')
+        self.constraints = open(os.path.abspath('../') + '/sql/createsTable/PontoOnibusRota_const.sql', 'r')
+        self.insert = open(os.path.abspath('../') + '/sql/inserts/PontoOnibusRota_inserts.sql', 'r')
+        self.falho = open(os.path.abspath('../') + '/sql/inserts/PontoOnibusRota_inserts_falhos.sql', 'r')
 
         self.PontoOnibusRota = self.table.read()
         self.cons = self.constraints.readlines()

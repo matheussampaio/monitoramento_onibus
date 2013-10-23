@@ -1,15 +1,16 @@
 import psycopg2
 import unittest
 import sys
+import os
 
 class LocalizationTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.table = open('src/sql/createsTable/Localization.sql', 'r')
-        self.constraints = open('src/sql/createsTable/Localization_const.sql', 'r')
-        self.insert = open('src/sql/inserts/Localization_inserts.sql', 'r')
-        self.falho = open('src/sql/inserts/Localization_inserts_falhos.sql', 'r')
+        self.table = open(os.path.abspath('../') + '/sql/createsTable/Localization.sql', 'r')
+        self.constraints = open(os.path.abspath('../') + '/sql/createsTable/Localization_const.sql', 'r')
+        self.insert = open(os.path.abspath('../') + '/sql/inserts/Localization_inserts.sql', 'r')
+        self.falho = open(os.path.abspath('../') + '/sql/inserts/Localization_inserts_falhos.sql', 'r')
 
         self.Localization = self.table.read()
         self.cons = self.constraints.read()

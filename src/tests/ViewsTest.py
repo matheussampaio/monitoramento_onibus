@@ -1,12 +1,13 @@
 import psycopg2
 import unittest
 import sys
+import os
 
 class ViewsTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.view = open('src/sql/inserts/views.sql', 'r')
+        self.view = open(os.path.abspath('../') + '/sql/inserts/views.sql', 'r')
         self.views = self.view.readlines()
         self.view.close()
                 

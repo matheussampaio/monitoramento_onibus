@@ -1,15 +1,16 @@
 import psycopg2
 import unittest
 import sys
+import os
 
 class RotaTest(unittest.TestCase):
 
     def setUp(self):
 
-      	self.table = open('src/sql/createsTable/Rota.sql', 'r')
-      	self.constraints = open('src/sql/createsTable/Rota_const.sql', 'r')
-      	self.insert = open('src/sql/inserts/Rota_inserts.sql', 'r')
-      	self.falho = open('src/sql/inserts/Rota_inserts_falhos.sql', 'r')
+      	self.table = open(os.path.abspath('../') + '/sql/createsTable/Rota.sql', 'r')
+      	self.constraints = open(os.path.abspath('../') + '/sql/createsTable/Rota_const.sql', 'r')
+      	self.insert = open(os.path.abspath('../') + '/sql/inserts/Rota_inserts.sql', 'r')
+      	self.falho = open(os.path.abspath('../') + '/sql/inserts/Rota_inserts_falhos.sql', 'r')
       	
       	self.Rota = self.table.read()
       	self.cons = self.constraints.readlines()

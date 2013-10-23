@@ -1,16 +1,17 @@
 import psycopg2
 import unittest
 import sys
+import os
 
 class TriggersTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.trigger1 = open('src/sql/Triggers/TriggerLocalizationRefreshCurrentPontoOnibus.sql', 'r')
-        self.trigger2 = open('src/sql/Triggers/TriggerLocalizationRefreshCurrentSeq.sql', 'r')
-        self.trigger3 = open('src/sql/Triggers/TriggerLocalizationRefreshFugaRota.sql', 'r')
-        self.trigger4 = open('src/sql/Triggers/TriggerLocalizationRefreshStatusOnibus.sql', 'r')
-        self.trigger5 = open('src/sql/Triggers/TriggerPontoOnibusRotaCheckOnibus.sql', 'r')
+        self.trigger1 = open(os.path.abspath('../') + '/sql/Triggers/TriggerLocalizationRefreshCurrentPontoOnibus.sql', 'r')
+        self.trigger2 = open(os.path.abspath('../') + '/sql/Triggers/TriggerLocalizationRefreshCurrentSeq.sql', 'r')
+        self.trigger3 = open(os.path.abspath('../') + '/sql/Triggers/TriggerLocalizationRefreshFugaRota.sql', 'r')
+        self.trigger4 = open(os.path.abspath('../') + '/sql/Triggers/TriggerLocalizationRefreshStatusOnibus.sql', 'r')
+        self.trigger5 = open(os.path.abspath('../') + '/sql/Triggers/TriggerPontoOnibusRotaCheckOnibus.sql', 'r')
 
         self.LocalizationRefreshPO = self.trigger1.read()
         self.LocalizationRefreshSeq = self.trigger2.read()
