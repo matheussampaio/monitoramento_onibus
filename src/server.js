@@ -272,9 +272,11 @@ server.post('/removerPontoOnibus', function(req, res) {
             var msgErro = "";
 
             if (err.detail.indexOf("rota") != -1) {
-                msgErro = "Este ponto de ônibus está sendo usado em uma rota";
+                msgErro = "Este Ponto de Ônibus está sendo usado em uma Rota.";
+            } else if (err.detail.indexOf("horario") != -1) {
+                msgErro = "Este Ponto de Ônibus está sendo usado em um Horário.";
             } else if (err.detail.indexOf("onibus") != -1) {
-                msgErro = "Este ponto de ônibus está sendo usado em um ônibus";
+                msgErro = "Este Ponto de Ônibus está sendo usado em um Ônibus.";
             } else {
                 msgErro = err.detail;
             }
