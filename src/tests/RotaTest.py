@@ -6,10 +6,10 @@ class RotaTest(unittest.TestCase):
 
     def setUp(self):
 
-      	self.table = open('createsTable/Rota.sql', 'r')
-      	self.constraints = open('createsTable/Rota_const.sql', 'r')
-      	self.insert = open('inserts/Rota_inserts.sql', 'r')
-      	self.falho = open('inserts/Rota_inserts_falhos.sql', 'r')
+      	self.table = open('src/sql/createsTable/Rota.sql', 'r')
+      	self.constraints = open('src/sql/createsTable/Rota_const.sql', 'r')
+      	self.insert = open('src/sql/inserts/Rota_inserts.sql', 'r')
+      	self.falho = open('src/sql/inserts/Rota_inserts_falhos.sql', 'r')
       	
       	self.Rota = self.table.read()
       	self.cons = self.constraints.readlines()

@@ -6,10 +6,10 @@ class FugaRotaTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.table = open('createsTable/FugaRota.sql', 'r')
-        self.constraints = open('createsTable/FugaRota_const.sql', 'r')
-        self.insert = open('inserts/Horarios_inserts.sql', 'r')
-        self.falho = open('inserts/FugaRota_inserts_falhos.sql', 'r')
+        self.table = open('src/sql/createsTable/FugaRota.sql', 'r')
+        self.constraints = open('src/sql/createsTable/FugaRota_const.sql', 'r')
+        self.insert = open('src/sql/inserts/Horarios_inserts.sql', 'r')
+        self.falho = open('src/sql/inserts/FugaRota_inserts_falhos.sql', 'r')
 
         self.FugaRota = self.table.read()
         self.cons = self.constraints.read()

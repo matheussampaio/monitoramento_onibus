@@ -6,11 +6,11 @@ class TriggersTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.trigger1 = open('Triggers/TriggerLocalizationRefreshCurrentPontoOnibus.sql', 'r')
-        self.trigger2 = open('Triggers/TriggerLocalizationRefreshCurrentSeq.sql', 'r')
-        self.trigger3 = open('Triggers/TriggerLocalizationRefreshFugaRota.sql', 'r')
-        self.trigger4 = open('Triggers/TriggerLocalizationRefreshStatusOnibus.sql', 'r')
-        self.trigger5 = open('Triggers/TriggerPontoOnibusRotaCheckOnibus.sql', 'r')
+        self.trigger1 = open('src/sql/Triggers/TriggerLocalizationRefreshCurrentPontoOnibus.sql', 'r')
+        self.trigger2 = open('src/sql/Triggers/TriggerLocalizationRefreshCurrentSeq.sql', 'r')
+        self.trigger3 = open('src/sql/Triggers/TriggerLocalizationRefreshFugaRota.sql', 'r')
+        self.trigger4 = open('src/sql/Triggers/TriggerLocalizationRefreshStatusOnibus.sql', 'r')
+        self.trigger5 = open('src/sql/Triggers/TriggerPontoOnibusRotaCheckOnibus.sql', 'r')
 
         self.LocalizationRefreshPO = self.trigger1.read()
         self.LocalizationRefreshSeq = self.trigger2.read()

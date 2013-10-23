@@ -8,14 +8,14 @@ class FunctionsTest(unittest.TestCase):
 
     def setUp(self):
 
-         self.funcao1 = open('Funcoes/checkPontoOnibusInRota.sql')
-         self.funcao2 = open('Funcoes/getIDNextPontoOnibus.sql')
-         self.funcao3 = open('Funcoes/getSubLineString.sql')
-         self.funcao4 = open('Funcoes/getVelocidadeMedia.sql')
-         self.funcao5 = open('Funcoes/refreshCurrentPontoOnibus.sql')
-         self.funcao6 = open('Funcoes/refreshCurrentSeq.sql')
-         self.funcao7 = open('Funcoes/refreshFugaRota.sql')
-         self.funcao8 = open('Funcoes/refreshStatusOnibus.sql')
+         self.funcao1 = open('src/sql/Funcoes/checkPontoOnibusInRota.sql')
+         self.funcao2 = open('src/sql/Funcoes/getIDNextPontoOnibus.sql')
+         self.funcao3 = open('src/sql/Funcoes/getSubLineString.sql')
+         self.funcao4 = open('src/sql/Funcoes/getVelocidadeMedia.sql')
+         self.funcao5 = open('src/sql/Funcoes/refreshCurrentPontoOnibus.sql')
+         self.funcao6 = open('src/sql/Funcoes/refreshCurrentSeq.sql')
+         self.funcao7 = open('src/sql/Funcoes/refreshFugaRota.sql')
+         self.funcao8 = open('src/sql/Funcoes/refreshStatusOnibus.sql')
 
          self.checaOnibus = self.funcao1.read()
          self.IDNext = self.funcao2.read()

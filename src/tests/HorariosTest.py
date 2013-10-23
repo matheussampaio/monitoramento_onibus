@@ -6,10 +6,10 @@ class HorariosTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.table = open('createsTable/Horario.sql', 'r')
-        self.constraints = open('createsTable/Horario_const.sql', 'r')
-        self.insert = open('inserts/Horarios_inserts.sql', 'r')
-        self.falho = open('inserts/Horarios_inserts_falhos.sql', 'r')
+        self.table = open('src/sql/createsTable/Horario.sql', 'r')
+        self.constraints = open('src/sql/createsTable/Horario_const.sql', 'r')
+        self.insert = open('src/sql/inserts/Horarios_inserts.sql', 'r')
+        self.falho = open('src/sql/inserts/Horarios_inserts_falhos.sql', 'r')
 
         self.Horario = self.table.read()
         self.cons = self.constraints.read()

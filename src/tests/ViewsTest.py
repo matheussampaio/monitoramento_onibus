@@ -6,7 +6,7 @@ class ViewsTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.view = open('inserts/views.sql', 'r')
+        self.view = open('src/sql/inserts/views.sql', 'r')
         self.views = self.view.readlines()
         self.view.close()
                 

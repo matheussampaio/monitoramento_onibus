@@ -6,10 +6,10 @@ class PontoOnibusTest(unittest.TestCase):
 
     def setUp(self):
 
-        self.table = open('createsTable/PontoOnibus.sql', 'r')
-        self.constraints = open('createsTable/PontoOnibus_const.sql', 'r')
-        self.insert = open('inserts/PontoOnibus_inserts.sql', 'r')
-        self.falho = open('inserts/PontoOnibus_inserts_falhos.sql', 'r')
+        self.table = open('src/sql/createsTable/PontoOnibus.sql', 'r')
+        self.constraints = open('src/sql/createsTable/PontoOnibus_const.sql', 'r')
+        self.insert = open('src/sql/inserts/PontoOnibus_inserts.sql', 'r')
+        self.falho = open('src/sql/inserts/PontoOnibus_inserts_falhos.sql', 'r')
 
         self.PontoOnibus = self.table.read()
         self.cons = self.constraints.read()

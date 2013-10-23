@@ -6,10 +6,10 @@ class OnibusTest(unittest.TestCase):
 
 		def setUp(self):
 
-			self.table = open('createsTable/Onibus.sql', 'r')
-			self.constraints = open('createsTable/Onibus_const.sql', 'r')
-			self.insert = open('inserts/Onibus_inserts.sql', 'r')
-			self.falho = open('inserts/Onibus_inserts_falhos.sql', 'r')
+			self.table = open('src/sql/createsTable/Onibus.sql', 'r')
+			self.constraints = open('src/sql/createsTable/Onibus_const.sql', 'r')
+			self.insert = open('src/sql/inserts/Onibus_inserts.sql', 'r')
+			self.falho = open('src/sql/inserts/Onibus_inserts_falhos.sql', 'r')
 
 			self.Onibus = self.table.read()
 			self.cons = self.constraints.read()

@@ -97,31 +97,38 @@ server.post('/adicionarRotaOnibus', function(req, res) {
     var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+novaRota+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+pontoInicial+")";
     var inserirPontoNaRota = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + novaRota + "'), " + pontoInicial + ", " + pontoInicial + ")";
     var view = "CREATE OR REPLACE VIEW rota"+novaRota+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+novaRota+"'";
-    client.query(inserir, function(err, result) {
-        if (err) {
+    client.query(inserir, function(err1, result1) {
+        if (err1) {
             var msgErro = "";
 
-            if(err == 'error: duplicate key value violates unique constraint "nome_unico_rota"') {
+            if(err1 == 'error: duplicate key value violates unique constraint "nome_unico_rota"') {
                 msgErro = "Este linha já existe, escolha outro identificador";
-            } else if (err == 'error: insert or update on table "rota" violates foreign key constraint "rota_first_pontoonibus_fkey"') {
+            } else if (err1 == 'error: insert or update on table "rota" violates foreign key constraint "rota_first_pontoonibus_fkey"') {
                 msgErro = "O ponto de ônibus passado deve ser de um ponto já existente";
-            } else if (err == 'error: geometry requires more points') {
+            } else if (err1 == 'error: geometry requires more points') {
                 msgErro = "Insira ao menos duas coordenadas para início e fim de rota";
-            } else if (err == 'error: parse error - invalid geometry') {
+            } else if (err1 == 'error: parse error - invalid geometry') {
                 msgErro = "A coordenadas passadas são inválidas";
             }
 
             req.flash('error', msgErro);
             res.redirect('/admin');
         } else {
-            client.query(inserirPontoNaRota);
-            client.query(view ,function(err, result) {
-                if (err) {
-                    req.flash('error', err.detail);
+            client.query(inserirPontoNaRota,function(err2, result2) {
+                if (err2) {
+                    console.log(err2 == "error: id_pontoonibus not in rota");
+                    req.flash('error', "ponto de onibus nao pertence a rota");
                     res.redirect('/admin');
                 } else {
-                    req.flash('success', 'Rota adicionada com sucesso.');
-                    res.redirect('/admin');
+                     client.query(view ,function(err3, result3) {
+                        if (err3) {
+                            req.flash('error', err3.detail);
+                            res.redirect('/admin');
+                        } else {
+                            req.flash('success', 'Rota adicionada com sucesso.');
+                            res.redirect('/admin');
+                        }
+                    });
                 }
             });
         }
