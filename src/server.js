@@ -74,7 +74,13 @@ server.get('/admin', function(req, res) {
                                                 if (err6) {
                                                     res.render('error.html', {erro: err6});
                                                 } else {
-                                                    res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, rotas: result4.rows, pontoonibus: result5.rows, horarios: result6.rows, messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                                                    client.query("SELECT * FROM PontoOnibus_Rota;", function(err7, result7) {
+                                                        if (err7) {
+                                                            res.render('error.html', {erro: err7});
+                                                        } else {
+                                                            res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, rotas: result4.rows, pontoonibus: result5.rows, horarios: result6.rows, pontoonibusrota: result7.rows , messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                                                        }
+                                                    });                                                
                                                 }
                                             });
                                         }
@@ -109,6 +115,11 @@ server.post('/adicionarRotaOnibus', function(req, res) {
                 msgErro = "Insira ao menos duas coordenadas para início e fim de rota";
             } else if (err1 == 'error: parse error - invalid geometry') {
                 msgErro = "A coordenadas passadas são inválidas";
+            }else if (err1 == 'error: first_pontoonibus not in rota'){
+                msgErro = "O primeiro ponto de ônibus deve pertencer a rota.";
+            }
+            else{
+                msgErro = err1.error;
             }
 
             req.flash('error', msgErro);
@@ -175,36 +186,49 @@ server.post('/adicionarPontoRota', function(req, res) {
     var pontoNovo = req.body.pontoNovo;
     var pontoAnterior = req.body.pontoAnterior;
     var pontoPosterior = req.body.pontoPosterior;
-    var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
-    client.query(inserir, function(err, result) {
+
+    var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota+ "')";
+
+    client.query(atualiza, function(err, result) {
         if (err) {
             var msgErro = "";
-            if (err == 'error: null value in column "id_rota" violates not-null constraint') {
-                msgErro = "Esta linha não está cadastrada";
-            } else if (err == 'error: id_pontoonibus not in rota') {
-                msgErro = "Este ponto está fora da rota da linha";
-            } else if (err == 'error: next_id_pontoonibus not in rota') {
+            // console.log(err);
+            if (err == 'error: next_id_pontoonibus not in rota') {
                 msgErro = "O ponto a frente está fora da rota da linha";
             }
 
-            req.flash('error', msgErro);
+            req.flash('error', "Ponto de Ônibus " + pontoNovo + " não pertence a Rota.");
             res.redirect('/admin');
+            
         } else {
-            var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota+ "')";
+            console.log(result);
+            if (result.rowCount == 0) {
+                req.flash('error', "Ponto de Ônibus " + pontoAnterior + " não pertence a Rota.");
+                res.redirect('/admin');
+            } else {
+                var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
+                client.query(inserir, function(err, result) {
+                    if (err) {
+                        var msgErro = "";
+                        console.log(err);
+                        if (err == 'error: null value in column "id_rota" violates not-null constraint') {
+                            msgErro = "Esta linha não está cadastrada";
+                        } else if (err == 'error: id_pontoonibus not in rota') {
+                            msgErro = "Este ponto está fora da rota da linha";
+                        } else if (err == 'error: next_id_pontoonibus not in rota') {
+                            msgErro = "O ponto a frente está fora da rota da linha";
+                        }else {
+                            msgErro = err;
+                        }
 
-            client.query(atualiza, function(err, result) {
-                if (err) {
-                    var msgErro = "x";
-                    if (err == 'error: next_id_pontoonibus not in rota') {
-                        msgErro = "O ponto a frente está fora da rota da linha";
+                        req.flash('error', msgErro);
+                        res.redirect('/admin');
+                    } else {
+                        req.flash('success', 'Rota adicionada com sucesso.');
+                        res.redirect('/admin');
                     }
-                    req.flash('error', msgErro);
-                    res.redirect('/admin');
-                } else {
-                    req.flash('success', 'Rota adicionada com sucesso.');
-                    res.redirect('/admin');
-                }
-            });
+                });
+            }
         }
     });
 });

@@ -269,14 +269,22 @@
                 <tr>
                     <td><div align="center"><b>Nome</b></div></td>
                     <td><div align="center"><b>Ponto de Ônibus de Início</b></div></td>
+                    <td><div align="center"><b>Pontos de Ônibus da Rota</b></div></td>
                     <td><div align="center"><b>Remover</b></div></td>
                 </tr>
                 </thead>
-
                 <% for (var i = 0; i < rotas.length; i++) { %>
                     <tr>
                         <td><div align="center"><%= rotas[i].nome %></div></td>
                         <td><div align="center"><%= rotas[i].first_pontoonibus %></div></td>
+                        <td><div align="center">
+                        <% for (var j = 0; j < pontoonibusrota.length; j++) { %>
+                            <% if(rotas[i].id_rota == pontoonibusrota[j].id_rota){ %>
+                            <%= pontoonibusrota[j].id_pontoonibus %>
+                            <% } %>
+                        <% } %>
+                        </div></td>
+                        
                         <td><div align="center">
                             <form action="removerRota" method="POST">
                                 <input type="hidden" name="idRota" id="idRota" value=<%= rotas[i].id_rota %>>
