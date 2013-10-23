@@ -135,8 +135,41 @@ server.post('/adicionarRotaOnibus', function(req, res) {
     });
 });
 
+//Remover rota
+server.post('/removerRota',function(req,res){
+    var idRota = req.body.idRota;
+
+    var deleteEmOnibus = "DELETE FROM Onibus WHERE id_rota = '" + idRota + "';";
+    var deleteEmPontoRota = "DELETE FROM PontoOnibus_Rota WHERE id_rota = '" + idRota + "';";
+    var deleteRota = "DELETE FROM Rota WHERE id_rota = '" + idRota + "';";
+
+    client.query (deleteEmOnibus, function(err, result) {
+        if (err) {
+            req.flash('error', err);
+            res.redirect('/admin');
+        } else {
+            client.query (deleteEmPontoRota, function(err2, result2) {
+                if (err2) {
+                    req.flash('error', err2);
+                    res.redirect('/admin');
+                } else {
+                    client.query (deleteRota, function(err3, result3) {
+                        if (err3) {
+                            req.flash('error', err3);
+                            res.redirect('/admin');
+                        } else {
+                            req.flash('success', 'Rota removidoa com sucesso.');
+                            res.redirect('/admin'); 
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+
 //recebe dados para adicionar um ponto a uma rota
-// @TODO: Atualizar para trabalhar com Flash e refatorar o código.
 server.post('/adicionarPontoRota', function(req, res) {
     var numeroRota = req.body.numeroRota;
     var pontoNovo = req.body.pontoNovo;
