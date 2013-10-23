@@ -323,3 +323,21 @@ CREATE OR REPLACE FUNCTION refreshCurrentSeq() RETURNS TRIGGER AS $refreshCurren
 
 CREATE TRIGGER refreshCurrentSeq AFTER INSERT ON Localization
     FOR EACH ROW EXECUTE PROCEDURE refreshCurrentSeq();
+
+CREATE OR REPLACE FUNCTION checkFirstPontoOnibusInRota() RETURNS trigger AS $checkFirstPontoOnibusInRota$
+    DECLARE
+    FirstPontoInRota BOOLEAN;
+    BEGIN
+         SELECT ST_Intersects(NEW.geom, p.geom) INTO FirstPontoInRota FROM PontoOnibus p WHERE p.id_pontoonibus = NEW.first_pontoonibus;
+
+         IF (NOT FirstPontoInRota) THEN
+            RAISE EXCEPTION 'first_pontoonibus not in rota';
+         END IF;
+
+        RETURN NEW;
+    END;
+    $checkFirstPontoOnibusInRota$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER checkFirstPontoOnibusInRota BEFORE INSERT ON Rota
+    FOR EACH ROW EXECUTE PROCEDURE checkFirstPontoOnibusInRota();
