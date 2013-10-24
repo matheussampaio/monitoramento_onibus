@@ -18,25 +18,6 @@
         var refreshID;
 
         function init() {
-
-            var layer_rota_500 = new OpenLayers.Layer.WMS(
-                "Rota: 500", server,
-                {layers: 'gonibus:rota500view', transparent: "true"},
-                {singleTile: false, isBaseLayer: false, visibility: true}
-                );
-
-            var layer_rota_505 = new OpenLayers.Layer.WMS(
-                "Rota: 505", server,
-                {layers: 'gonibus:rota505view', transparent: "true"},
-                {singleTile: false, isBaseLayer: false, visibility: true}
-                );
-
-            var layer_rota_555 = new OpenLayers.Layer.WMS(
-                "Rota: 555", server,
-                {layers: 'gonibus:rota555view', transparent: "true"},
-                {singleTile: false, isBaseLayer: false, visibility: true}
-                );
-
             var layer_pontos_onibus = new OpenLayers.Layer.WMS(
                 "Pontos de Ônibus", server,
                 {layers: 'gonibus:pontoonibus', transparent: "true"},
@@ -61,7 +42,12 @@
 
             layer_googleStr = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
 
-            map.addLayers([layer_googleStr, layer_rota_500, layer_rota_505, layer_rota_555, layer_pontos_onibus, layer_onibus]);
+            map.addLayers([layer_googleStr, layer_pontos_onibus, layer_onibus]);
+
+            <% for (var i=0; i < result.length; i++) { %>
+                var nomeRota = <%= result[i].nome %>;
+                map.addLayer(new OpenLayers.Layer.WMS("Rota: " + nomeRota, server, {layers: 'gonibus:rota' + nomeRota + 'view', transparent: "true"}, {singleTile: false, isBaseLayer: false, visibility: true}));
+            <% } %>
 
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 

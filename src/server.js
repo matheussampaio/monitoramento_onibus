@@ -41,12 +41,19 @@ server.configure(function(){
 });
 
 // Define o get para a pagina principal: apenas retorna o index
-server.get('/', function(req, res){
-    res.render('index.html');
+server.get('/', function(req, res) {
+    res.redirect('/home');
 });
 
 server.get('/home', function(req, res){
-    res.render('index.html');
+    var query = "SELECT nome FROM Rota;";
+    client.query(query, function(err, result) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('index.html', {result: result.rows});
+        }
+    });
 });
 
 server.get('/admin', function(req, res) {
