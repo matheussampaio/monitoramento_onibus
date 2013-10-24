@@ -12,7 +12,7 @@ from FugaRotaTest import * # @UnusedWildImport
 from FunctionsTest import * # @UnusedWildImport
 from TriggersTest import * # @UnusedWildImport
 from ViewsTest import * # @UnusedWildImport
-from DropTablesTest import * # @UnusedWildImport
+#from DropTablesTest import * # @UnusedWildImport
 
 
 def SuiteTest():
@@ -27,7 +27,7 @@ def SuiteTest():
     suite.addTest(test.makeSuite(HFunctionsTest))
     suite.addTest(test.makeSuite(ITriggersTest))
     suite.addTest(test.makeSuite(JViewsTest))
-    suite.addTest(test.makeSuite(LDropTablesTest))
+    #suite.addTest(test.makeSuite(LDropTablesTest))
     return suite
 
 if __name__ == "__main__":
