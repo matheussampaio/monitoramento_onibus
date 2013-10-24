@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-class LocalizationTest(unittest.TestCase):
+class FLocalizationTest(unittest.TestCase):
 
     def setUp(self):
 

@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-class ViewsTest(unittest.TestCase):
+class JViewsTest(unittest.TestCase):
 
     def setUp(self):
 

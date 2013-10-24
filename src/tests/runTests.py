@@ -17,17 +17,17 @@ from DropTablesTest import * # @UnusedWildImport
 
 def SuiteTest():
     suite = test.TestSuite()
-    suite.addTest(test.makeSuite(PontoOnibusTest))
-    suite.addTest(test.makeSuite(RotaTest))
-    suite.addTest(test.makeSuite(PontoOnibusRotaTest))
-    suite.addTest(test.makeSuite(OnibusTest))
-    suite.addTest(test.makeSuite(HorariosTest))
-    suite.addTest(test.makeSuite(LocalizationTest))
-    suite.addTest(test.makeSuite(FugaRotaTest))
-    suite.addTest(test.makeSuite(FunctionsTest))
-    suite.addTest(test.makeSuite(TriggersTest))
-    suite.addTest(test.makeSuite(ViewsTest))
-    suite.addTest(test.makeSuite(DropTablesTest))
+    suite.addTest(test.makeSuite(APontoOnibusTest))
+    suite.addTest(test.makeSuite(BRotaTest))
+    suite.addTest(test.makeSuite(CPontoOnibusRotaTest))
+    suite.addTest(test.makeSuite(DOnibusTest))
+    suite.addTest(test.makeSuite(EHorariosTest))
+    suite.addTest(test.makeSuite(FLocalizationTest))
+    suite.addTest(test.makeSuite(GFugaRotaTest))
+    suite.addTest(test.makeSuite(HFunctionsTest))
+    suite.addTest(test.makeSuite(ITriggersTest))
+    suite.addTest(test.makeSuite(JViewsTest))
+    suite.addTest(test.makeSuite(LDropTablesTest))
     return suite
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-class FugaRotaTest(unittest.TestCase):
+class GFugaRotaTest(unittest.TestCase):
 
     def setUp(self):
 

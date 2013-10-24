@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-class PontoOnibusTest(unittest.TestCase):
+class APontoOnibusTest(unittest.TestCase):
 
     def setUp(self):
 

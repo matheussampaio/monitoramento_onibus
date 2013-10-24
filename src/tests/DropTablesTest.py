@@ -2,7 +2,7 @@ import psycopg2
 import unittest
 import sys
 
-class DropTablesTest(unittest.TestCase):
+class LDropTablesTest(unittest.TestCase):
 
         def setUp(self):
 

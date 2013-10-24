@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-class HorariosTest(unittest.TestCase):
+class EHorariosTest(unittest.TestCase):
 
     def setUp(self):
 

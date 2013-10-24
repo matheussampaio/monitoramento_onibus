@@ -5,7 +5,7 @@ import unittest
 import sys
 import os
 
-class FunctionsTest(unittest.TestCase):
+class HFunctionsTest(unittest.TestCase):
 
     def setUp(self):
 

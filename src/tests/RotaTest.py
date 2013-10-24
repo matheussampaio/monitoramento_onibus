@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-class RotaTest(unittest.TestCase):
+class BRotaTest(unittest.TestCase):
 
     def setUp(self):
 

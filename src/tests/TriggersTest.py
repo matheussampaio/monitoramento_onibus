@@ -3,7 +3,7 @@ import unittest
 import sys
 import os
 
-class TriggersTest(unittest.TestCase):
+class ITriggersTest(unittest.TestCase):
 
     def setUp(self):
 
