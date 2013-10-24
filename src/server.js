@@ -78,9 +78,9 @@ server.get('/admin', function(req, res) {
                                                         if (err7) {
                                                             res.render('error.html', {erro: err7});
                                                         } else {
-                                                            res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, rotas: result4.rows, pontoonibus: result5.rows, horarios: result6.rows, pontoonibusrota: result7.rows , messageSuccess: req.flash('success'), messageError: req.flash('error')});
+                                                            res.render('admin.html', {fugarota: result.rows, fugarotahistorico: result2.rows, onibus: result3.rows, rotas: result4.rows, pontoonibus: result5.rows, horarios: result6.rows, pontoonibusrota: result7.rows , messageSuccess: req.flash('success'), messageError: req.flash('error'), inPage: req.flash('page')});
                                                         }
-                                                    });                                                
+                                                    });
                                                 }
                                             });
                                         }
@@ -100,9 +100,11 @@ server.post('/adicionarRotaOnibus', function(req, res) {
     var coordenadas = req.body.coordenadas;
     var novaRota = req.body.novaRota;
     var pontoInicial = req.body.pontoInicial;
+
     var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+novaRota+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+pontoInicial+")";
     var inserirPontoNaRota = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + novaRota + "'), " + pontoInicial + ", " + pontoInicial + ")";
     var view = "CREATE OR REPLACE VIEW rota"+novaRota+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+novaRota+"'";
+
     client.query(inserir, function(err1, result1) {
         if (err1) {
             var msgErro = "";
@@ -122,20 +124,23 @@ server.post('/adicionarRotaOnibus', function(req, res) {
                 msgErro = err1.error;
             }
 
+            req.flash('page', 'rota');
             req.flash('error', msgErro);
             res.redirect('/admin');
         } else {
             client.query(inserirPontoNaRota,function(err2, result2) {
                 if (err2) {
-                    console.log(err2 == "error: id_pontoonibus not in rota");
-                    req.flash('error', "ponto de onibus nao pertence a rota");
+                    req.flash('page', 'rota');
+                    req.flash('error', "Ponto de Ônibus não pertence a Rota.");
                     res.redirect('/admin');
                 } else {
                      client.query(view ,function(err3, result3) {
                         if (err3) {
+                            req.flash('page', 'rota');
                             req.flash('error', err3.detail);
                             res.redirect('/admin');
                         } else {
+                            req.flash('page', 'rota');
                             req.flash('success', 'Rota adicionada com sucesso.');
                             res.redirect('/admin');
                         }
@@ -147,7 +152,7 @@ server.post('/adicionarRotaOnibus', function(req, res) {
 });
 
 //Remover rota
-server.post('/removerRota',function(req,res){
+server.post('/removerRota',function(req,res) {
     var idRota = req.body.idRota;
 
     var deleteEmOnibus = "DELETE FROM Onibus WHERE id_rota = '" + idRota + "';";
@@ -156,21 +161,25 @@ server.post('/removerRota',function(req,res){
 
     client.query (deleteEmOnibus, function(err, result) {
         if (err) {
+            req.flash('page', 'rota');
             req.flash('error', err);
             res.redirect('/admin');
         } else {
             client.query (deleteEmPontoRota, function(err2, result2) {
                 if (err2) {
+                    req.flash('page', 'rota');
                     req.flash('error', err2);
                     res.redirect('/admin');
                 } else {
                     client.query (deleteRota, function(err3, result3) {
                         if (err3) {
+                            req.flash('page', 'rota');
                             req.flash('error', err3);
                             res.redirect('/admin');
                         } else {
+                            req.flash('page', 'rota');
                             req.flash('success', 'Rota removidoa com sucesso.');
-                            res.redirect('/admin'); 
+                            res.redirect('/admin');
                         }
                     });
                 }
@@ -187,7 +196,7 @@ server.post('/adicionarPontoRota', function(req, res) {
     var pontoAnterior = req.body.pontoAnterior;
     var pontoPosterior = req.body.pontoPosterior;
 
-    var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota+ "')";
+    var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "')";
 
     client.query(atualiza, function(err, result) {
         if (err) {
@@ -197,12 +206,13 @@ server.post('/adicionarPontoRota', function(req, res) {
                 msgErro = "O ponto a frente está fora da rota da linha";
             }
 
+            req.flash('page', 'rota');
             req.flash('error', "Ponto de Ônibus " + pontoNovo + " não pertence a Rota.");
             res.redirect('/admin');
-            
         } else {
             console.log(result);
             if (result.rowCount == 0) {
+                req.flash('page', 'rota');
                 req.flash('error', "Ponto de Ônibus " + pontoAnterior + " não pertence a Rota.");
                 res.redirect('/admin');
             } else {
@@ -220,10 +230,11 @@ server.post('/adicionarPontoRota', function(req, res) {
                         }else {
                             msgErro = err;
                         }
-
+                        req.flash('page', 'rota');
                         req.flash('error', msgErro);
                         res.redirect('/admin');
                     } else {
+                        req.flash('page', 'rota');
                         req.flash('success', 'Rota adicionada com sucesso.');
                         res.redirect('/admin');
                     }
@@ -272,14 +283,17 @@ server.post('/adicionarHorario', function(req, res) {
 
     client.query(queryDelete, function(err, result) {
         if (err) {
+            req.flash('page', 'horario');
             req.flash('error', err);
             res.redirect('/admin');
         } else {
             client.query(query, function(err1, result1) {
                 if (err1) {
+                    req.flash('page', 'horario');
                     req.flash('error', err1);
                     res.redirect('/admin');
                 } else {
+                    req.flash('page', 'horario');
                     req.flash('success', "Horário adicionado com sucesso.");
                     res.redirect('/admin');
                 }
@@ -298,14 +312,17 @@ server.post('/fugarota', function(req, res) {
 
     client.query (query1, function(err, result) {
         if (err) {
+            req.flash('page', 'fugarota');
             req.flash('error', err);
             res.redirect('/admin');
         } else {
             client.query(query2, function(err2, result2) {
                 if (err2) {
+                    req.flash('page', 'fugarota');
                     req.flash('error', err2);
                     res.redirect('/admin');
                 } else {
+                    req.flash('page', 'fugarota');
                     req.flash('success', 'Fuga de Rota resolvida.');
                     res.redirect('/admin');
                 }
@@ -323,9 +340,11 @@ server.post('/adicionarPontoOnibus', function(req, res) {
 
     client.query(inserir, function(err, result) {
         if (err) {
+            req.flash('page', 'pontoonibus');
             req.flash('error', err.detail);
             res.redirect('/admin');
         } else {
+            req.flash('page', 'pontoonibus');
             req.flash('success', "Ponto de Ônibus criado com sucesso.");
             res.redirect('/admin');
         }
@@ -352,9 +371,11 @@ server.post('/removerPontoOnibus', function(req, res) {
                 msgErro = err.detail;
             }
 
+            req.flash('page', 'pontoonibus');
             req.flash('error', msgErro);
             res.redirect('/admin');
         } else {
+            req.flash('page', 'pontoonibus');
             req.flash('success', 'Ponto de Ônibus removido com sucesso.');
             res.redirect('/admin');
         }
@@ -377,9 +398,11 @@ server.post('/adicionarOnibus', function(req, res) {
                 msgErro = "A rota que você passou não existe";
             }
 
+            req.flash('page', 'onibus');
             req.flash('error', msgErro);
             res.redirect('/admin');
         } else {
+            req.flash('page', 'onibus');
             req.flash('success', "Ônibus criado com sucesso.");
             res.redirect('/admin');
         }
@@ -397,24 +420,29 @@ server.post('/removerOnibus', function(req, res) {
 
     client.query (deleteHorario, function(err, result) {
         if (err) {
+            req.flash('page', 'onibus');
             req.flash('error', err);
             res.redirect('/admin');
         } else {
             client.query (deleteFugaRota, function(err2, result2) {
                 if (err2) {
+                    req.flash('page', 'onibus');
                     req.flash('error', err2);
                     res.redirect('/admin');
                 } else {
                     client.query (deleteLocalization, function(err3, result3) {
                         if (err3) {
+                            req.flash('page', 'onibus');
                             req.flash('error', err3);
                             res.redirect('/admin');
                         } else {
                             client.query (deleteOnibus, function(err4, result4) {
                                 if (err4) {
+                                    req.flash('page', 'onibus');
                                     req.flash('error', err4);
                                     res.redirect('/admin');
                                 } else {
+                                    req.flash('page', 'onibus');
                                     req.flash('success', 'Ônibus removido com sucesso.');
                                     res.redirect('/admin');
                                 }

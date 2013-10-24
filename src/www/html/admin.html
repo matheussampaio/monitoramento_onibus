@@ -65,7 +65,7 @@
       document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Número da Rota não pode ser vázio.</div>';
       isOk = false;
     } else if (isNaN(numeroRota)) {
-      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>O número da rota precisa ser um número.</div>';
+      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>O número da Rota precisa ser um número.</div>';
       isOk = false;
     }
 
@@ -103,7 +103,7 @@
       document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">Número da Rota não pode ser vázio.</div>';
       isOk = false;
     } else if (isNaN(novaRota)) {
-      document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">O número da rota precisa ser um número.</div>';
+      document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">O número da Rota precisa ser um número.</div>';
       isOk = false;
     } else if (coordenadas.length == 0) {
       document.getElementById("errorCoordenadas").innerHTML =  '<div class="alert fade in span6">A coordenada não pode ser vázia.</div>';
@@ -176,17 +176,17 @@
       <!--Sidebar content-->
       <div class="span3" style="margin-left: 100px; margin-right: 100px">
         <ul class="nav nav-tabs nav-stacked" id="sidebar_content_ul">
-          <li class="active" id="submenu_onibus"><a href="#onibus" onclick="javascript:submenu('onibus')">Ônibus</i></a></li>
-          <li id="submenu_rotas"><a href="#rotas" onclick="javascript:submenu('rotas')">Rotas</a></li>
-          <li id="submenu_pontoonibus"><a href="#pontoonibus" onclick="javascript:submenu('pontoonibus')">Pontos de Ônibus</a></li>
-          <li id="submenu_fugarotas"><a href="#fugarotas" onclick="javascript:submenu('fugarotas')">Fugas de Rotas</a></li>
-          <li id="submenu_horarios"><a href="#horarios" onclick="javascript:submenu('horarios')">Horários</a></li>
+          <li <% if (inPage == '' || inPage == 'onibus') { %> class="active" <% } %> id="submenu_onibus"><a href="#onibus" onclick="javascript:submenu('onibus')">Ônibus</i></a></li>
+          <li <% if (inPage == 'rota') { %> class="active" <% } %> id="submenu_rotas"><a href="#rotas" onclick="javascript:submenu('rotas')">Rotas</a></li>
+          <li <% if (inPage == 'pontoonibus') { %> class="active" <% } %> id="submenu_pontoonibus"><a href="#pontoonibus" onclick="javascript:submenu('pontoonibus')">Pontos de Ônibus</a></li>
+          <li <% if (inPage == 'fugarota') { %> class="active" <% } %> id="submenu_fugarotas"><a href="#fugarotas" onclick="javascript:submenu('fugarotas')">Fugas de Rotas</a></li>
+          <li <% if (inPage == 'horario') { %> class="active" <% } %> id="submenu_horarios"><a href="#horarios" onclick="javascript:submenu('horarios')">Horários</a></li>
         </ul>
       </div>
 
       <!--Body content-->
       <div class="span9" id="body_content" style="margin-left: 100px">
-        <div id="body_content_onibus">
+        <div <% if (inPage == '' || inPage == 'onibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_onibus">
             <h2 class="text-center">Ônibus</h2><br>
 
             <% if (onibus.length == 0) { %>
@@ -256,7 +256,7 @@
             <% } %>
         </div>
 
-        <div class="hide" id="body_content_rotas">
+        <div <% if (inPage == 'rota') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_rotas">
             <h2 class="text-center">Rotas</h2><br>
 
             <% if (rotas.length == 0) { %>
@@ -284,7 +284,7 @@
                             <% } %>
                         <% } %>
                         </div></td>
-                        
+
                         <td><div align="center">
                             <form action="removerRota" method="POST">
                                 <input type="hidden" name="idRota" id="idRota" value=<%= rotas[i].id_rota %>>
@@ -298,12 +298,16 @@
 
             <% } %>
 
+            <br><hr><br>
+
             <h3 class="text-center">Adicionar Rota de Ônibus</h3> <br>
 
             <form id="rotaOnibusForm" class="form-horizontal" onsubmit="return adicionarRotaOnibus()" method="POST" action="adicionarRotaOnibus">
               <div class="control-group">
                 <label class="control-label" for="novaRota">Nome</label>
+                <div class="controls">
                     <input type="text" id="novaRota" name="novaRota" placeholder="Nova Rota">
+                </div>
                 <div id="errorNovaRota"></div>
               </div>
               <div class="control-group">
@@ -326,12 +330,14 @@
 
               <div class="control-group">
                 <div class="controls">
-                  <button class="submit btn" type="submit">Adicionar nova rota</button>
+                  <button class="submit btn" type="submit">Adicionar nova Rota</button>
                 </div>
               </div>
             </form>
 
-            <h3 class="text-center">Adicionar um ponto a uma rota</h3> <br>
+            <br><hr><br>
+
+            <h3 class="text-center">Adicionar Ponto de Ônibus à Rota</h3> <br>
 
             <form id="rotaPontosForm" class="form-horizontal" onsubmit="return adicionarPontoRota()" method="POST" action="adicionarPontoRota">
               <div class="control-group">
@@ -345,9 +351,9 @@
                 </div>
               </div>
               <div class="control-group">
-               <label class="control-label" for="pontoAnterior">Ponto de ônibus anterior</label>
+               <label class="control-label" for="pontoAnterior">Ponto de Ônibus anterior</label>
                 <div class="controls">
-                    <select name="pontoAnterior" id="pontoAnterior">Ponto de ônibus anterior
+                    <select name="pontoAnterior" id="pontoAnterior">Ponto de Ônibus anterior
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
                             <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
                         <% } %>
@@ -355,9 +361,9 @@
                 </div>
               </div>
               <div class="control-group">
-               <label class="control-label" for="pontoNovo">Ponto de ônibus a ser adicionado</label>
+               <label class="control-label" for="pontoNovo">Ponto de Ônibus a ser adicionado</label>
                 <div class="controls">
-                    <select name="pontoNovo" id="pontoNovo">Ponto de ônibus a ser adicionado
+                    <select name="pontoNovo" id="pontoNovo">Ponto de Ônibus a ser adicionado
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
                             <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
                         <% } %>
@@ -365,9 +371,9 @@
                 </div>
               </div>
               <div class="control-group">
-               <label class="control-label" for="pontoPosterior">Ponto de ônibus posterior</label>
+               <label class="control-label" for="pontoPosterior">Ponto de Ônibus posterior</label>
                 <div class="controls">
-                    <select name="pontoPosterior" id="pontoPosterior">Ponto de ônibus posterior
+                    <select name="pontoPosterior" id="pontoPosterior">Ponto de Ônibus posterior
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
                             <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
                         <% } %>
@@ -377,7 +383,7 @@
 
               <div class="control-group">
                 <div class="controls">
-                  <button class="submit btn" type="submit">Adicionar novo ponto a rota</button>
+                  <button class="submit btn" type="submit">Adicionar novo Ponto a Rota</button>
                 </div>
               </div>
             </form>
@@ -386,7 +392,7 @@
 
         </div>
 
-        <div class="hide" id="body_content_pontoonibus">
+        <div <% if (inPage == 'pontoonibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_pontoonibus">
             <h2 class="text-center">Pontos de Ônibus</h2><br>
 
             <% if (pontoonibus.length == 0) { %>
@@ -457,7 +463,7 @@
             </form>
         </div>
 
-        <div class="hide" id="body_content_fugarotas">
+        <div <% if (inPage == 'fugarota') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_fugarotas">
             <h2 class="text-center">Fugas em Aberto</h2><br>
 
             <% if (fugarota.length == 0) { %>
@@ -531,7 +537,7 @@
             <% } %>
         </div>
 
-        <div class="hide" id="body_content_horarios">
+        <div <% if (inPage == 'horario') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_horarios">
             <h2 class="text-center">Horários de Ônibus</h2><br>
 
             <% if (horarios.length == 0) { %>
@@ -672,7 +678,6 @@
                 </form>
             <% } %>
         </div>
-
       </div>
     </div>
 </body>
