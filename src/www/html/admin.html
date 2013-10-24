@@ -452,6 +452,33 @@
                 </div>
               </div>
             </form>
+            <table class="table">
+                <thead>
+                <% for (var i = 0; i < rotas.length; i++) { %>
+                  <tr>
+                      <td><div align="center"><b>Nome da Rota</b></div></td>
+                      <td><div align="center"><b>ID do ponto</b></div></td>
+                      <td><div align="center"><b>Remover</b></div></td>
+                  </tr>
+                  </thead>
+                  <% for (var j = 0; j < pontoonibusrota.length; j++) { %>
+                      <tr>
+                      <td><div align="center"><%= rotas[i].nome %></div></td>
+                     
+                          <td><div align="center"><%= pontoonibusrota[j].id_pontoonibus %></div></td>
+                          <td><div align="center">
+                              <form action="removerPontoRota" method="POST">
+                                  <input type="hidden" name="idPonto" id="idPonto" value=<%= pontoonibusrota[j].id_pontoonibus %>>
+                                  <input type="hidden" name="nomeRota" id="nomeRota" value=<%= rotas[i].nome %>>
+                                  <input type="hidden" name="idRota" id="idRota" value=<%= rotas[i].id_rota %>>
+                                  <button class="btn btn-mini btn-link" type="submit"><i class="icon-remove"></i></button>
+                              </form>
+                              </div>
+                          </td>
+                      </tr>
+                  <% } %>
+                </table>
+                <% } %>
         </div>
 
         <div <% if (inPage == 'pontoonibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_pontoonibus">

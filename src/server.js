@@ -185,8 +185,90 @@ server.post('/removerRota',function(req,res) {
                             res.redirect('/admin');
                         } else {
                             req.flash('page', 'rota');
-                            req.flash('success', 'Rota removidoa com sucesso.');
+                            req.flash('success', 'Rota removida com sucesso.');
                             res.redirect('/admin');
+                        }
+                    });
+                }
+            });
+        }
+    });
+});
+
+//Remover o ponto de uma rota de ônibus
+server.post('/removerPontoRota',function(req,res) {
+    var idPonto = req.body.idPonto;
+    var nomeRota = req.body.nomeRota;
+    var idRota = req.body.idRota;
+    var anterior = "";
+    var proximo = "";
+
+
+    var verificaPrimeiro = "SELECT * FROM Rota WHERE first_pontoonibus = '" + idPonto + "' AND nome = '" + nomeRota + "';";
+    var pegaAnterior = "SELECT id_pontoonibus FROM PontoOnibus_Rota WHERE next_id_pontoonibus = '" + idPonto + "' AND id_rota = '" + idRota + "';";
+    var pegaProximo = "SELECT next_id_pontoonibus FROM PontoOnibus_Rota WHERE id_pontoonibus = '"+ idPonto + "' AND id_rota = '" + idRota + "';";
+    var atualiza ;"UPDATE PontoOnibus_Rota SET next_id_pontoonibus = '" + proximo + "' WHERE id_pontoonibus = '" + anterior + "' AND id_rota = '" + idRota + "';";
+    var deleteEmPontoRota = "DELETE FROM PontoOnibus_Rota WHERE id_pontoonibus = '" + idPonto + "';";
+ 
+    client.query (verificaPrimeiro, function(err1, result1) {
+        if (result1.rowCount ==1 ) {
+            req.flash('page', 'rota');
+            req.flash('error', "Este ponto é o inicial e não pode ser deletado");
+            res.redirect('/admin');
+        } else {
+            client.query (pegaAnterior, function(err2, result2) {
+                if (err2) {
+                    console.log("erro2");
+                    req.flash('page', 'rota');
+                    req.flash('error', err2);
+                    res.redirect('/admin');
+                } else {
+                    anterior = result2.rows[0].id_pontoonibus.toString();
+                    client.query (pegaProximo, function(err3, result3) {
+                        if (err3) {
+                            console.log("erro3");
+                            req.flash('page', 'rota');
+                            req.flash('error', err3);
+                            res.redirect('/admin');
+                        } else {   
+                            proximo = result3.rows[0].next_id_pontoonibus.toString();
+                            /*console.log(typeof anterior);
+                            console.log(typeof proximo);*/
+                            atualiza = "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = '" + proximo + "' WHERE id_pontoonibus = '" + anterior + "' AND id_rota = '" + idRota + "';"; 
+                            client.query (atualiza, function(err4, result4) {
+                                if (err4) {
+                                    if(err4 == 'error: duplicate key value violates unique constraint "pontoonibus_rota_pk"'){
+                                        client.query ("DELETE FROM PontoOnibus_Rota WHERE id_pontoonibus = '" + idPonto + "' AND id_rota = '" + idRota + "';", function(err5, result5) {
+                                            if (err5) {
+                                                console.log("erro5");
+                                                console.log(err5);
+                                                req.flash('page', 'rota');
+                                                req.flash('error', err5);
+                                                res.redirect('/admin');
+                                            } else {   
+                                                req.flash('page', 'rota');
+                                                req.flash('success', 'Ponto removido da Rota com sucesso.');
+                                                res.redirect('/admin');
+                                            }
+                                        });      
+                                    }
+                                    
+                                } else {  
+                                    client.query (deleteEmPontoRota, function(err6, result6) {
+                                        if (err6) {
+                                            console.log("erro5");
+                                            console.log(err6);
+                                            req.flash('page', 'rota');
+                                            req.flash('error', err6);
+                                            res.redirect('/admin');
+                                        } else {   
+                                            req.flash('page', 'rota');
+                                            req.flash('success', 'Ponto removido da Rota com sucesso.');
+                                            res.redirect('/admin');
+                                        }
+                                    });
+                                }
+                            });
                         }
                     });
                 }
@@ -208,7 +290,6 @@ server.post('/adicionarPontoRota', function(req, res) {
     client.query(atualiza, function(err, result) {
         if (err) {
             var msgErro = "";
-            // console.log(err);
             if (err == 'error: next_id_pontoonibus not in rota') {
                 msgErro = "O ponto a frente está fora da rota da linha";
             }
