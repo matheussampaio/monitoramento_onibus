@@ -37,6 +37,6 @@ class JViewsTest(unittest.TestCase):
 
     def testFLastlocalization(self):
         self.cur.execute("SELECT * FROM lastLocalization;")
-        self.assertEqual(self.cur.statusmessage, "SELECT 0")
+        self.assertEqual(self.cur.statusmessage, "SELECT 3")
 
  
