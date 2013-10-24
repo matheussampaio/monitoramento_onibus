@@ -48,15 +48,7 @@ class OnibusTest(unittest.TestCase):
 					self.cur.execute(self.dadosFalhos)
 				except:
 					self.assertFalse(False)
-
-		def testADropTable(self):
-			self.cur.execute("DROP TABLE Onibus CASCADE;")
-			self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 			
 		def testCCreateEnum(self):
 			self.cur.execute("CREATE TYPE status AS ENUM ('normal', 'atrasado', 'adiantado', 'garagem', 'indeterminado');")
 			self.assertEqual(self.cur.statusmessage, "CREATE TYPE")
-		
-		def testBDropEnum(self):
-			self.cur.execute("DROP TYPE status;")
-			self.assertEqual(self.cur.statusmessage, "DROP TYPE")

@@ -48,7 +48,3 @@ class LocalizationTest(unittest.TestCase):
                 self.cur.execute(self.dadosFalhos)
             except:
                 self.assertTrue(True)
-
-    def testADropTable(self):
-        self.cur.execute("DROP TABLE Localization CASCADE;")
-        self.assertEqual(self.cur.statusmessage, "DROP TABLE")

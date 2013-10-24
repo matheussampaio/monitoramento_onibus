@@ -52,9 +52,5 @@ class PontoOnibusTest(unittest.TestCase):
                 self.cur.execute(self.dadosFalhos)
             except:
                 self.assertFalse(False)
-
-    def testADropTable(self):
-        self.cur.execute("DROP TABLE PontoOnibus CASCADE;")
-        self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 			
 		

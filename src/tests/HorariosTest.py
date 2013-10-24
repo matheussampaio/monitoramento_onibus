@@ -48,7 +48,3 @@ class HorariosTest(unittest.TestCase):
                 self.cur.execute(self.dadosFalhos)
             except:
                 self.assertTrue(True)
-
-    def testADropTable(self):
-        self.cur.execute("DROP TABLE Horario CASCADE;")
-        self.assertEqual(self.cur.statusmessage, "DROP TABLE")
