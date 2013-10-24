@@ -196,23 +196,48 @@
             <li><a href="./home">Home</a></li>
             <li><a href="./horarios">Horários</a></li>
             <li class="active"><a href="./admin">Administração</a></li>
+            <li><a href="#Sobre" role="button" data-toggle="modal">Sobre</a></li>
           </ul>
         </div>
       </div>
     </div>
 
+    <!-- Modal -->
+    <div id="Sobre" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="sobreLabel" aria-hidden="true">
+        <div class="modal-header">
+            <h3 id="sobreLabel">Sobre</h3>
+        </div>
+        <div class="modal-body">
+            <h4 align="center">Monitoramento de Ônibus</h4>
+            <p align="center">Sistema para monitorar transportes públicos baseado em localização.</p>
+            <br>
+            <p>Desenvolvedores:</p>
+            <ul>
+                <li><a href="https://github.com/matheussampaio" target="_blank">@matheussampaio</a></li>
+                <li><a href="https://github.com/pherivelton" target="_blank">@pherivelton</a></li>
+                <li><a href="https://github.com/RaiffRamalho" target="_blank">@RaiffRamalho</a></li>
+                <li><a href="https://github.com/WesleyBrenno" target="_blank">@WesleyBrenno</a></li>
+            </ul>
+
+            <p align="center"><a href="https://github.com/matheussampaio/monitoramento_onibus" target="_blank">GitHub</a></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+        </div>
+    </div>
+
     <div class="row">
         <!-- Header Content -->
-      <div class="row-fluid">
-        <div class="span12 center" id="header_messages" style="padding: 50px">
-            <% if (messageSuccess.length > 0) { %>
-                <div class="alert alert-success text-center"><button type="button" class="close" data-dismiss="alert">&times;</button><%= messageSuccess %></div>
-            <% } %>
-            <% if (messageError.length > 0) { %>
-                <div class="alert alert-error text-center"><button type="button" class="close" data-dismiss="alert">&times;</button><%= messageError %></div>
-            <% } %>
+        <div class="row-fluid">
+            <div class="span12 center" id="header_messages" style="padding: 50px">
+                <% if (messageSuccess.length > 0) { %>
+                    <div class="alert alert-success text-center"><button type="button" class="close" data-dismiss="alert">&times;</button><%= messageSuccess %></div>
+                <% } %>
+                <% if (messageError.length > 0) { %>
+                    <div class="alert alert-error text-center"><button type="button" class="close" data-dismiss="alert">&times;</button><%= messageError %></div>
+                <% } %>
+            </div>
         </div>
-      </div>
       <!--Sidebar content-->
       <div class="span3" style="margin-left: 100px; margin-right: 100px">
         <ul class="nav nav-tabs nav-stacked" id="sidebar_content_ul">
