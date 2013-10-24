@@ -25,120 +25,160 @@
     };
 
 
-  function adicionarOnibus() {
-    var isOk = true;
+    function adicionarOnibus() {
+        var isOk = true;
 
-    var placa = document.getElementById("placaOnibusAdicionar").value;
-    var numeroRota = document.getElementById("numeroRota").value;
-    var cont = 0;
+        var placa = document.getElementById("placaOnibusAdicionar").value;
+        var numeroRota = document.getElementById("numeroRota").value;
+        var cont = 0;
 
-    document.getElementById("errorPlaca").innerHTML = "";
-    document.getElementById("errorNumero").innerHTML = "";
+        document.getElementById("errorPlaca").innerHTML = "";
+        document.getElementById("errorNumero").innerHTML = "";
 
-    if (placa.length != 8) {
-    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN</div>';
-    isOk = false;
+        if (placa.length != 8) {
+            document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN</div>';
+            isOk = false;
+        }
+
+        for (var i = 0 ; i < placa.length; i++) {
+            if (cont < 3) {
+                if (!isNaN(placa[i])) {
+                    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa de Ônibus deve iniciar com 3 Letras.</div>';
+                    isOk = false;
+                }
+            } else if (cont == 3) {
+                if (placa[i] != "-") {
+                    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN.</div>';
+                    isOk = false;
+                }
+            } else {
+                if (isNaN(placa[i])) {
+                    document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN.</div>';
+                    isOk = false;
+                }
+            }
+
+            cont++;
+        };
+
+        if (numeroRota.length == 0) {
+            document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Número da Rota não pode ser vázio.</div>';
+            isOk = false;
+        } else if (isNaN(numeroRota)) {
+            document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>O número da Rota precisa ser um número.</div>';
+            isOk = false;
+        }
+
+        return isOk;
     }
 
-    for (var i = 0 ; i < placa.length; i++) {
-    if (cont < 3) {
-      if (!isNaN(placa[i])) {
-        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa de Ônibus deve iniciar com 3 Letras.</div>';
-        isOk = false;
-      }
-    } else if (cont == 3) {
-      if (placa[i] != "-") {
-        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN.</div>';
-        isOk = false;
-      }
-    } else {
-      if (isNaN(placa[i])) {
-        document.getElementById("errorPlaca").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Placa deve ter o fomato LLL-NNNN.</div>';
-        isOk = false;
-      }
+    function adicionarPontoOnibus() {
+        var isOk = true;
+
+        var latitude = document.getElementById("latitude").value;
+        var longitude = document.getElementById("longitude").value;
+
+        if (latitude.length == 0) {
+            document.getElementById("errorLatitudePO").innerHTML =  '<div class="alert fade in span6">A latitude não pode ser vázio.</div>';
+            isOk = false;
+        } else if (isNaN(latitude)) {
+            document.getElementById("errorLatitudePO").innerHTML =  '<div class="alert fade in span6">A latitude precisa ser um número.</div>';
+            isOk = false;
+        } else if (longitude.length == 0) {
+            document.getElementById("errorLongitudePO").innerHTML =  '<div class="alert fade in span6">A longitude não pode ser vázio.</div>';
+            isOk = false;
+        } else if (isNaN(longitude)) {
+            document.getElementById("errorLongitudePO").innerHTML =  '<div class="alert fade in span6">A longitude precisa ser um número.</div>';
+            isOk = false;
+        }
+
+        return isOk;
     }
 
-    cont++;
-    };
+    function adicionarRotaOnibus() {
+        var isOk = true;
 
-    if (numeroRota.length == 0) {
-      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>Número da Rota não pode ser vázio.</div>';
-      isOk = false;
-    } else if (isNaN(numeroRota)) {
-      document.getElementById("errorNumero").innerHTML =  '<div class="alert fade in span6"><button type="button" class="close" data-dismiss="alert">&times;</button>O número da Rota precisa ser um número.</div>';
-      isOk = false;
+        var novaRota =document.getElementById("novaRota").value;
+        var coordenadas =document.getElementById("coordenadas").value;
+
+        if (novaRota.length == 0) {
+            document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">Número da Rota não pode ser vázio.</div>';
+            isOk = false;
+        } else if (isNaN(novaRota)) {
+            document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">O número da Rota precisa ser um número.</div>';
+            isOk = false;
+        } else if (coordenadas.length == 0) {
+            document.getElementById("errorCoordenadas").innerHTML =  '<div class="alert fade in span6">A coordenada não pode ser vázia.</div>';
+            isOk = false;
+        }
+
+        return isOk;
     }
 
-    return isOk;
-  }
+    function showHorario() {
+        for (var j=0; j < document.getElementById('horarios_content').children.length; j++) {
+            document.getElementById('horarios_content').children[j].setAttribute("class", "hide");
+        }
 
-  function adicionarPontoOnibus() {
-    var isOk = true;
+        var div = "horarios_" + document.getElementById("horarioSelect").value;
 
-    var latitude = document.getElementById("latitude").value;
-    var longitude = document.getElementById("longitude").value;
-
-    if (latitude.length == 0) {
-      document.getElementById("errorLatitudePO").innerHTML =  '<div class="alert fade in span6">A latitude não pode ser vázio.</div>';
-      isOk = false;
-    } else if (isNaN(latitude)) {
-      document.getElementById("errorLatitudePO").innerHTML =  '<div class="alert fade in span6">A latitude precisa ser um número.</div>';
-      isOk = false;
-    } else if (longitude.length == 0) {
-      document.getElementById("errorLongitudePO").innerHTML =  '<div class="alert fade in span6">A longitude não pode ser vázio.</div>';
-      isOk = false;
-    } else if (isNaN(longitude)) {
-      document.getElementById("errorLongitudePO").innerHTML =  '<div class="alert fade in span6">A longitude precisa ser um número.</div>';
-      isOk = false;
-    }
-    return isOk;
-  }
-
-  function adicionarRotaOnibus() {
-    var isOk = true;
-
-    var novaRota =document.getElementById("novaRota").value;
-    var coordenadas =document.getElementById("coordenadas").value;
-    if (novaRota.length == 0) {
-      document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">Número da Rota não pode ser vázio.</div>';
-      isOk = false;
-    } else if (isNaN(novaRota)) {
-      document.getElementById("errorNovaRota").innerHTML =  '<div class="alert fade in span6">O número da Rota precisa ser um número.</div>';
-      isOk = false;
-    } else if (coordenadas.length == 0) {
-      document.getElementById("errorCoordenadas").innerHTML =  '<div class="alert fade in span6">A coordenada não pode ser vázia.</div>';
-      isOk = false;
+        document.getElementById(div).setAttribute("class", "table");
     }
 
-    return isOk;
-  }
+    function remLinhaHorario() {
+        var container = document.getElementById("tableAdcHorario").children[1];
 
-  function showHorario() {
-    for (var j=0; j < document.getElementById('horarios_content').children.length; j++) {
-        document.getElementById('horarios_content').children[j].setAttribute("class", "hide");
-    }
-    var div = "horarios_" + document.getElementById("horarioSelect").value;
-
-    document.getElementById(div).setAttribute("class", "table");
-  }
-
-  function remLinhaHorario() {
-    var container = document.getElementById("tableAdcHorario").children[1];
-
-    if (container.children.length > 1) {
-        container.removeChild(container.lastChild);
+        if (container.children.length > 1) {
+            container.removeChild(container.lastChild);
+        }
     }
 
-  }
+    function adcLinhaHorario() {
+        var container = document.getElementById("tableAdcHorario");
 
-  function adcLinhaHorario() {
-    var container = document.getElementById("tableAdcHorario");
+        var index = container.children[1].children.length + 1;
 
-    var index = container.children[1].children.length + 1;
+        var row = container.insertRow(-1);
+        row.innerHTML = "<td><div align='center'><select name='idAdcPontoOnibus" + index + "' id='idAdcPontoOnibus" + index + "'><% for (var i = 0; i < pontoonibus.length; i++) { %><option value='<%= pontoonibus[i].id_pontoonibus %>'><%= pontoonibus[i].id_pontoonibus %></option><% } %></select></div></td><td><div align='center'><input type='time' id='tempoAdcHorario" + index + "' name='tempoAdcHorario" + index + "' placahold='Horário' required></div></td>";
+    }
 
-    var row = container.insertRow(-1);
-    row.innerHTML = "<td><div align='center'><select name='idAdcPontoOnibus" + index + "' id='idAdcPontoOnibus" + index + "'><% for (var i = 0; i < pontoonibus.length; i++) { %><option value='<%= pontoonibus[i].id_pontoonibus %>'><%= pontoonibus[i].id_pontoonibus %></option><% } %></select></div></td><td><div align='center'><input type='time' id='tempoAdcHorario" + index + "' name='tempoAdcHorario" + index + "' placahold='Horário' required></div></td>";
-  }
+    var page = 0;
+
+    function nextPageFugaRota() {
+        if (document.getElementById("pageNextFugaRota").className.indexOf("disabled") == -1) {
+            document.getElementById("horariospage_" + page).setAttribute("class", "table hide");
+
+            page += 10;
+
+            document.getElementById("horariospage_" + page).setAttribute("class", "table");
+
+            var next = document.getElementById("horariospage_" + (page + 10));
+
+            if (!next) {
+                document.getElementById("pageNextFugaRota").setAttribute("class", "next disabled");
+            }
+
+            document.getElementById("pagePreviousFugaRota").setAttribute("class", "previous");
+        }
+    }
+
+    function previousPageFugaRota() {
+        if (document.getElementById("pagePreviousFugaRota").className.indexOf("disabled") == -1) {
+            document.getElementById("horariospage_" + page).setAttribute("class", "table hide");
+
+            page -= 10;
+
+            document.getElementById("horariospage_" + page).setAttribute("class", "table");
+
+            var previous = document.getElementById("horariospage_" + (page - 10));
+
+            if (!previous) {
+                document.getElementById("pagePreviousFugaRota").setAttribute("class", "previous disabled");
+            }
+
+            document.getElementById("pageNextFugaRota").setAttribute("class", "next");
+        }
+    }
 
   </script>
 </head>
@@ -387,9 +427,6 @@
                 </div>
               </div>
             </form>
-
-
-
         </div>
 
         <div <% if (inPage == 'pontoonibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_pontoonibus">
@@ -512,27 +549,40 @@
                 <p class="text-center muted bold">Não há nenhuma Fuga de Rota resolvida.</p>
             <% } else { %>
 
-                <table class="table">
-                <thead>
-                <tr>
-                    <td><div align="center"><b>Placa do Ônibus</b></div></td>
-                    <td><div align="center"><b>Inicio da Fuga</b></div></td>
-                    <td><div align="center"><b>Final da Fuga</b></div></td>
-                </tr>
-                </thead>
+                <ul class="pager">
+                  <li id="pagePreviousFugaRota" class="previous disabled">
+                    <a href="#" onclick="javascript:previousPageFugaRota()">&larr; Novos</a>
+                  </li>
+                  <li id="pageNextFugaRota" class="next">
+                    <a href="#" onclick="javascript:nextPageFugaRota()">Antigos &rarr;</a>
+                  </li>
+                </ul>
 
-                <% for (var i = 0; i < fugarotahistorico.length; i++) { %>
+                <% for (var k=0; k < fugarotahistorico.length; k+=10) { %>
+                    <table id="horariospage_<%= k %>" <% if ( k == 0) { %> class="table" <% } else { %> class="table hide" <% } %>>
+                    <thead>
                     <tr>
-                        <td><div align="center"><%= fugarotahistorico[i].placa %></div></td>
-                        <td><div align="center"><%= fugarotahistorico[i].horarioinicio %></div></td>
-                        <% if (!fugarotahistorico[i].horariofinal) { %>
-                            <td><div align="center">-</div></td>
-                        <% } else { %>
-                        <td><div align="center"><%= fugarotahistorico[i].horariofinal %></div></td>
-                        <% } %>
+                        <td><div align="center"><b>Placa do Ônibus</b></div></td>
+                        <td><div align="center"><b>Inicio da Fuga</b></div></td>
+                        <td><div align="center"><b>Final da Fuga</b></div></td>
                     </tr>
+                    </thead>
+
+                    <% for (var i = k; i < k+10; i++) { %>
+                        <% if (fugarotahistorico[i]) { %>
+                        <tr>
+                            <td><div align="center"><%= fugarotahistorico[i].placa %></div></td>
+                            <td><div align="center"><%= fugarotahistorico[i].horarioinicio %></div></td>
+                            <% if (!fugarotahistorico[i].horariofinal) { %>
+                                <td><div align="center">-</div></td>
+                            <% } else { %>
+                            <td><div align="center"><%= fugarotahistorico[i].horariofinal %></div></td>
+                            <% } %>
+                        </tr>
+                        <% } %>
+                    <% } %>
+                    </table>
                 <% } %>
-                </table>
 
             <% } %>
         </div>
