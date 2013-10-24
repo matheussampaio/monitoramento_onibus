@@ -13,37 +13,33 @@ class LDropTablesTest(unittest.TestCase):
         def tearDown(self):
             self.cur.close()
         
-        def testDropTableFugaRota(self):
-            self.cur.execute("DROP TABLE FugaRota CASCADE;")
+        def testCDropTableFugaRota(self):
+            self.cur.execute("DROP TABLE FugaRota;")
             self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 
-        def testDropTableHorario(self):
-            self.cur.execute("DROP TABLE Horario CASCADE;")
+        def testEDropTableHorario(self):
+            self.cur.execute("DROP TABLE Horario;")
             self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 
-        def testDropTableLocalization(self):
+        def testDDropTableLocalization(self):
             self.cur.execute("DROP TABLE Localization CASCADE;")
             self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 
-        def testDropTableOnibus(self):
-            self.cur.execute("DROP TABLE Onibus CASCADE;")
+        def testFDropTableOnibus(self):
+            self.cur.execute("DROP TABLE Onibus;")
             self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 
-        def testDropTablePontoOnibusRota(self):
-            self.cur.execute("DROP TABLE PontoOnibus_Rota CASCADE;")
+        def testBDropTablePontoOnibusRota(self):
+            self.cur.execute("DROP TABLE PontoOnibus_Rota;")
             self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 
-        def testDropTablePontoOnibus(self):
-            self.cur.execute("DROP TABLE PontoOnibus CASCADE;")
+        def testGDropTablePontoOnibus(self):
+            self.cur.execute("DROP TABLE PontoOnibus;")
             self.assertEqual(self.cur.statusmessage, "DROP TABLE")
 
-        def testDropTableRota(self):
+        def testADropTableRota(self):
             self.cur.execute("DROP TABLE Rota CASCADE;")
             self.assertEqual(self.cur.statusmessage, "DROP TABLE")
-
-        def testBDropEnum(self):
-            self.cur.execute("DROP TYPE status;")
-            self.assertEqual(self.cur.statusmessage, "DROP TYPE")
 
 
     
