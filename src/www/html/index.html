@@ -10,7 +10,10 @@
         <script src='http://maps.google.com/maps/api/js?v=3&amp;sensor=false'></script>
         <script src="http://openlayers.org/api/OpenLayers.js"></script>
         <script type="text/javascript">
-        var map, layer_onibus;
+        var map, layer_pontos_onibus, layer_onibus;
+
+        // pink tile avoidance
+        OpenLayers.IMAGE_RELOAD_ATTEMPTS = 10;
 
         var server = "http://192.168.1.244:8080/geoserver/GO/wms";
 
@@ -18,7 +21,7 @@
         var refreshID;
 
         function init() {
-            var layer_pontos_onibus = new OpenLayers.Layer.WMS(
+            layer_pontos_onibus = new OpenLayers.Layer.WMS(
                 "Pontos de Ônibus", server,
                 {layers: 'gonibus:pontoonibus', transparent: "true"},
                 {singleTile: false, isBaseLayer: false, visibility: true}
@@ -27,7 +30,7 @@
             layer_onibus = new OpenLayers.Layer.WMS(
                 "Ônibus", server,
                 {layers: 'gonibus:lastlocalization', transparent: "true"},
-                {singleTile: false, isBaseLayer: false, visibility: true}
+                {singleTile: true, isBaseLayer: false, visibility: true}
                 );
 
 
@@ -42,12 +45,14 @@
 
             layer_googleStr = new OpenLayers.Layer.Google("Google Streets",{numZoomLevels: 20});
 
-            map.addLayers([layer_googleStr, layer_pontos_onibus, layer_onibus]);
+            map.addLayers([layer_googleStr]);
 
             <% for (var i=0; i < result.length; i++) { %>
                 var nomeRota = <%= result[i].nome %>;
                 map.addLayer(new OpenLayers.Layer.WMS("Rota: " + nomeRota, server, {layers: 'gonibus:rota' + nomeRota + 'view', transparent: "true"}, {singleTile: false, isBaseLayer: false, visibility: true}));
             <% } %>
+
+            map.addLayers([layer_pontos_onibus, layer_onibus]);
 
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 
