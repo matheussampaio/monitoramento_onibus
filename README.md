@@ -10,15 +10,11 @@ Configurando o ambiente
 ===================
 
 
-####Instalar o Postgres+Postgis
+####Instalar o PostgreSQL
 
-*TODO*
-
-
-####Configurar o Postgres
-
-*TODO*
-
+```
+sudo apt-get install postgresql-9.1-postgis -q
+```
 
 ####Criando um Banco de Dados Espacial (EN)
 
