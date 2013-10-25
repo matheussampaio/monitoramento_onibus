@@ -256,7 +256,7 @@
 
             <% if (onibus.length == 0) { %>
                 <br>
-                <p class="text-center muted bold">Não há nenhum Ônibus no banco de dados.</p>
+                <p class="text-center muted bold">Não há nenhum Ônibus no Banco de Dados.</p>
             <% } else { %>
 
                 <table class="table">
@@ -290,11 +290,11 @@
 
             <br><hr><br>
 
-            <h3 class="text-center">Adicionar Ônibus</h3> <br>
+            <h2 class="text-center">Adicionar Ônibus</h2> <br>
 
             <% if (rotas.length == 0) { %>
                 <br>
-                <p class="text-center muted bold">Não há nenhuma Rota no banco de dados.</p>
+                <p class="text-center muted bold">Não há nenhuma Rota no Banco de Dados.</p>
             <% } else { %>
                 <form id="onibusForm" class="form-horizontal" onsubmit="return adicionarOnibus()" method="POST" action="adicionarOnibus">
                   <div class="control-group">
@@ -330,7 +330,7 @@
 
             <% if (rotas.length == 0) { %>
                 <br>
-                <p class="text-center muted bold">Não há nenhuma Rota no banco de dados.</p>
+                <p class="text-center muted bold">Não há nenhuma Rota no Banco de Dados.</p>
             <% } else { %>
 
                 <table class="table">
@@ -369,7 +369,12 @@
 
             <br><hr><br>
 
-            <h3 class="text-center">Adicionar Rota de Ônibus</h3> <br>
+            <h2 class="text-center">Adicionar Rota de Ônibus</h2> <br>
+
+            <% if (pontoonibus.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhum Ponto de Ônibus no Banco de Dados.</p>
+            <% } else { %>
 
             <form id="rotaOnibusForm" class="form-horizontal" onsubmit="return adicionarRotaOnibus()" method="POST" action="adicionarRotaOnibus">
               <div class="control-group">
@@ -404,11 +409,16 @@
               </div>
             </form>
 
+            <% } %>
+
             <br><hr><br>
 
-            <h3 class="text-center">Adicionar Ponto de Ônibus à Rota</h3>
+            <h2 class="text-center">Adicionar Ponto de Ônibus à Rota</h2> <br>
 
-            <br>
+            <% if (pontoonibus.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhum Ponto de Ônibus no Banco de Dados.</p>
+            <% } else { %>
 
             <form id="rotaPontosForm" class="form-horizontal" onsubmit="return adicionarPontoRota()" method="POST" action="adicionarPontoRota">
               <div class="control-group">
@@ -458,6 +468,18 @@
                 </div>
               </div>
             </form>
+
+            <% } %>
+
+            <br><hr><br>
+
+            <h2 class="text-center">Remover Ponto de Ônibus de uma Rota</h2> <br>
+
+            <% if (rotas.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhuma Rota no Banco de Dados.</p>
+            <% } else { %>
+
             <table class="table">
                 <thead>
                 <% for (var i = 0; i < rotas.length; i++) { %>
@@ -470,7 +492,6 @@
                   <% for (var j = 0; j < pontoonibusrota.length; j++) { %>
                       <tr>
                       <td><div align="center"><%= rotas[i].nome %></div></td>
-                     
                           <td><div align="center"><%= pontoonibusrota[j].id_pontoonibus %></div></td>
                           <td><div align="center">
                               <form action="removerPontoRota" method="POST">
@@ -485,6 +506,9 @@
                   <% } %>
                 <% } %>
             </table>
+
+            <% } %>
+
         </div>
 
         <div <% if (inPage == 'pontoonibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_pontoonibus">
@@ -492,7 +516,7 @@
 
             <% if (pontoonibus.length == 0) { %>
                 <br>
-                <p class="text-center muted bold">Não há nenhum Ponto de Ônibus no banco de dados.</p>
+                <p class="text-center muted bold">Não há nenhum Ponto de Ônibus no Banco de Dados.</p>
             <% } else { %>
 
                 <table class="table">
@@ -529,7 +553,7 @@
 
             <br><hr><br>
 
-            <h3 class="text-center">Criar Ponto de Ônibus</h3> <br>
+            <h2 class="text-center">Criar Ponto de Ônibus</h2> <br>
 
             <form id="pontoOnibusForm" class="form-horizontal" onsubmit="return adicionarPontoOnibus()" method="POST" action="adicionarPontoOnibus">
               <div class="control-group">
