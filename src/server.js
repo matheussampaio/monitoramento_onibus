@@ -278,19 +278,16 @@ server.post('/adicionarPontoRota', function(req, res) {
     var pontoNovo = req.body.pontoNovo;
     var pontoAnterior = req.body.pontoAnterior;
     var pontoPosterior = req.body.pontoPosterior;
-    //AND next_id_pontoonibus = " + pontoPosterior + "
     var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'AND next_id_pontoonibus = " + pontoPosterior + ");";
 
     client.query(atualiza, function(err1, result1) {
         if (err1) {
             var msgErro = "";
-            console.log(err1);
             if (err1 == 'error: next_id_pontoonibus not in rota') {
                 msgErro = "O novo ponto está fora da rota";
             } else {
                 msgErro = err1.detail;
             }
-
             req.flash('page', 'rota');
             req.flash('error', msgErro);
             res.redirect('/admin');
