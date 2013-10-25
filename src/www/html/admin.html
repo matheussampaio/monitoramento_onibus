@@ -395,7 +395,7 @@
                 <div class="controls">
                     <select name="pontoInicial" id="pontoInicial">Ponto de ônibus
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
-                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %>: <%= pontoonibus[i].nome %></option>
                         <% } %>
                     </select>
                 </div>
@@ -438,7 +438,7 @@
                 <div class="controls">
                     <select name="pontoAnterior" id="pontoAnterior">Ponto de Ônibus anterior
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
-                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %>: <%= pontoonibus[i].nome %></option>
                         <% } %>
                     </select>
                 </div>
@@ -448,7 +448,7 @@
                 <div class="controls">
                     <select name="pontoNovo" id="pontoNovo">Ponto de Ônibus a ser adicionado
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
-                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %>: <%= pontoonibus[i].nome %></option>
                         <% } %>
                     </select>
                 </div>
@@ -458,7 +458,7 @@
                 <div class="controls">
                     <select name="pontoPosterior" id="pontoPosterior">Ponto de Ônibus posterior
                         <% for (var i = 0; i < pontoonibus.length; i++) { %>
-                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %></option>
+                            <option value="<%= pontoonibus[i].id_pontoonibus %>"><%= pontoonibus[i].id_pontoonibus %>: <%= pontoonibus[i].nome %></option>
                         <% } %>
                     </select>
                 </div>
