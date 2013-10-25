@@ -68,79 +68,84 @@
             <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
         </div>
     </div>
-    
-  <div class="row">
 
-    <!--Sidebar content-->
-    <div class="span3" style="padding: 100px" id="sidebar_content">
-        <ul class="nav nav-tabs nav-stacked" id="sidebar_content_ul">
+  <div class="row">
+    <% if ( result.length == 0 ) { %>
+        <br>
+        <p class="text-center muted bold" style="padding: 100px">Não há nenhum Horário no Banco de Dados.</p>
+    <% } else { %>
+
+        <!--Sidebar content-->
+        <div class="span3" style="padding: 100px" id="sidebar_content">
+            <ul class="nav nav-tabs nav-stacked" id="sidebar_content_ul">
+              <% for (var i=0; i < result.length; i++ ) { %>
+                <% if (i == 0) { %>
+                    <% var prev = result[i].nome; %>
+                    <li class="active" id="submenu_<%= result[i].nome %>"><a href="#<%= result[i].nome %>" onclick="javascript:submenu(<%= result[i].nome %>)">Linha <%= result[i].nome %></i></a></li>
+                <% } else if (prev != result[i].nome) { %>
+                    <% prev = result[i].nome; %>
+                    <li id="submenu_<%= result[i].nome %>"><a href="#<%= result[i].nome %>" onclick="javascript:submenu(<%= result[i].nome %>)">Linha <%= result[i].nome %></a></li>
+                <% } %>
+              <% } %>
+            </ul>
+        </div>
+
+        <!--Body content-->
+        <div class="span9" style="padding: 100px" id="body_content">
+
           <% for (var i=0; i < result.length; i++ ) { %>
             <% if (i == 0) { %>
                 <% var prev = result[i].nome; %>
-                <li class="active" id="submenu_<%= result[i].nome %>"><a href="#<%= result[i].nome %>" onclick="javascript:submenu(<%= result[i].nome %>)">Linha <%= result[i].nome %></i></a></li>
+                <table class="table" id="horarios_<%= result[i].nome %>">
+                  <!-- Cabeçalho -->
+                  <thead>
+                  <tr>
+                    <td><div align="center"><b>Placa do Ônibus</b></div></td>
+                    <td><div align="center"><b>Ponto de Ônibus</b></div></td>
+                    <td><div align="center"><b>Horário de Chegada</b></div></td>
+                  <tr>
+                  </thead>
+
+                  <tbody>
+                  <% for (var j=0; j < result.length; j++) { %>
+                    <% if (prev == result[j].nome) { %>
+                    <tr>
+                        <td><div align="center"><%= result[j].placa %></div></td>
+                        <td><div align="center"><%= result[j].id_pontoonibus %></div></td>
+                        <td><div align="center"><%= result[j].tempo %></div></td>
+                    </tr>
+                    <% } %>
+                  <% } %>
+                  </tbody>
+                </table>
+
             <% } else if (prev != result[i].nome) { %>
                 <% prev = result[i].nome; %>
-                <li id="submenu_<%= result[i].nome %>"><a href="#<%= result[i].nome %>" onclick="javascript:submenu(<%= result[i].nome %>)">Linha <%= result[i].nome %></a></li>
+                <table class="table hide" id="horarios_<%= result[i].nome %>">
+                  <!-- Cabeçalho -->
+                  <thead>
+                    <tr>
+                      <td><div align="center"><b>Placa do Ônibus</b></div></td>
+                      <td><div align="center"><b>Ponto de Ônibus</b></div></td>
+                      <td><div align="center"><b>Horário de Chegada</b></div></td>
+                    <tr>
+                  </thead>
+                  <tbody>
+                  <% for (var j=0; j < result.length; j++) { %>
+                    <% if (prev == result[j].nome) { %>
+                    <tr>
+                        <td><div align="center"><%= result[j].placa %></div></td>
+                        <td><div align="center"><%= result[j].id_pontoonibus %></div></td>
+                        <td><div align="center"><%= result[j].tempo %></div></td>
+                    </tr>
+                    <% } %>
+                  <% } %>
+                  </tbody>
+                </table>
             <% } %>
           <% } %>
-        </ul>
-    </div>
-
-    <!--Body content-->
-    <div class="span9" style="padding: 100px" id="body_content">
-
-      <% for (var i=0; i < result.length; i++ ) { %>
-        <% if (i == 0) { %>
-            <% var prev = result[i].nome; %>
-            <table class="table" id="horarios_<%= result[i].nome %>">
-              <!-- Cabeçalho -->
-              <thead>
-              <tr>
-                <td><div align="center"><b>Placa do Ônibus</b></div></td>
-                <td><div align="center"><b>Ponto de Ônibus</b></div></td>
-                <td><div align="center"><b>Horário de Chegada</b></div></td>
-              <tr>
-              </thead>
-
-              <tbody>
-              <% for (var j=0; j < result.length; j++) { %>
-                <% if (prev == result[j].nome) { %>
-                <tr>
-                    <td><div align="center"><%= result[j].placa %></div></td>
-                    <td><div align="center"><%= result[j].id_pontoonibus %></div></td>
-                    <td><div align="center"><%= result[j].tempo %></div></td>
-                </tr>
-                <% } %>
-              <% } %>
-              </tbody>
-            </table>
-
-        <% } else if (prev != result[i].nome) { %>
-            <% prev = result[i].nome; %>
-            <table class="table hide" id="horarios_<%= result[i].nome %>">
-              <!-- Cabeçalho -->
-              <thead>
-                <tr>
-                  <td><div align="center"><b>Placa do Ônibus</b></div></td>
-                  <td><div align="center"><b>Ponto de Ônibus</b></div></td>
-                  <td><div align="center"><b>Horário de Chegada</b></div></td>
-                <tr>
-              </thead>
-              <tbody>
-              <% for (var j=0; j < result.length; j++) { %>
-                <% if (prev == result[j].nome) { %>
-                <tr>
-                    <td><div align="center"><%= result[j].placa %></div></td>
-                    <td><div align="center"><%= result[j].id_pontoonibus %></div></td>
-                    <td><div align="center"><%= result[j].tempo %></div></td>
-                </tr>
-                <% } %>
-              <% } %>
-              </tbody>
-            </table>
-        <% } %>
-      <% } %>
-    </div>
+        </div>
+    <% } %>
 
 </body>
 </html>
