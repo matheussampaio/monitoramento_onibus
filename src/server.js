@@ -282,8 +282,6 @@ server.post('/adicionarPontoRota', function(req, res) {
 
     var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "') AND next_id_pontoonibus = " + pontoPosterior + ";";
 
-    console.log(atualiza);
-
     client.query(atualiza, function(err1, result1) {
         if (err1) {
             var msgErro = "";
@@ -298,49 +296,35 @@ server.post('/adicionarPontoRota', function(req, res) {
             res.redirect('/admin');
         } else  {
             if (result1.rowCount == 0) {
-                // console.log(result);
                 req.flash('page', 'rota');
                 req.flash('error', "Caminho de " + pontoAnterior + " para " + pontoPosterior + " não pertence a Rota.");
                 res.redirect('/admin');
             } else {
-                // if ( pontoAnterior == pontoPosterior ) {
-                //         var verifica = "SELECT * FROM PontoOnibus_Rota";
-                //         client.query(verifica, function(err, result){
-                //             if (result.rowCount > 1) {
-                //                 req.flash('page', 'rota');
-                //                 req.flash('error', "Selecione o ponto anterior e o posterior diferentes");
-                //                 res.redirect('/admin');
-                //             }
-                //         });
-
-                // } else {
-
-                    var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
-                    client.query(inserir, function(err2, result2) {
-                        if (err2) {
-                            var msgErro = "";
-                            if (err2 == 'error: null value in column "id_rota" violates not-null constraint') {
-                                msgErro = "Esta linha não está cadastrada";
-                            } else if (err2 == 'error: id_pontoonibus not in rota') {
-                                msgErro = "Este ponto está fora da rota da linha";
-                            } else if (err2 == 'error: next_id_pontoonibus not in rota') {
-                                msgErro = "O ponto a frente está fora da rota da linha";
-                            } else if (err2 == 'error: duplicate key value violates unique constraint "pontoonibus_rota_pk"') {
-                                msgErro = "Já existe essta sequência na roda de ônibus";
-                            } else {
-                                msgErro = err2.detail;
-                            }
-                            req.flash('page', 'rota');
-                            req.flash('error', msgErro);
-                            res.redirect('/admin');
+                var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
+                client.query(inserir, function(err2, result2) {
+                    if (err2) {
+                        var msgErro = "";
+                        if (err2 == 'error: null value in column "id_rota" violates not-null constraint') {
+                            msgErro = "Esta linha não está cadastrada";
+                        } else if (err2 == 'error: id_pontoonibus not in rota') {
+                            msgErro = "Este ponto está fora da rota da linha";
+                        } else if (err2 == 'error: next_id_pontoonibus not in rota') {
+                            msgErro = "O ponto a frente está fora da rota da linha";
+                        } else if (err2 == 'error: duplicate key value violates unique constraint "pontoonibus_rota_pk"') {
+                            msgErro = "Já existe essta sequência na roda de ônibus";
                         } else {
-                            req.flash('page', 'rota');
-                            req.flash('success', 'Rota adicionada com sucesso.');
-                            res.redirect('/admin');
+                            msgErro = err2.detail;
                         }
+                        req.flash('page', 'rota');
+                        req.flash('error', msgErro);
+                        res.redirect('/admin');
+                    } else {
+                        req.flash('page', 'rota');
+                        req.flash('success', 'Rota adicionada com sucesso.');
+                        res.redirect('/admin');
+                    }
 
-                    });
-                // }
+                });
             }
         }
     });
