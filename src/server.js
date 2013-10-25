@@ -272,27 +272,27 @@ server.post('/removerPontoRota',function(req,res) {
     });
 });
 
-
 //recebe dados para adicionar um ponto a uma rota
 server.post('/adicionarPontoRota', function(req, res) {
     var numeroRota = req.body.numeroRota;
     var pontoNovo = req.body.pontoNovo;
     var pontoAnterior = req.body.pontoAnterior;
     var pontoPosterior = req.body.pontoPosterior;
-
-    var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "') AND next_id_pontoonibus = " + pontoPosterior + ";";
+    //AND next_id_pontoonibus = " + pontoPosterior + "
+    var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'AND next_id_pontoonibus = " + pontoPosterior + ");";
 
     client.query(atualiza, function(err1, result1) {
         if (err1) {
             var msgErro = "";
-            if (err == 'error: next_id_pontoonibus not in rota') {
-                msgErro = "O ponto a frente está fora da rota da linha";
+            console.log(err1);
+            if (err1 == 'error: next_id_pontoonibus not in rota') {
+                msgErro = "O novo ponto está fora da rota";
             } else {
-                msgError = err.detail;
+                msgErro = err1.detail;
             }
 
             req.flash('page', 'rota');
-            req.flash('error', msgError);
+            req.flash('error', msgErro);
             res.redirect('/admin');
         } else  {
             if (result1.rowCount == 0) {
@@ -320,7 +320,7 @@ server.post('/adicionarPontoRota', function(req, res) {
                         res.redirect('/admin');
                     } else {
                         req.flash('page', 'rota');
-                        req.flash('success', 'Rota adicionada com sucesso.');
+                        req.flash('success', 'Ponto adicionado a Rota com sucesso.');
                         res.redirect('/admin');
                     }
 
