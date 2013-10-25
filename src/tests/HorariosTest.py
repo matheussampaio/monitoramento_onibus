@@ -22,7 +22,7 @@ class EHorariosTest(unittest.TestCase):
         self.insert.close()
         self.falho.close()
 
-        conn = psycopg2.connect("hostaddr=192.168.1.244 dbname=teste user=matheussampaio password=sampaio")
+        conn = psycopg2.connect("dbname=teste user=postgres")
         conn.set_isolation_level(0) # set autocommit
         self.cur = conn.cursor()
 

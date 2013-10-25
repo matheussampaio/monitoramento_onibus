@@ -6,7 +6,7 @@ class LDropTablesTest(unittest.TestCase):
 
         def setUp(self):
 
-            conn = psycopg2.connect("dbname=postgres user=postgres password=pablo")
+            conn = psycopg2.connect("dbname=teste user=postgres")
             conn.set_isolation_level(0) # set autocommit
             self.cur = conn.cursor()
 

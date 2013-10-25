@@ -1,7 +1,6 @@
 import unittest as test  # @UnusedWildImport
 import xmlrunner
 
-from HelloTest import *  # @UnusedWildImport
 from PontoOnibusTest import * # @UnusedWildImport
 from RotaTest import * # @UnusedWildImport
 from PontoOnibusRotaTest import * # @UnusedWildImport
