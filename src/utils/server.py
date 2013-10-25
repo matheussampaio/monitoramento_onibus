@@ -6,8 +6,13 @@ conn.set_isolation_level(0) # set autocommit
 
 def insertLocalization(placa, lat, lon):
     cur = conn.cursor()
-    cur.execute("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = '{0}'), {1}, {2}, NOW());".format(placa, lat, lon))
-    r = cur.statusmessage
+
+    try:
+        cur.execute("INSERT INTO Localization VALUES (DEFAULT, (SELECT id_onibus FROM Onibus WHERE placa = '{0}'), {1}, {2}, NOW());".format(placa, lat, lon))
+        r = cur.statusmessage
+    except:
+        r = 'fail'
+
     cur.close()
     return r
 
