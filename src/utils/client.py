@@ -1,6 +1,7 @@
 import socket
 import sys
 from time import sleep
+import random
 
 address = '127.0.0.1'
 port = 5007
@@ -19,7 +20,7 @@ def main():
 
         s.sendto(message, (address, port))
 
-        sleep(3)
+        sleep(random.randrange(2,6))
 
 
 if (sys.argv < 2):
