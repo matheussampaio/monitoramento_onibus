@@ -288,6 +288,8 @@
 
             <% } %>
 
+            <br><hr><br>
+
             <h3 class="text-center">Adicionar Ônibus</h3> <br>
 
             <% if (rotas.length == 0) { %>
@@ -322,7 +324,9 @@
         </div>
 
         <div <% if (inPage == 'rota') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_rotas">
-            <h2 class="text-center">Rotas</h2><br>
+            <h2 class="text-center">Rotas</h2>
+
+            <br>
 
             <% if (rotas.length == 0) { %>
                 <br>
@@ -402,7 +406,9 @@
 
             <br><hr><br>
 
-            <h3 class="text-center">Adicionar Ponto de Ônibus à Rota</h3> <br>
+            <h3 class="text-center">Adicionar Ponto de Ônibus à Rota</h3>
+
+            <br>
 
             <form id="rotaPontosForm" class="form-horizontal" onsubmit="return adicionarPontoRota()" method="POST" action="adicionarPontoRota">
               <div class="control-group">
@@ -460,7 +466,7 @@
                       <td><div align="center"><b>ID do ponto</b></div></td>
                       <td><div align="center"><b>Remover</b></div></td>
                   </tr>
-                  </thead>
+              </thead>
                   <% for (var j = 0; j < pontoonibusrota.length; j++) { %>
                       <tr>
                       <td><div align="center"><%= rotas[i].nome %></div></td>
@@ -477,8 +483,8 @@
                           </td>
                       </tr>
                   <% } %>
-                </table>
                 <% } %>
+            </table>
         </div>
 
         <div <% if (inPage == 'pontoonibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_pontoonibus">
@@ -520,6 +526,8 @@
                 </table>
 
             <% } %>
+
+            <br><hr><br>
 
             <h3 class="text-center">Criar Ponto de Ônibus</h3> <br>
 
@@ -592,7 +600,7 @@
 
             <% } %>
 
-            <br><br>
+            <br><hr><br>
 
             <h2 class="text-center">Histórico de Fugas</h2><br>
 
@@ -605,7 +613,7 @@
                   <li id="pagePreviousFugaRota" class="previous disabled">
                     <a href="#" onclick="javascript:previousPageFugaRota()">&larr; Novos</a>
                   </li>
-                  <li id="pageNextFugaRota" class="next">
+                  <li id="pageNextFugaRota" <% if (fugarotahistorico.length > 10) { %> class="next" <% } else { %> class="next disabled" <% } %>>
                     <a href="#" onclick="javascript:nextPageFugaRota()">Antigos &rarr;</a>
                   </li>
                 </ul>
