@@ -253,12 +253,11 @@
       <div class="span9" id="body_content" style="margin-left: 100px">
         <div <% if (inPage == '' || inPage == 'onibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_onibus">
             <h2 class="text-center">Ônibus</h2><br>
-
+            <h3 class="text-center">Remover Ônibus</h3> <br>   
             <% if (onibus.length == 0) { %>
                 <br>
                 <p class="text-center muted bold">Não há nenhum Ônibus no Banco de Dados.</p>
             <% } else { %>
-
                 <table class="table">
                 <thead>
                 <tr>
@@ -469,6 +468,7 @@
               </div>
             </form>
 
+<<<<<<< HEAD
             <% } %>
 
             <br><hr><br>
@@ -480,7 +480,14 @@
                 <p class="text-center muted bold">Não há nenhuma Rota no Banco de Dados.</p>
             <% } else { %>
 
+=======
+            <h3 class="text-center">Remover Ponto de uma Rota de Ônibus</h3> <br>
+>>>>>>> debug 3
             <table class="table">
+            <% if (rotas.length == 0) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhuma Rota no banco de dados.</p>
+            <% } else { %>
                 <thead>
                 <% for (var i = 0; i < rotas.length; i++) { %>
                   <tr>
@@ -505,15 +512,19 @@
                       </tr>
                   <% } %>
                 <% } %>
+<<<<<<< HEAD
             </table>
 
             <% } %>
 
+=======
+            <% } %>
+>>>>>>> debug 3
         </div>
 
         <div <% if (inPage == 'pontoonibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_pontoonibus">
             <h2 class="text-center">Pontos de Ônibus</h2><br>
-
+            <h3 class="text-center">Remover Ponto</h3> <br>   
             <% if (pontoonibus.length == 0) { %>
                 <br>
                 <p class="text-center muted bold">Não há nenhum Ponto de Ônibus no Banco de Dados.</p>
