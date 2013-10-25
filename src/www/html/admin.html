@@ -417,6 +417,9 @@
             <% if (pontoonibus.length == 0) { %>
                 <br>
                 <p class="text-center muted bold">Não há nenhum Ponto de Ônibus no Banco de Dados.</p>
+            <% } else if (rotas.length == 0 ) { %>
+                <br>
+                <p class="text-center muted bold">Não há nenhuma Rota no Banco de Dados.</p>
             <% } else { %>
 
             <form id="rotaPontosForm" class="form-horizontal" onsubmit="return adicionarPontoRota()" method="POST" action="adicionarPontoRota">
