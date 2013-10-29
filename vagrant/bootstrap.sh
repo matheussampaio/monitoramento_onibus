@@ -42,8 +42,8 @@ cp geoserver.war /var/lib/tomcat7/webapps/
 
 # Configurando o GeoServer
 apt-get install -y curl
-curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
-curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
+curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://10.0.0.100:8080/geoserver/rest/workspaces
+curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://10.0.0.100:8080/geoserver/rest/workspaces/GO/datastores
 
 # Executando testes
 cd monitoramento_onibus/src
