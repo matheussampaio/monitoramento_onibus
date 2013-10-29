@@ -19,7 +19,7 @@ try {
     process.exit(e.code);
 }
 
-var conString = "postgres://postgres@10.0.0.100:5432/gonibus";
+var conString = "postgres://postgres@localhost:5432/gonibus";
 
 var client = new pg.Client(conString);
 client.connect();
