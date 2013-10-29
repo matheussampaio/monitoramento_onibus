@@ -1,0 +1,11 @@
+<dataStore>
+  <name>teste</name>
+  <connectionParameters>
+    <host>localhost</host>
+    <port>5432</port>
+    <database>teste</database>
+    <user>postgres</user>
+    <passwd>postgres</passwd>
+    <dbtype>postgis</dbtype>
+  </connectionParameters>
+</dataStore>
