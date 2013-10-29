@@ -1,0 +1,1 @@
+ALTER TABLE FugaRota ADD FOREIGN KEY (id_onibus) REFERENCES Onibus;
