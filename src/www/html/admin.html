@@ -252,7 +252,7 @@
       <!--Body content-->
       <div class="span9" id="body_content" style="margin-left: 100px">
         <div <% if (inPage == '' || inPage == 'onibus') { %> class="" <% } else { %> class="hide" <% } %> id="body_content_onibus">
-            <h2 class="text-center">Ônibus</h2> <br>   
+            <h2 class="text-center">Ônibus</h2> <br>
             <% if (onibus.length == 0) { %>
                 <br>
                 <p class="text-center muted bold">Não há nenhum Ônibus no Banco de Dados.</p>
@@ -311,6 +311,7 @@
                             <% } %>
                         </select>
                     </div>
+                    <div id="errorNumero"></div>
                   </div>
                   <div class="control-group">
                     <div class="controls">
