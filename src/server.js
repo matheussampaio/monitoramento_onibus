@@ -108,7 +108,7 @@ server.post('/adicionarRotaOnibus', function(req, res) {
     var novaRota = req.body.novaRota;
     var pontoInicial = req.body.pontoInicial;
 
-    var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+novaRota+"', ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291), "+pontoInicial+")";
+    var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+novaRota+"', "+pontoInicial+", ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291) )";
     var inserirPontoNaRota = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + novaRota + "'), " + pontoInicial + ", " + pontoInicial + ")";
     var view = "CREATE OR REPLACE VIEW rota"+novaRota+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+novaRota+"'";
 

@@ -37,7 +37,7 @@ CREATE TABLE Onibus (
     current_pontoonibus INTEGER NOT NULL,
     statusFuga BOOLEAN NOT NULL DEFAULT FALSE,
     current_seq INTEGER NOT NULL DEFAULT 1,
-    tempo TIME
+    tempo TEXT
 );
 
 ALTER TABLE Onibus ADD FOREIGN KEY (id_rota) REFERENCES Rota;

@@ -1,7 +1,7 @@
 import socket
 import psycopg2
 
-conn = psycopg2.connect("dbname=gonibus user=matheussampaio password=sampaio")
+conn = psycopg2.connect("dbname=gonibus user=postgres")
 conn.set_isolation_level(0) # set autocommit
 
 def insertLocalization(placa, lat, lon):

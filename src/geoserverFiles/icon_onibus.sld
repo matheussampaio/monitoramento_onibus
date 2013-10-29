@@ -24,7 +24,7 @@
                 <ExternalGraphic>
                   <OnlineResource
                      xlink:type="simple"
-                  xlink:href="/home/matheussampaio/git/monitoramento_onibus/src/img/icon_onibus.png" />
+                  xlink:href="/home/vagrant/monitoramento_onibus/src/img/icon_onibus.png" />
                    <Format>image/png</Format>
                  </ExternalGraphic>
               <Size>100</Size>
