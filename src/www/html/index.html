@@ -15,7 +15,7 @@
         // pink tile avoidance
         OpenLayers.IMAGE_RELOAD_ATTEMPTS = 10;
 
-        var server = "http://192.168.1.244:8080/geoserver/GO/wms";
+        var server = "http://10.0.0.100:8080/geoserver/GO/wms";
 
         var refreshing = false;
         var refreshID;
@@ -33,6 +33,12 @@
                 {singleTile: true, isBaseLayer: false, visibility: true}
                 );
 
+            layer_rota = new OpenLayers.Layer.WMS(
+                "Rotas", server,
+                {layers: 'gonibus:rota', transparent: "true"},
+                {singleTile: true, isBaseLayer: false, visibility: true}
+                );
+
 
             var options = {
                 projection: 'EPSG:3857',
@@ -47,12 +53,7 @@
 
             map.addLayers([layer_googleStr]);
 
-            <% for (var i=0; i < result.length; i++) { %>
-                var nomeRota = <%= result[i].nome %>;
-                map.addLayer(new OpenLayers.Layer.WMS("Rota: " + nomeRota, server, {layers: 'gonibus:rota' + nomeRota + 'view', transparent: "true"}, {singleTile: false, isBaseLayer: false, visibility: true}));
-            <% } %>
-
-            map.addLayers([layer_pontos_onibus, layer_onibus]);
+            map.addLayers([layer_pontos_onibus, layer_onibus, layer_rota]);
 
             map.addControl(new OpenLayers.Control.LayerSwitcher());
 
