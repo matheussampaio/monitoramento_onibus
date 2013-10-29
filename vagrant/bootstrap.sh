@@ -12,7 +12,7 @@ psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql -U postg
 
 # Clonando repositorio
 apt-get install -y git
-git clone https://github.com/matheussampaio/monitoramento_onibus.git
+git clone --branch=vagrant https://github.com/matheussampaio/monitoramento_onibus.git
 
 # Instalando dependencias
 apt-get install -y python-pip
