@@ -40,10 +40,12 @@ wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.3.5/geoserver-2
 unzip geoserver-2.3.5-war.zip
 cp geoserver.war /var/lib/tomcat7/webapps/
 
-# Configurando o GeoServer
-# curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
-# curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
-
 # Executando testes
 cd monitoramento_onibus/src
 python setup.py
+
+sleep 120
+
+# Configurando o GeoServer
+curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
+curl -v -u admin:geoserver -XPOST -T /home/vagrant/monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores

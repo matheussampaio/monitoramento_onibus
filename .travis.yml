@@ -28,5 +28,5 @@ notifications:
   email:
     recipients:
       - matheus1401@gmail.com
-    on_success: always
-    on_failure: always
+    on_success: changed
+    on_failure: changed
