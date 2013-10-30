@@ -3,7 +3,7 @@
 apt-get update
 
 # Clonando repositorio
-apt-get install -y git
+apt-get install -y git curl vim nodejs python-psycopg2 python-pip tomcat7 unzip
 git clone --branch=vagrant https://github.com/matheussampaio/monitoramento_onibus.git
 
 # Instalando Postgres
@@ -24,24 +24,23 @@ psql -d gonibus -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys
 psql -d gonibus -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql -U postgres
 
 # Instalando dependencias
-apt-get install -y python-pip
-apt-get install -y python-psycopg2
+# apt-get install -y python-pip
+# apt-get install -y python-psycopg2
 pip install unittest-xml-reporting
 
 # Instalando o NodeJS
-apt-get install -y nodejs
+# apt-get install -y nodejs
 
 # Instalando Apache
-apt-get install -y tomcat7
+# apt-get install -y tomcat7
 
 # Instalando GeoServer
-apt-get install unzip
+# apt-get install unzip
 wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.3.5/geoserver-2.3.5-war.zip
 unzip geoserver-2.3.5-war.zip
 cp geoserver.war /var/lib/tomcat7/webapps/
 
 # Configurando o GeoServer
-apt-get install -y curl
 # curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
 # curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
 
