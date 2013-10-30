@@ -97,6 +97,7 @@ Vagrant::Config.run do |config|
   config.vm.provision :shell, :path => "bootstrap.sh"
   config.vm.forward_port 3001, 4567
   config.vm.forward_port 8080, 4568
-  config.vm.network :hostonly, "10.0.0.100", :netmask => "255.255.0.0"
+  # config.vm.network :hostonly, "10.0.0.100", :netmask => "255.255.0.0"
+  config.vm.network "private_network", ip: "192.168.100.100"
 
 end

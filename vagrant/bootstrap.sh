@@ -12,10 +12,10 @@ cp monitoramento_onibus/vagrant/pg_hba.conf /etc/postgresql/9.1/main/
 /etc/init.d/postgresql restart
 
 # Criando servidor de teste
-psql -c 'create database teste;' -U postgres
-psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql -U postgres
-psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql  -U postgres
-psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql -U postgres
+# psql -c 'create database teste;' -U postgres
+# psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql -U postgres
+# psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql  -U postgres
+# psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql -U postgres
 
 # Servidor para deploy
 psql -c 'create database gonibus;' -U postgres
@@ -42,8 +42,8 @@ cp geoserver.war /var/lib/tomcat7/webapps/
 
 # Configurando o GeoServer
 apt-get install -y curl
-curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://10.0.0.100:8080/geoserver/rest/workspaces
-curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://10.0.0.100:8080/geoserver/rest/workspaces/GO/datastores
+# curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
+# curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
 
 # Executando testes
 cd monitoramento_onibus/src
