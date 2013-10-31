@@ -19,6 +19,14 @@ try {
     process.exit(e.code);
 }
 
+var myArgs = process.argv.slice(2);
+
+if (myArgs[0]) {
+    geoserverIP = myArgs[0];
+} else {
+    geoserverIP = "localhost:8080";
+}
+
 var conString = "postgres://postgres@localhost:5432/gonibus";
 
 var client = new pg.Client(conString);
@@ -51,7 +59,7 @@ server.get('/home', function(req, res){
         if (err) {
             console.log(err);
         } else {
-            res.render('index.html', {result: result.rows});
+            res.render('index.html', {result: result.rows, geoIP: geoserverIP});
         }
     });
 });
