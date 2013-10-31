@@ -8,7 +8,7 @@ git clone --branch=vagrant https://github.com/matheussampaio/monitoramento_onibu
 
 # Instalando Postgres
 apt-get install -y postgresql-9.1-postgis -q
-cp monitoramento_onibus/vagrant/pg_hba.conf /etc/postgresql/9.1/main/
+cp /home/vagrant/monitoramento_onibus/vagrant/pg_hba.conf /etc/postgresql/9.1/main/
 /etc/init.d/postgresql restart
 
 # Criando servidor de teste
@@ -26,7 +26,7 @@ psql -d gonibus -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql -U pos
 # Instalando dependencias
 # apt-get install -y python-pip
 # apt-get install -y python-psycopg2
-pip install unittest-xml-reporting
+# pip install unittest-xml-reporting
 
 # Instalando o NodeJS
 # apt-get install -y nodejs
@@ -44,8 +44,8 @@ cp geoserver.war /var/lib/tomcat7/webapps/
 cd monitoramento_onibus/src
 python setup.py
 
-sleep 120
+# sleep 120
 
 # Configurando o GeoServer
-curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
-curl -v -u admin:geoserver -XPOST -T /home/vagrant/monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
+# curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
+# curl -v -u admin:geoserver -XPOST -T /home/vagrant/monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
