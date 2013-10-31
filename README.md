@@ -35,7 +35,8 @@ E executarmos o vagrant:
 user@sony:~/monitoramento_onibus/vagrant$ vagrant up
 ```
 
-O vagrant irá criar uma maquina virtual do Ubuntu 12.04 x86 e irá instalar toda as dependências do projeto. O ultimo passo é configurar o GeoServer.
+O vagrant irá criar uma maquina virtual do Ubuntu 12.04 x86 e irá instalar toda as dependências do projeto. O proximo passo é configurar o GeoServer.
+
 
 ##Configurando o GeoServer :
 
@@ -258,13 +259,66 @@ Clique em <b>Compute from native bounds</b>.
 Clique em <b>Publishing</b>.
 [![Screenshot](imgs/20.png)](imgs/20.png)
 
-Em <i>default style</i> selecione <b>icon_onibus</b>.
+Em <i>default style</i> selecione <b>icon_onibus</b> e em seguida clique em <b>Save</b>.
+[![Screenshot](imgs/21.png)](imgs/21.png)
+
+Clique em <b>Layers</b>.
+[![Screenshot](imgs/12.png)](imgs/12.png)
+
+Clique em <b>Add a new resource</b>.
+[![Screenshot](imgs/13.png)](imgs/13.png)
+
+Em <i>Add a new layer from</i> selecione <b>GO</b>.
+[![Screenshot](imgs/14.png)](imgs/14.png)
+
+Na linha de <i>pontoonibus</i> clique em <b>Publish</b>.
+[![Screenshot](imgs/22.png)](imgs/22.png)
+
+Clique em <b>Find</b>.
+[![Screenshot](imgs/16.png)](imgs/16.png)
+
+No campo de pesquisa digite <b>4326</b> e aperte <b>Enter</b>, em seguite clique no código <b>4326</b>.
+[![Screenshot](imgs/17.png)](imgs/17.png)
+
+Clique em <b>Compute from native bounds</b>.
+[![Screenshot](imgs/18.png)](imgs/18.png)
+
+Clique em <b>Publishing</b>.
+[![Screenshot](imgs/20.png)](imgs/20.png)
+
+Em <i>default style</i> selecione <b>icon_pontoonibus</b> e em seguida clique em <b>Save</b>.
+[![Screenshot](imgs/23.png)](imgs/23.png)
+
+Agora o GeoServer está configurado para com todas as layers e styles usados pelo projeto. Agora vamos para o ultimo passo: iniciar o projeto.
 
 
+## Iniciando o Projeto :
 
+Voltemos até a pasta monitoramento_onibus/vagrant:
 
+```
+user@sony:~$ cd monitoramento_onibus/vagrant
+```
 
+Fazemos SSH na VM do vagrant:
+```
+user@sony:~monitoramento_onibus/vagrant$ vagrant ssh
+```
 
+Navegamos até a pasta monitoramento_onibus/src:
+```
+vagrant@precise32:~$ cd monitoramento_onibus/src
+```
+
+Antes desse passo procure saber o seu IP interno (Por exemplo 192.168.1.244). Após descobrir, execute o comando abaixo substituindo pelo seu IP (Inclua :4568):
+```
+vagrant@precise32:~/monitoramento_onibus/src$ node server.js 192.168.1.244:4568
+Server on.
+http://localhost:3001
+
+```
+
+O projeto está completamente instalado e funcionando, a partir desse passo você já deve poder adicionar Rotas, Ônibus e Pontos de Ônibus.
 
 ##Licença :
 
