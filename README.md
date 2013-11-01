@@ -289,7 +289,7 @@ Clique em <b>Publishing</b>.
 Em <i>default style</i> selecione <b>icon_pontoonibus</b> e em seguida clique em <b>Save</b>.
 [![Screenshot](imgs/23.png)](imgs/23.png)
 
-Agora o GeoServer está configurado para com todas as layers e styles usados pelo projeto. Agora vamos para o ultimo passo: iniciar o projeto.
+Agora o GeoServer está configurado com todas as layers e styles usados pelo projeto. Agora vamos para o ultimo passo: iniciar o projeto.
 
 
 ## Iniciando o Projeto :
@@ -318,11 +318,11 @@ http://localhost:3001
 
 ```
 
-O projeto está completamente instalado e funcionando, a partir desse passo você já deve poder adicionar Rotas, Ônibus e Pontos de Ônibus.
+O projeto está completamente instalado e funcionando, a partir desse passo você já pode acessar o [site][6] e usa-lo.
 
 ##Licença :
 
-O código está disponivel em um [projeto][0] no GitHub sobre a licença [GNU General Public License][1]
+O código está disponivel em um [projeto][0] no GitHub sobre a licença [GPL v3][1]
 
 [0]: https://github.com/matheussampaio/monitoramento_onibus
 [1]: http://www.gnu.org/copyleft/gpl.html
@@ -330,3 +330,4 @@ O código está disponivel em um [projeto][0] no GitHub sobre a licença [GNU Ge
 [3]: http://www.vagrantup.com/
 [4]: http://git-scm.com/
 [5]: http://localhost:4568/geoserver
+[6]: http://localhost:4567
