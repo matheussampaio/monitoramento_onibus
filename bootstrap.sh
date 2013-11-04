@@ -12,10 +12,10 @@ cp /home/vagrant/monitoramento_onibus/vagrant/pg_hba.conf /etc/postgresql/9.1/ma
 /etc/init.d/postgresql restart
 
 # Criando servidor de teste
-# psql -c 'create database teste;' -U postgres
-# psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql -U postgres
-# psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql  -U postgres
-# psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql -U postgres
+psql -c 'create database teste;' -U postgres
+psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/postgis.sql -U postgres
+psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis-1.5/spatial_ref_sys.sql  -U postgres
+psql -d teste -f /usr/share/postgresql/9.1/contrib/postgis_comments.sql -U postgres
 
 # Servidor para deploy
 psql -c 'create database gonibus;' -U postgres
