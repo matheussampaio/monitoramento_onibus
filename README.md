@@ -23,16 +23,10 @@ Devemos clonar o [projeto][0] do GitHub:
 user@sony:~$ git clone https://github.com/matheussampaio/monitoramento_onibus.git
 ```
 
-Ir até a pasta monitoramento_onibus/vagrant:
-
-```
-user@sony:~$ cd monitoramento_onibus/vagrant
-```
-
 E executarmos o vagrant:
 
 ```
-user@sony:~/monitoramento_onibus/vagrant$ vagrant up
+user@sony:~/monitoramento_onibus$ vagrant up
 ```
 
 O vagrant irá criar uma maquina virtual do Ubuntu 12.04 x86 e irá instalar toda as dependências do projeto. O proximo passo é configurar o GeoServer.
@@ -294,18 +288,18 @@ Agora o GeoServer está configurado com todas as layers e styles usados pelo pro
 
 ## Iniciando o Projeto :
 
-Voltemos até a pasta monitoramento_onibus/vagrant:
+Voltemos até a pasta do projeto no Host:
 
 ```
-user@sony:~$ cd monitoramento_onibus/vagrant
+user@sony:~$ cd monitoramento_onibus
 ```
 
 Fazemos SSH na VM do vagrant:
 ```
-user@sony:~monitoramento_onibus/vagrant$ vagrant ssh
+user@sony:~monitoramento_onibus$ vagrant ssh
 ```
 
-Navegamos até a pasta monitoramento_onibus/src:
+No Cliente, navegamos até a pasta monitoramento_onibus/src:
 ```
 vagrant@precise32:~$ cd monitoramento_onibus/src
 ```
