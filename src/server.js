@@ -562,13 +562,33 @@ server.get('/web-api/onibus', function(req, res) {
 });
 
 server.get('/web-api/horarios', function(req, res) {
-  var query = 'SELECT * FROM TempoToPontoOnibus;';
+  var query = "SELECT * FROM (SELECT DISTINCT ON (id_pontoonibus) t.id_onibus, t.id_pontoonibus, to_char(t.tempo, 'HH24:MI:SS DD/MM/YY') AS tempo, t.nome, o.placa FROM tempotopontoonibus t, Onibus o WHERE t.id_onibus = o.id_onibus ORDER BY id_pontoonibus, tempo) AS subquery ORDER BY subquery.tempo;";
+
+  var queryRotas = "SELECT DISTINCT ON (nome) nome FROM TempoToPontoOnibus;";
+
+  var queryPontoOnibus = "SELECT DISTINCT ON (id_pontoonibus) id_pontoonibus FROM TempoToPontoOnibus;";
 
   client.query(query, function(err, result) {
     if (err) {
       res.send(err);
     } else {
-      res.send(result);
+      client.query(queryRotas, function(err2, result2) {
+        if (err2) {
+          res.send(err2);
+        } else {
+
+          result["rotas"] = result2.rows;
+
+          client.query(queryPontoOnibus, function(err3, result3) {
+            if (err3) {
+              res.send(err3);
+            } else {
+              result["id_pontoonibus"] = result3.rows;
+              res.send(result);
+            }
+          });
+        }
+      });
     }
   });
 });
