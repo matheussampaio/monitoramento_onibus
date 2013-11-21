@@ -593,6 +593,20 @@ server.get('/web-api/horarios', function(req, res) {
   });
 });
 
+
+server.get('/web-api/onibus', function(req, res) {
+
+    var query = "SELECT * FROM Onibus;";
+
+    client.query(query, function(err, result) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
   console.log('Server on.');
