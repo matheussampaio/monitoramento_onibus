@@ -30,7 +30,7 @@ wget http://sourceforge.net/projects/geoserver/files/GeoServer/2.3.5/geoserver-2
 unzip geoserver-2.3.5-war.zip
 cp geoserver.war /var/lib/tomcat7/webapps/
 
-website="http://localhost:8080/geoservers"
+website="http://localhost:8080/geoserver"
 
 wget -q --spider $website
 
