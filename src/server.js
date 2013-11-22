@@ -546,20 +546,6 @@ server.post('/removerOnibus', function(req, res) {
   });
 });
 
-// API para recuperar dados de um Ônibus
-server.get('/web-api/onibus', function(req, res) {
-  var placa = req.query.placa;
-
-  var query = "SELECT * FROM Onibus WHERE placa = '" + placa + "'";
-
-  client.query(query, function(err, result) {
-    if (err) {
-      res.send(err);
-    } else {
-      res.send(result);
-    }
-  });
-});
 
 server.get('/web-api/horarios', function(req, res) {
   var query = "SELECT * FROM (SELECT DISTINCT ON (id_pontoonibus) t.id_onibus, t.id_pontoonibus, to_char(t.tempo, 'HH24:MI:SS DD/MM/YY') AS tempo, t.nome, o.placa FROM tempotopontoonibus t, Onibus o WHERE t.id_onibus = o.id_onibus ORDER BY id_pontoonibus, tempo) AS subquery ORDER BY subquery.tempo;";
