@@ -42,9 +42,14 @@ do
   wget -q --spider $website
 done
 
-# Configurando o GeoServer
- curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
- curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
+# Adicionando Workspaces
+curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml"  -d "<workspace><name>GO</name></workspace>"  http://localhost:8080/geoserver/rest/workspaces
+# Adicionando Database
+curl -v -u admin:geoserver -XPOST -T monitoramento_onibus/src/geoserverFiles/gonibusDataStore.xml -H "Content-type: text/xml"  http://localhost:8080/geoserver/rest/workspaces/GO/datastores
+# Adicionando estilos
+# curl -v -u admin:geoserver -XPOST -H "Content-type: text/xml" -d "<style><name>icon_pontoonibus</name></style>" http://localhost:8080/geoserver/rest/styles
+curl -u admin:geoserver -XPOST -H 'Content-type: application/xml' -d '<style><name>icon_pontoonibus</name><filename>icon_pontoo_onibus.sld</filename></style>' http://localhost:8080/geoserver/rest/styles
+curl -u admin:geoserver -XPUT -H "Content-type: application/vnd.ogc.sld+xml" -d @monitoramento_onibus/src/geoserverFiles/icon_ponto_onibus.sld http://159.226.13.203:8080/geoserver/rest/styles/wywStyle
 
 # Executando testes
 cd monitoramento_onibus/src
