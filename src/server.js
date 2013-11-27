@@ -581,29 +581,42 @@ server.get('/web-api/horarios', function(req, res) {
 
 // @TODO: Adicionar recuperar onibus via placa.
 server.get('/web-api/onibus', function(req, res) {
+  var query = "SELECT * FROM Onibus;";
 
-    var query = "SELECT * FROM Onibus;";
-
-    client.query(query, function(err, result) {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send(result);
-        }
-    });
+  client.query(query, function(err, result) {
+      if (err) {
+          res.send(err);
+      } else {
+          res.send(result);
+      }
+  });
 });
 
 server.get('/web-api/pontoonibus', function(req, res) {
+  var query = "SELECT * FROM PontoOnibus;";
 
-    var query = "SELECT * FROM PontoOnibus;";
+  client.query(query, function(err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
 
-    client.query(query, function(err, result) {
-        if (err) {
-            res.send(err);
-        } else {
-            res.send(result);
-        }
-    });
+// @TODO: Fazer gerenciador de Log
+server.post('/web-api/pontoonibus/remover', function(req, res) {
+  var query = 'DELETE FROM PontoOnibus WHERE id_pontoonibus = ' + req.body.id_pontoonibus + ';';
+
+  client.query (query, function(err, result) {
+    if (err) {
+      err['id_pontoonibus'] = req.body.id_pontoonibus;
+      res.send(err);
+    } else {
+      result['id_pontoonibus'] = req.body.id_pontoonibus;
+      res.send(result);
+    }
+  });
 });
 
 // Inicia o servidor na porta 3001.
