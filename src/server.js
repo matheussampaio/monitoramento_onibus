@@ -579,10 +579,23 @@ server.get('/web-api/horarios', function(req, res) {
   });
 });
 
-
+// @TODO: Adicionar recuperar onibus via placa.
 server.get('/web-api/onibus', function(req, res) {
 
     var query = "SELECT * FROM Onibus;";
+
+    client.query(query, function(err, result) {
+        if (err) {
+            res.send(err);
+        } else {
+            res.send(result);
+        }
+    });
+});
+
+server.get('/web-api/pontoonibus', function(req, res) {
+
+    var query = "SELECT * FROM PontoOnibus;";
 
     client.query(query, function(err, result) {
         if (err) {

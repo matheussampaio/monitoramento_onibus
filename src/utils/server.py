@@ -23,6 +23,8 @@ def main():
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     sock.bind((address, port))
 
+    print 'Servidor iniciado.'
+
     while True:
 
         data, addr = sock.recvfrom(1024)
