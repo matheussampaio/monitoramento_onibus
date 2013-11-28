@@ -660,30 +660,6 @@ server.post('/web-api/onibus/remover', function(req, res) {
   });
 });
 
-server.get('/web-api/adicionarOnibus', function(req, res) {
- 
-
-var placa = req.query.placa;  
-var numero = req.query.numero;
-
-  var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '" + numero + "'), '" + placa + "', 'indeterminado', (SELECT first_pontoonibus FROM Rota WHERE nome = '" + numero + "'), DEFAULT)";
-
-  client.query(inserir, function(err, result) {
-    if (err) {
-      var msgErro = "";
-      if (err == 'error: duplicate key value violates unique constraint "placa_unica_onibus"') {
-        msgErro = "Ônibus com essa placa já existe.";
-      } else if (err == 'error: null value in column "id_rota" violates not-null constraint') {
-        msgErro = "A rota que você passou não existe.";
-      }
-      res.send(msgErro);
-    } else {
-      res.send("Ônibus criado com sucesso.");
-    }
-  });
-});
-
-
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
   console.log('Server on.');
