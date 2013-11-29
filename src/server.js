@@ -621,35 +621,34 @@ server.post('/web-api/pontoonibus/remover', function(req, res) {
 
 // @TODO: Fazer gerenciador de Log (O QUE É ISSO?)
 server.post('/web-api/onibus/remover', function(req, res) {
-  var idOnibus = req.body.idOnibus;
 
-  var deleteHorario = "DELETE FROM Horario WHERE id_onibus = '" + idOnibus + "';";
-  var deleteFugaRota = "DELETE FROM FugaRota WHERE id_onibus = '" + idOnibus + "';";
-  var deleteLocalization = "DELETE FROM Localization WHERE id_onibus = '" + idOnibus + "';";
-  var deleteOnibus = "DELETE FROM Onibus WHERE id_onibus = '" + idOnibus + "';";
+  var deleteHorario = "DELETE FROM Horario WHERE id_onibus = '" + req.body.idOnibus + "';";
+  var deleteFugaRota = "DELETE FROM FugaRota WHERE id_onibus = '" + req.body.idOnibus + "';";
+  var deleteLocalization = "DELETE FROM Localization WHERE id_onibus = '" + req.body.idOnibus + "';";
+  var deleteOnibus = "DELETE FROM Onibus WHERE id_onibus = '" + req.body.idOnibus + "';";
 
   client.query (deleteHorario, function(err, result) {
     if (err) {
-      err['id_onibus'] = req.body.id_Onibus;
+      err['idOnibus'] = req.body.idOnibus;
       res.send(err);
     } else {
       client.query (deleteFugaRota, function(err2, result2) {
         if (err2) {
-          err2['id_onibus'] = req.body.id_Onibus;
+          err2['idOnibus'] = req.body.idOnibus;
           res.send(err2);
         } else {
           client.query (deleteLocalization, function(err3, result3) {
             if (err3) {
-              err3['id_onibus'] = req.body.id_Onibus;
+              err3['idOnibus'] = req.body.idOnibus;
               res.send(err3);
             } else {
               client.query (deleteOnibus, function(err4, result4) {
                 if (err4) {
-                  err4['id_onibus'] = req.body.id_Onibus;
+                  err4['idOnibus'] = req.body.idOnibus;
                   res.send(err4);
                 } else {
-                  result['id_onibus'] = req.body.id_Onibus;
-                  res.send(result);
+                  result4['idOnibus'] = req.body.idOnibus;
+                  res.send(result4);
                 }
               });
             }
