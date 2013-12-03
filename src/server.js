@@ -660,8 +660,6 @@ server.post('/web-api/onibus/remover', function(req, res) {
 });
 
 server.get('/web-api/adicionarOnibus', function(req, res) {
- 
-
 var placa = req.query.placa;  
 var numero = req.query.numero;
 
@@ -671,14 +669,27 @@ var numero = req.query.numero;
     if (err) {
       var msgErro = "";
       if (err == 'error: duplicate key value violates unique constraint "placa_unica_onibus"') {
-        msgErro = "Ônibus com essa placa já existe.";
+        msgErro = "Onibus com essa placa ja existe.";
       } else if (err == 'error: null value in column "id_rota" violates not-null constraint') {
-        msgErro = "A rota que você passou não existe.";
+        msgErro = "A rota que voce passou nao existe.";
       }
       res.send(msgErro);
     } else {
-      res.send("Ônibus criado com sucesso.");
+      res.send("Onibus criado com sucesso.");
     }
+  });
+});
+
+// @TODO: Adicionar recuperar onibus via placa.
+server.get('/web-api/rota', function(req, res) {
+  var query = "SELECT * FROM Rota;";
+
+  client.query(query, function(err, result) {
+      if (err) {
+          res.send(err);
+      } else {
+          res.send(result);
+      }
   });
 });
 
