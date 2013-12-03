@@ -694,6 +694,35 @@ server.get('/web-api/rota', function(req, res) {
 });
 
 
+//Remover rota
+server.post('/web-api/rota/remover',function(req,res) {
+  var idRota = req.body.idRota;
+
+  var deleteEmOnibus = "DELETE FROM Onibus WHERE id_rota = '" + idRota + "';";
+  var deleteEmPontoRota = "DELETE FROM PontoOnibus_Rota WHERE id_rota = '" + idRota + "';";
+  var deleteRota = "DELETE FROM Rota WHERE id_rota = '" + idRota + "';";
+
+  client.query (deleteEmOnibus, function(err, result) {
+    if (err) {
+      res.send(err);
+    } else {
+      client.query (deleteEmPontoRota, function(err2, result2) {
+        if (err2) {
+          res.send(err2);
+        } else {
+          client.query (deleteRota, function(err3, result3) {
+            if (err3) {
+              res.send(err3);
+            } else {
+              res.send(result3);
+            }
+          });
+        }
+      });
+    }
+  });
+});
+
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
   console.log('Server on.');
