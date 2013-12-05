@@ -606,16 +606,55 @@ server.get('/web-api/pontoonibus', function(req, res) {
 
 // @TODO: Fazer gerenciador de Log
 server.post('/web-api/pontoonibus/remover', function(req, res) {
-  var query = 'DELETE FROM PontoOnibus WHERE id_pontoonibus = ' + req.body.id_pontoonibus + ';';
+  var id_pontoonibus = req.body.id_pontoonibus;
 
-  client.query (query, function(err, result) {
+  result = {};
+  result['detail'] = 'rem_pontoonibus';
+  result['paramns'] = {};
+
+  result.paramns['id_pontoonibus'] = id_pontoonibus;
+
+  var query = 'DELETE FROM PontoOnibus WHERE id_pontoonibus = ' + id_pontoonibus + ';';
+
+  client.query (query, function(err, queryResult) {
     if (err) {
-      err['id_pontoonibus'] = req.body.id_pontoonibus;
-      res.send(err);
+      result['err'] = err;
     } else {
-      result['id_pontoonibus'] = req.body.id_pontoonibus;
-      res.send(result);
+      result['queryResult'] = queryResult;
     }
+
+    console.log(result);
+    res.send(result);
+  });
+});
+
+//Adicionar Ponto de Ônibus
+server.post('/web-api/pontoonibus/adicionar',function(req,res) {
+  var nome = req.body.nome;
+  var lat = req.body.lat;
+  var lng = req.body.lng;
+
+  result = {};
+
+  result["detail"] = "add_pontoonibus";
+  result["paramns"] = {};
+
+  result.paramns["nome"] = nome;
+  result.paramns["lat"] = lat;
+  result.paramns["lng"] = lng;
+
+  var query = "INSERT INTO PontoOnibus VALUES (DEFAULT, '" + nome + "', ST_GeomFromText('POINT (" + lat + " " + lng + ")' ,4291))";
+
+  client.query (query, function(err, queryResult) {
+    if (err) {
+      result['err'] = err;
+    } else {
+      result['queryResult'] = queryResult;
+
+    }
+
+    console.log(result);
+    res.send(result);
   });
 });
 
@@ -722,6 +761,8 @@ server.post('/web-api/rota/remover',function(req,res) {
     }
   });
 });
+
+
 
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
