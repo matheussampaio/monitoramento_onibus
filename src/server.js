@@ -579,6 +579,19 @@ server.get('/web-api/horarios', function(req, res) {
   });
 });
 
+server.get('/web-api/horariosAdmin', function(req,res){
+  var query = "SELECT o.placa, h.* FROM Horario h, Onibus o WHERE h.id_onibus = o.id_onibus;";
+
+  client.query(query, function(err, result){
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
 // @TODO: Adicionar recuperar onibus via placa.
 server.get('/web-api/onibus', function(req, res) {
   var query = "SELECT * FROM Onibus;";
@@ -699,24 +712,24 @@ server.post('/web-api/onibus/remover', function(req, res) {
 });
 
 server.get('/web-api/adicionarOnibus', function(req, res) {
-var placa = req.query.placa;  
-var numero = req.query.numero;
+  var placa = req.query.placa;  
+  var numero = req.query.numero;
 
-  var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '" + numero + "'), '" + placa + "', 'indeterminado', (SELECT first_pontoonibus FROM Rota WHERE nome = '" + numero + "'), DEFAULT)";
+    var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '" + numero + "'), '" + placa + "', 'indeterminado', (SELECT first_pontoonibus FROM Rota WHERE nome = '" + numero + "'), DEFAULT)";
 
-  client.query(inserir, function(err, result) {
-    if (err) {
-      var msgErro = "";
-      if (err == 'error: duplicate key value violates unique constraint "placa_unica_onibus"') {
-        msgErro = "Onibus com essa placa ja existe.";
-      } else if (err == 'error: null value in column "id_rota" violates not-null constraint') {
-        msgErro = "A rota que voce passou nao existe.";
+    client.query(inserir, function(err, result) {
+      if (err) {
+        var msgErro = "";
+        if (err == 'error: duplicate key value violates unique constraint "placa_unica_onibus"') {
+          msgErro = "Onibus com essa placa ja existe.";
+        } else if (err == 'error: null value in column "id_rota" violates not-null constraint') {
+          msgErro = "A rota que voce passou nao existe.";
+        }
+        res.send(msgErro);
+      } else {
+        res.send("Onibus criado com sucesso.");
       }
-      res.send(msgErro);
-    } else {
-      res.send("Onibus criado com sucesso.");
-    }
-  });
+    });
 });
 
 // @TODO: Adicionar recuperar onibus via placa.
