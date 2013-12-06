@@ -793,15 +793,10 @@ server.get('/web-api/adicionarPontoRota', function(req, res) {
       } else {
         msgErro = err1.detail;
       }
-      //req.flash('page', 'rota');
-      //req.flash('error', msgErro);
-      //res.redirect('/admin');
       res.send(msgErro);
     } else  {
       if (result1.rowCount == 0) {
-        //req.flash('page', 'rota');
         res.send("Caminho de " + pontoAnterior + " para " + pontoPosterior + " não pertence a Rota.");
-        //res.redirect('/admin');
       } else {
         var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
         client.query(inserir, function(err2, result2) {
@@ -818,21 +813,40 @@ server.get('/web-api/adicionarPontoRota', function(req, res) {
             } else {
               msgErro = err2.detail;
             }
-            //req.flash('page', 'rota');
-            //req.flash('error', msgErro);
-            //res.redirect('/admin');
         res.send(msgErro);
           } else {
-            //req.flash('page', 'rota');
             res.send ('Ponto adicionado a Rota com sucesso.');
-            //res.redirect('/admin');
           }
-
         });
       }
     }
   });
 });
+
+server.get('/web-api/fugarota', function(req, res) {
+  var query = "SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.horarioinicio DESC;";
+
+  client.query(query, function(err, result) {
+      if (err) {
+          res.send(err);
+      } else {
+          res.send(result);
+      }
+  });
+});
+
+server.get('/web-api/fugarotahistorico', function(req, res) {
+  var query = "SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido ORDER BY f.id_onibus, f.horarioinicio DESC;";
+
+  client.query(query, function(err, result) {
+      if (err) {
+          res.send(err);
+      } else {
+          res.send(result);
+      }
+  });
+});
+
 
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
