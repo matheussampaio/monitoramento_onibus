@@ -350,7 +350,6 @@ server.get('/horarios', function(req,res){
 // Adicionar um Horário a um Ônibus
 server.post('/adicionarHorario', function(req, res) {
   var idOnibus = req.body.idOnibus;
-
   var index = 0;
   var idAdcPontoOnibus = "";
   var tempoAdcHorario = "";
@@ -591,6 +590,47 @@ server.get('/web-api/horariosAdmin', function(req,res){
   });
 });
 
+server.post('/web-api/horariosAdmin/adicionar',function(req,res){
+  var idOnibus = req.body.idOnibus;
+  var idPontoOnibus = req.body.idPontoOnibus;
+  var tempo = req.body.tempo;
+  var index = 0;
+  result = {};
+
+  queryDelete = "DELETE FROM Horario WHERE id_pontoonibus = " + idPontoOnibus + ";";
+
+  result["detail"] = "add_horario_onibus";
+  result["paramns"] = {};
+
+ 
+  result.paramns["idOnibus"] = idOnibus;
+  result.paramns["idPontoOnibus"] = idPontoOnibus;
+  result.paramns["tempo"] = tempo;
+
+  var query2 = "INSERT INTO Horario (id_horario, id_onibus, id_pontoonibus, tempo, seq) VALUES ";
+
+
+  query2 += "(DEFAULT, " + idOnibus + ", " + idPontoOnibus + ", (SELECT TIME '" + tempo + "'), " + index + "),";
+  query2 = query2.slice(0, -1) + ";";
+  index++;
+
+  client.query(queryDelete,function(err,result1){
+    if (err) {
+      result['err'] = err;
+    } else {
+      client.query (query2, function(err1, result2) {
+        if (err1) {
+          result['err1'] = err1;
+        } else {
+          result['result'] = result2;
+        }
+      });
+    }
+
+    res.send(result);
+  });
+});
+
 
 // @TODO: Adicionar recuperar onibus via placa.
 server.get('/web-api/onibus', function(req, res) {
@@ -768,7 +808,7 @@ server.post('/web-api/rota/remover',function(req,res) {
               err3['idRota'] = req.body.idRota;
 	      res.send(err3);
             } else {
-	      result3['idRota'] = req.body.idRota;
+	             result3['idRota'] = req.body.idRota;
               res.send(result3);
             }
           });
