@@ -597,7 +597,7 @@ server.post('/web-api/horariosAdmin/adicionar',function(req,res){
   var index = 0;
   result = {};
 
-  queryDelete = "DELETE FROM Horario WHERE id_pontoonibus = " + idPontoOnibus + ";";
+  queryDelete = "DELETE FROM Horario WHERE id_pontoonibus = " + idPontoOnibus +" AND idOnibus = " +idOnibus+ ";";
 
   result["detail"] = "add_horario_onibus";
   result["paramns"] = {};
