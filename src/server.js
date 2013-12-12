@@ -881,7 +881,6 @@ server.get('/web-api/fugarota', function(req, res) {
 
 server.get('/web-api/fugarotahistorico', function(req, res) {
   var query = "SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido ORDER BY f.id_onibus, f.horarioinicio DESC;";
-
   client.query(query, function(err, result) {
       if (err) {
           res.send(err);
@@ -890,6 +889,35 @@ server.get('/web-api/fugarotahistorico', function(req, res) {
       }
   });
 });
+
+server.post('/web-api/resolverFuga', function(req, res) {
+  var idFugaRota = req.body.idFugaRota;
+  var idOnibus = req.body.idOnibus;
+   
+  var query1 = "UPDATE FugaRota SET resolvido = TRUE WHERE id_fugarota = " + idFugaRota + " AND resolvido = FALSE";
+  var query2 = "UPDATE Onibus SET statusFuga = FALSE WHERE id_onibus = " + idOnibus; 
+
+  result = {};
+  result['detail'] = 'resolverfuga';
+  result['paramns'] = {};
+  result.paramns['idFugaRota'] = idFugaRota;
+
+
+  client.query (query1, function(err, queryResult) {
+    if (err) {
+      result['err'] = err;
+    } else {
+      client.query(query2, function(err2, result2) {
+        if (err2) {
+        res.send(err2)
+                  }
+     });
+     result['queryResult'] = queryResult;
+    }
+    res.send(result);
+  });
+});
+
 
 
 // Inicia o servidor na porta 3001.

@@ -350,7 +350,6 @@ server.get('/horarios', function(req,res){
 // Adicionar um Horário a um Ônibus
 server.post('/adicionarHorario', function(req, res) {
   var idOnibus = req.body.idOnibus;
-
   var index = 0;
   var idAdcPontoOnibus = "";
   var tempoAdcHorario = "";
@@ -579,6 +578,60 @@ server.get('/web-api/horarios', function(req, res) {
   });
 });
 
+server.get('/web-api/horariosAdmin', function(req,res){
+  var query = "SELECT o.placa, h.* FROM Horario h, Onibus o WHERE h.id_onibus = o.id_onibus;";
+
+  client.query(query, function(err, result){
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+server.post('/web-api/horariosAdmin/adicionar',function(req,res){
+  var idOnibus = req.body.idOnibus;
+  var idPontoOnibus = req.body.idPontoOnibus;
+  var tempo = req.body.tempo;
+  var index = 0;
+  result = {};
+
+  queryDelete = "DELETE FROM Horario WHERE id_pontoonibus = " + idPontoOnibus + " AND id_onibus = " + idOnibus+ ";";
+
+  result["detail"] = "add_horario_onibus";
+  result["paramns"] = {};
+
+ 
+  result.paramns["idOnibus"] = idOnibus;
+  result.paramns["idPontoOnibus"] = idPontoOnibus;
+  result.paramns["tempo"] = tempo;
+
+  var query2 = "INSERT INTO Horario (id_horario, id_onibus, id_pontoonibus, tempo, seq) VALUES ";
+
+
+  query2 += "(DEFAULT, " + idOnibus + ", " + idPontoOnibus + ", (SELECT TIME '" + tempo + "'), " + index + "),";
+  query2 = query2.slice(0, -1) + ";";
+  index++;
+
+  client.query(queryDelete,function(err,result1){
+    if (err) {
+      result['errdel'] = err;
+    } else {
+      client.query (query2, function(err1, result2) {
+        if (err1) {
+          result['err1'] = err1;
+        } else {
+          result['result'] = result2;
+        }
+      });
+    }
+
+    res.send(result);
+  });
+});
+
+
 // @TODO: Adicionar recuperar onibus via placa.
 server.get('/web-api/onibus', function(req, res) {
   var query = "SELECT * FROM Onibus;";
@@ -587,6 +640,7 @@ server.get('/web-api/onibus', function(req, res) {
       if (err) {
           res.send(err);
       } else {
+          result["detail"] = "get_onibus";
           res.send(result);
       }
   });
@@ -606,16 +660,55 @@ server.get('/web-api/pontoonibus', function(req, res) {
 
 // @TODO: Fazer gerenciador de Log
 server.post('/web-api/pontoonibus/remover', function(req, res) {
-  var query = 'DELETE FROM PontoOnibus WHERE id_pontoonibus = ' + req.body.id_pontoonibus + ';';
+  var id_pontoonibus = req.body.id_pontoonibus;
 
-  client.query (query, function(err, result) {
+  result = {};
+  result['detail'] = 'rem_pontoonibus';
+  result['paramns'] = {};
+
+  result.paramns['id_pontoonibus'] = id_pontoonibus;
+
+  var query = 'DELETE FROM PontoOnibus WHERE id_pontoonibus = ' + id_pontoonibus + ';';
+
+  client.query (query, function(err, queryResult) {
     if (err) {
-      err['id_pontoonibus'] = req.body.id_pontoonibus;
-      res.send(err);
+      result['err'] = err;
     } else {
-      result['id_pontoonibus'] = req.body.id_pontoonibus;
-      res.send(result);
+      result['queryResult'] = queryResult;
     }
+
+    console.log(result);
+    res.send(result);
+  });
+});
+
+//Adicionar Ponto de Ônibus
+server.post('/web-api/pontoonibus/adicionar',function(req,res) {
+  var nome = req.body.nome;
+  var lat = req.body.lat;
+  var lng = req.body.lng;
+
+  result = {};
+
+  result["detail"] = "add_pontoonibus";
+  result["paramns"] = {};
+
+  result.paramns["nome"] = nome;
+  result.paramns["lat"] = lat;
+  result.paramns["lng"] = lng;
+
+  var query = "INSERT INTO PontoOnibus VALUES (DEFAULT, '" + nome + "', ST_GeomFromText('POINT (" + lat + " " + lng + ")' ,4291))";
+
+  client.query (query, function(err, queryResult) {
+    if (err) {
+      result['err'] = err;
+    } else {
+      result['queryResult'] = queryResult;
+
+    }
+
+    console.log(result);
+    res.send(result);
   });
 });
 
@@ -629,24 +722,25 @@ server.post('/web-api/onibus/remover', function(req, res) {
 
   client.query (deleteHorario, function(err, result) {
     if (err) {
-      err['idOnibus'] = req.body.idOnibus;
+      err['err'] = req.body.idOnibus;
       res.send(err);
     } else {
       client.query (deleteFugaRota, function(err2, result2) {
         if (err2) {
-          err2['idOnibus'] = req.body.idOnibus;
+          err2['err2'] = req.body.idOnibus;
           res.send(err2);
         } else {
           client.query (deleteLocalization, function(err3, result3) {
             if (err3) {
-              err3['idOnibus'] = req.body.idOnibus;
+              err3['err3'] = req.body.idOnibus;
               res.send(err3);
             } else {
               client.query (deleteOnibus, function(err4, result4) {
                 if (err4) {
-                  err4['idOnibus'] = req.body.idOnibus;
+                  err4['err4'] = req.body.idOnibus;
                   res.send(err4);
                 } else {
+                  result4['detail'] = 'rem_onibus';
                   result4['idOnibus'] = req.body.idOnibus;
                   res.send(result4);
                 }
@@ -659,25 +753,26 @@ server.post('/web-api/onibus/remover', function(req, res) {
   });
 });
 
-server.get('/web-api/adicionarOnibus', function(req, res) {
-var placa = req.query.placa;  
-var numero = req.query.numero;
+server.post('/web-api/onibus/adicionar', function(req, res) {
+  var placa = req.body.placa;  
+  var nome = req.body.nome;
 
-  var inserir = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '" + numero + "'), '" + placa + "', 'indeterminado', (SELECT first_pontoonibus FROM Rota WHERE nome = '" + numero + "'), DEFAULT)";
+  result = {};
 
-  client.query(inserir, function(err, result) {
-    if (err) {
-      var msgErro = "";
-      if (err == 'error: duplicate key value violates unique constraint "placa_unica_onibus"') {
-        msgErro = "Onibus com essa placa ja existe.";
-      } else if (err == 'error: null value in column "id_rota" violates not-null constraint') {
-        msgErro = "A rota que voce passou nao existe.";
+    var query = "INSERT INTO Onibus VALUES (DEFAULT, (SELECT id_rota FROM Rota WHERE nome = '" + nome + "'), '" + placa + "', 'indeterminado', (SELECT first_pontoonibus FROM Rota WHERE nome = '" + nome + "'), DEFAULT)";
+
+     client.query (query, function(err, queryResult) {
+      if (err) {
+        result['err'] = err;
+      } else {
+        result['detail'] = 'add_onibus';
+        result['queryResult'] = queryResult;
+
       }
-      res.send(msgErro);
-    } else {
-      res.send("Onibus criado com sucesso.");
-    }
-  });
+
+      console.log(result);
+      res.send(result);
+    });
 });
 
 // @TODO: Adicionar recuperar onibus via placa.
@@ -688,6 +783,7 @@ server.get('/web-api/rota', function(req, res) {
       if (err) {
           res.send(err);
       } else {
+          result["detail"] = "get_rotas";
           res.send(result);
       }
   });
@@ -716,7 +812,7 @@ server.post('/web-api/rota/remover',function(req,res) {
               err3['idRota'] = req.body.idRota;
 	      res.send(err3);
             } else {
-	      result3['idRota'] = req.body.idRota;
+	             result3['idRota'] = req.body.idRota;
               res.send(result3);
             }
           });
@@ -725,6 +821,104 @@ server.post('/web-api/rota/remover',function(req,res) {
     }
   });
 });
+
+server.get('/web-api/adicionarPontoRota', function(req, res) {
+  var numeroRota = req.query.numeroRota;
+  var pontoNovo = req.query.pontoNovo;
+  var pontoAnterior = req.query.pontoAnterior;
+  var pontoPosterior = req.query.pontoPosterior;
+  var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'AND next_id_pontoonibus = " + pontoPosterior + ");";
+
+  client.query(atualiza, function(err1, result1) {
+    if (err1) {
+      var msgErro = "";
+      if (err1 == 'error: next_id_pontoonibus not in rota') {
+        msgErro = "O novo ponto está fora da rota";
+      } else {
+        msgErro = err1.detail;
+      }
+      res.send(msgErro);
+    } else  {
+      if (result1.rowCount == 0) {
+        res.send("Caminho de " + pontoAnterior + " para " + pontoPosterior + " não pertence a Rota.");
+      } else {
+        var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
+        client.query(inserir, function(err2, result2) {
+          if (err2) {
+            var msgErro = "";
+            if (err2 == 'error: null value in column "id_rota" violates not-null constraint') {
+              msgErro = "Esta linha não está cadastrada";
+            } else if (err2 == 'error: id_pontoonibus not in rota') {
+              msgErro = "Este ponto está fora da rota da linha";
+            } else if (err2 == 'error: next_id_pontoonibus not in rota') {
+              msgErro = "O ponto a frente está fora da rota da linha";
+            } else if (err2 == 'error: duplicate key value violates unique constraint "pontoonibus_rota_pk"') {
+              msgErro = "Já existe essta sequência na roda de ônibus";
+            } else {
+              msgErro = err2.detail;
+            }
+        res.send(msgErro);
+          } else {
+            res.send ('Ponto adicionado a Rota com sucesso.');
+          }
+        });
+      }
+    }
+  });
+});
+
+server.get('/web-api/fugarota', function(req, res) {
+  var query = "SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido = FALSE ORDER BY f.id_onibus, f.horarioinicio DESC;";
+
+  client.query(query, function(err, result) {
+      if (err) {
+          res.send(err);
+      } else {
+          res.send(result);
+      }
+  });
+});
+
+server.get('/web-api/fugarotahistorico', function(req, res) {
+  var query = "SELECT f.id_fugarota, o.id_onibus, o.placa, to_char(f.horarioinicio, 'HH24:MI:SS DD/MM/YY') AS horarioInicio, to_char(f.horarioFinal, 'HH24:MI:SS DD/MM/YY') AS horarioFinal FROM FugaRota f, Onibus o WHERE o.id_onibus = f.id_onibus AND resolvido ORDER BY f.id_onibus, f.horarioinicio DESC;";
+  client.query(query, function(err, result) {
+      if (err) {
+          res.send(err);
+      } else {
+          res.send(result);
+      }
+  });
+});
+
+server.post('/web-api/resolverFuga', function(req, res) {
+  var idFugaRota = req.body.idFugaRota;
+  var idOnibus = req.body.idOnibus;
+   
+  var query1 = "UPDATE FugaRota SET resolvido = TRUE WHERE id_fugarota = " + idFugaRota + " AND resolvido = FALSE";
+  var query2 = "UPDATE Onibus SET statusFuga = FALSE WHERE id_onibus = " + idOnibus; 
+
+  result = {};
+  result['detail'] = 'resolverfuga';
+  result['paramns'] = {};
+  result.paramns['idFugaRota'] = idFugaRota;
+
+
+  client.query (query1, function(err, queryResult) {
+    if (err) {
+      result['err'] = err;
+    } else {
+      client.query(query2, function(err2, result2) {
+        if (err2) {
+        res.send(err2)
+                  }
+     });
+     result['queryResult'] = queryResult;
+    }
+    res.send(result);
+  });
+});
+
+
 
 // Inicia o servidor na porta 3001.
 server.listen(3001, function() {
