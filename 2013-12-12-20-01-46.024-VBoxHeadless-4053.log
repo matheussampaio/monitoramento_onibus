@@ -1,0 +1,12 @@
+Log created: 2013-12-12T20:01:46.248737000Z
+Executable: /usr/lib/virtualbox/VBoxHeadless
+Arg[0]: /usr/lib/virtualbox/VBoxHeadless
+Arg[1]: --comment
+Arg[2]: monitoramento_onibus_1386868459
+Arg[3]: --startvm
+Arg[4]: 409ff628-70f6-412b-81dd-63ad9509c036
+Arg[5]: --vrde
+Arg[6]: config
+Crash in patch code d94dca68 (c10da023) esp=c0091fa8
+Patch state=4 flags=4010c0081 fDirty=0
+0060:d94dca68 cc                      int3

@@ -580,7 +580,8 @@ server.get('/web-api/horarios', function(req, res) {
 
 server.get('/web-api/horariosAdmin', function(req,res){
   var query = "SELECT o.placa, h.* FROM Horario h, Onibus o WHERE h.id_onibus = o.id_onibus;";
-
+  result = {};
+  result["detail"] = "horario_admin";
   client.query(query, function(err, result){
     if (err) {
       res.send(err);
@@ -653,6 +654,7 @@ server.get('/web-api/pontoonibus', function(req, res) {
     if (err) {
       res.send(err);
     } else {
+      result["detail"] = "get_pontos";
       res.send(result);
     }
   });
@@ -789,6 +791,42 @@ server.get('/web-api/rota', function(req, res) {
   });
 });
 
+server.post('/web-api/rota/adicionar', function(req, res) {
+  var coordenadas = req.body.coord;
+  var novaRota = req.body.nome;
+  var pontoInicial = req.body.pontoInicial;
+
+  var inserir = "INSERT INTO Rota VALUES (DEFAULT, '"+novaRota+"', "+pontoInicial+", ST_GeomFromText('LINESTRING ("+coordenadas+")', 4291) )";
+  var inserirPontoNaRota = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + novaRota + "'), " + pontoInicial + ", " + pontoInicial + ")";
+  var view = "CREATE OR REPLACE VIEW rota"+novaRota+"view AS SELECT id_rota, nome, ST_GeomFromText(ST_AsText(geom), 4291) AS geom FROM rota WHERE nome = '"+novaRota+"'";
+
+  result = {};
+
+  client.query(inserir, function(err1, result1) {
+    if (err1) {
+      result['err'] = err1;
+    } else {
+      result['result1'] = result1;
+      client.query(inserirPontoNaRota,function(err2, result2) {
+        if (err2) {
+          result['err'] = err2;
+        } else {
+           result['result2'] = result2;
+           client.query(view ,function(err3, result3) {
+            if (err3) {
+              result['err'] = err3;
+            } else {
+              result['detail'] = 'add_rota';
+              result['result3'] = result3;
+              res.send(result);
+            }
+          });
+        }
+      });
+    }
+  });
+  
+});
 
 //Remover rota
 server.post('/web-api/rota/remover',function(req,res) {
@@ -797,23 +835,26 @@ server.post('/web-api/rota/remover',function(req,res) {
   var deleteEmPontoRota = "DELETE FROM PontoOnibus_Rota WHERE id_rota = '" +  req.body.idRota + "';";
   var deleteRota = "DELETE FROM Rota WHERE id_rota = '" +  req.body.idRota + "';";
 
+  result = {};
+
   client.query (deleteEmOnibus, function(err, result) {
     if (err) {
-      err['idRota'] = req.body.idRota;
-      res.send(err);
+      result['err'] = 'ERRO1';
+      res.send(result);
     } else {
       client.query (deleteEmPontoRota, function(err2, result2) {
         if (err2) {
-          err2['idRota'] = req.body.idRota;
-	  res.send(err2);
+          result['err2'] = 'ERRO2';
+          res.send(result);
         } else {
           client.query (deleteRota, function(err3, result3) {
             if (err3) {
-              err3['idRota'] = req.body.idRota;
-	      res.send(err3);
+              result['err3'] = 'ERRO3';
+              res.send(result);
             } else {
-	             result3['idRota'] = req.body.idRota;
-              res.send(result3);
+               result['detail'] = 'rem_rota';
+               result['result3'] = result3;
+               res.send(result);
             }
           });
         }
@@ -822,12 +863,14 @@ server.post('/web-api/rota/remover',function(req,res) {
   });
 });
 
-server.get('/web-api/adicionarPontoRota', function(req, res) {
-  var numeroRota = req.query.numeroRota;
-  var pontoNovo = req.query.pontoNovo;
-  var pontoAnterior = req.query.pontoAnterior;
-  var pontoPosterior = req.query.pontoPosterior;
+server.post('/web-api/rota/adicionarPontoRota', function(req, res) {
+  var numeroRota = req.body.numeroRota;
+  var pontoNovo = req.body.pontoNovo;
+  var pontoAnterior = req.body.pontoAnterior;
+  var pontoPosterior = req.body.pontoPosterior;
   var atualiza =  "UPDATE PontoOnibus_Rota SET next_id_pontoonibus = " + pontoNovo + " WHERE id_pontoonibus = " + pontoAnterior + " AND id_rota = (SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'AND next_id_pontoonibus = " + pontoPosterior + ");";
+
+  result = {};
 
   client.query(atualiza, function(err1, result1) {
     if (err1) {
@@ -840,7 +883,8 @@ server.get('/web-api/adicionarPontoRota', function(req, res) {
       res.send(msgErro);
     } else  {
       if (result1.rowCount == 0) {
-        res.send("Caminho de " + pontoAnterior + " para " + pontoPosterior + " não pertence a Rota.");
+        result['detail'] = "Caminho de " + pontoAnterior + " para " + pontoPosterior + " não pertence a Rota.";
+        res.send(result);
       } else {
         var inserir = "INSERT INTO PontoOnibus_Rota VALUES ((SELECT id_rota FROM Rota WHERE nome = '" + numeroRota + "'), " + pontoNovo + ", " + pontoPosterior + ")";
         client.query(inserir, function(err2, result2) {
@@ -857,9 +901,10 @@ server.get('/web-api/adicionarPontoRota', function(req, res) {
             } else {
               msgErro = err2.detail;
             }
-        res.send(msgErro);
+            res.send(msgErro);
           } else {
-            res.send ('Ponto adicionado a Rota com sucesso.');
+            result['detail'] = 'add_ponto_rota';
+            res.send(result);
           }
         });
       }
