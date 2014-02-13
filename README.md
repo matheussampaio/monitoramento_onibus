@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/matheussampaio/monitoramento_onibus.png)](https://travis-ci.org/monitoramento_onibus/sig)
-
 Monitoramento de Ônibus
 ====================
 
